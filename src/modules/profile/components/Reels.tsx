@@ -1,19 +1,15 @@
-import SuggetionsSlider from "@/components/shared/suggetionsSliders/SuggetionsSlider"
-import { EmptyPost } from "./EmptyPost"
-
+import SuggetionsSlider from "@/components/shared/suggetionsSliders/SuggetionsSlider";
+import { EmptyPost } from "./EmptyPost";
 
 const Reels = () => {
   return (
     <div className="py-10">
-    <EmptyPost />
-    <div className="max-w-[1000px] mx-auto">
-      <SuggetionsSlider />
+      <EmptyPost message="No Reels Found" />
+      <div className="max-w-[1000px] mx-auto">
+        <SuggetionsSlider />
+      </div>
     </div>
+  );
+};
 
-
-    
-  </div>
-  )
-}
-
-export default Reels
+export default Reels;

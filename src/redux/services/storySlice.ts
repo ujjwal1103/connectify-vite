@@ -1,6 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { RootState } from "../store";
 
-const initialState = {
+interface StorySliceState {
+  story: any;
+  stories: any[];
+  shouldExit: boolean;
+}
+
+const initialState: StorySliceState = {
   story: {},
   stories: [],
   shouldExit: false,
@@ -18,7 +25,7 @@ const storySlice = createSlice({
     },
     setPreviousStory: (state, action) => {
       const index = state.stories.findIndex(
-        (story) => story._id === action.payload
+        (story: any) => story._id === action.payload
       );
       if (index === 0) {
         return;
@@ -28,7 +35,7 @@ const storySlice = createSlice({
     },
     setNextStory: (state, action) => {
       const index = state.stories.findIndex(
-        (story) => story._id === action.payload
+        (story: any) => story._id === action.payload
       );
       if (index === state.stories.length - 1) {
         state.shouldExit = true;
@@ -46,4 +53,4 @@ export const { setStories, setStory, setPreviousStory, setNextStory, reset } =
 
 export default storySlice.reducer;
 
-export const state = (state) => state.auth;
+export const state = (state: RootState) => state.story;

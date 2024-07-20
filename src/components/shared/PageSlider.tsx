@@ -6,7 +6,6 @@ import {
   //   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { type CarouselApi } from "@/components/ui/carousel";
-import React from "react";
 
 export const PageSlider = ({ items = [1, 2], setCurrent }: any) => {
   const [api, setApi] = React.useState<CarouselApi>();

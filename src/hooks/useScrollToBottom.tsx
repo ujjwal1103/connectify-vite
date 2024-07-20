@@ -1,13 +1,13 @@
-import React from "react";
+import { useState, useEffect } from "react";
 
 export const useScrollToBottom = <T extends Element>(): [
   React.RefCallback<T>,
   boolean
 ] => {
-  const [isBottom, setIsBottom] = React.useState(false);
-  const [node, setRef] = React.useState<any>(null);
+  const [isBottom, setIsBottom] = useState(false);
+  const [node, setRef] = useState<any>(null);
 
-  React.useEffect(() => {
+  useEffect(() => {
     let observer: IntersectionObserver;
 
     if (node && node.parentElement) {

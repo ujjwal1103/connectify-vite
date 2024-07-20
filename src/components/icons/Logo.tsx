@@ -1,6 +1,4 @@
-import React from "react";
-
-const Logo = ({className, size}:any) => {
+const Logo = ({ className, size }: any) => {
   return (
     <svg
       version="1.1"
