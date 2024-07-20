@@ -252,7 +252,7 @@ const Noti = ({ n, handleAccept, deleteNotification }: any) => {
             <FollowButton
               isFollow={n.user.isFollow}
               userId={n.user._id}
-              callBack={function (data: any) {
+              callBack={function () {
                 throw new Error("Function not implemented.");
               }}
               showRemoveFollowerBtn={false}

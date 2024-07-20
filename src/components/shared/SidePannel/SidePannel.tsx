@@ -1,6 +1,5 @@
 import { useClickOutside } from "@react-hookz/web";
 import {
-  forwardRef,
   useEffect,
   useLayoutEffect,
   useRef,

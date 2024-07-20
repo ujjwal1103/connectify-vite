@@ -167,7 +167,7 @@ const Chat = ({ chat }: any) => {
             checked={selectedChats.includes(chat._id)}
             id=""
             className="accent-blue-900 text-red-400"
-            onChange={(e) => {
+            onChange={() => {
               setSelectedChats(chat._id);
             }}
           />

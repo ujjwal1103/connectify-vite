@@ -1,6 +1,5 @@
 import { IoChevronBackCircle, IoChevronForwardCircle } from "react-icons/io5";
 import Avatar from "@/components/shared/Avatar";
-import { CircleChevronRight } from "lucide-react";
 import { useRef, useState } from "react";
 import "slick-carousel/slick/slick-theme.css";
 import "slick-carousel/slick/slick.css";
@@ -181,31 +180,37 @@ const storyImages = [
 ];
 
 const Stories = () => {
-  const [stories, _] = useState(storyImages); // Assuming storyImages is defined elsewhere
-  const scrollContainerRef = useRef(null);
+  const [stories, _] = useState(storyImages);
+  const scrollContainerRef = useRef<any>(null);
 
   const scrollLeft = () => {
     if (scrollContainerRef.current) {
       scrollContainerRef?.current?.scrollBy({
-        left: -625-10, // Adjust as needed
-        behavior: 'smooth',
+        left: -625 - 10,
+        behavior: "smooth",
       });
     }
-  };  
+  };
 
   const scrollRight = () => {
     if (scrollContainerRef.current) {
       scrollContainerRef.current.scrollBy({
-        left: 625+10, // Adjust as needed
-        behavior: 'smooth',
+        left: 625 + 10,
+        behavior: "smooth",
       });
     }
   };
   return (
     <div className="md:max-w-[625px] w-full flex items-center z-0 min-h-16 overflow-hidden relative ">
-      <div className="flex max-h-20 overflow-x-scroll scrollbar-none" ref={scrollContainerRef}>
+      <div
+        className="flex max-h-20 overflow-x-scroll scrollbar-none"
+        ref={scrollContainerRef}
+      >
         {stories.map((story, index) => (
-          <div key={index} className="flex basis-4 mr-2 first:ml-2 items-center justify-center">
+          <div
+            key={index}
+            className="flex basis-4 mr-2 first:ml-2 items-center justify-center"
+          >
             <div className="  bg-gradient-to-r from-amber-500 to-pink-500 rounded-full  flex items-center justify-center">
               <div className="p-[2px] flex  items-center justify-center rounded-full">
                 <Avatar
@@ -218,13 +223,19 @@ const Stories = () => {
         ))}
       </div>
 
-       {/* Scroll buttons */}
-       <div className="flex justify-between mt-2 absolute top-6 -translate-y-1/2 w-full">
-        <button onClick={scrollLeft} className="bg-transparent  text-sm ml-2 p-1  absoulute right-0  rounded-full disabled:opacity-50">
-        <IoChevronBackCircle size={24}/>
+      {/* Scroll buttons */}
+      <div className="flex justify-between mt-2 absolute top-6 -translate-y-1/2 w-full">
+        <button
+          onClick={scrollLeft}
+          className="bg-transparent  text-sm ml-2 p-1  absoulute right-0  rounded-full disabled:opacity-50"
+        >
+          <IoChevronBackCircle size={24} />
         </button>
-        <button onClick={scrollRight} className="bg-transparent text-sm mr-2 p-1 text-white absoulute right-0 rounded-full disabled:opacity-50">
-        <IoChevronForwardCircle size={24}/>
+        <button
+          onClick={scrollRight}
+          className="bg-transparent text-sm mr-2 p-1 text-white absoulute right-0 rounded-full disabled:opacity-50"
+        >
+          <IoChevronForwardCircle size={24} />
         </button>
       </div>
     </div>

@@ -19,7 +19,7 @@ const ChatInfo = ({ onClose }: any) => {
 
   const handleChangeNewName = async () => {
     setGroupName({ chatId: _id, newGroupName });
-    const res = await updateGroupName(_id, newGroupName!);
+    await updateGroupName(_id, newGroupName!);
     setEditGroupName(false);
   };
 

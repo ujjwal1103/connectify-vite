@@ -85,7 +85,7 @@ const PostActions = ({
 
 export default PostActions;
 
-export const SendPost = ({ post, onClose }: any) => {
+export const SendPost = ({ onClose }: any) => {
   const [users, setUsers] = useState<IUser[]>([]);
   const [search, setSearch] = useState<string>("");
   const [selectedUser, setSelectedUser] = useState<string[]>([]);

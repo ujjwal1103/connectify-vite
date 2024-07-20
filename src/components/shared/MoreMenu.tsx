@@ -8,14 +8,14 @@ import {
   Sun,
 } from "lucide-react";
 import { Link } from "react-router-dom";
-import { BookMark, ChevronBack } from "../icons";
+import { ChevronBack } from "../icons";
 import { useTheme } from "../ThemeProvider";
-import { forwardRef, useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { motion, AnimatePresence } from "framer-motion";
 import Switch from "./Inputs/Switch";
 
-const MoreMenu = (props: any, ref: any) => {
+const MoreMenu = () => {
   const [themeMenu, setThemeMenu] = useState(false);
   const { theme, setTheme } = useTheme();
   const { logout } = useAuth();
@@ -76,7 +76,7 @@ const MoreMenu = (props: any, ref: any) => {
                   <div className="mx-2">
                     <Switch
                       checked={theme === "dark"}
-                      onChange={(e) => {
+                      onChange={(e: ChangeEvent<HTMLInputElement>) => {
                         if (e.target.checked) {
                           setTheme("light");
                         } else {
@@ -192,4 +192,4 @@ const MoreMenu = (props: any, ref: any) => {
   );
 };
 
-export default forwardRef(MoreMenu);
+export default MoreMenu;

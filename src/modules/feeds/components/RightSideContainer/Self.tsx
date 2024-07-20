@@ -32,13 +32,16 @@ const Self = () => {
           />
           <span className="flex flex-col">
             <span className="text-sm font-medium">{user?.name}</span>
-            <Link to="/profile" className="text-sm font-medium text-foreground-secondary">
+            <Link
+              to="/profile"
+              className="text-sm font-medium text-foreground-secondary"
+            >
               {user?.username}
             </Link>
           </span>
         </div>
         <button
-          onClick={(e) => setSwitchLogin(true)}
+          onClick={() => setSwitchLogin(true)}
           className="text-sm bg-gradient-to-l from-sky-900 to-indigo-900 px-2 rounded-xl text-sky-100 py-1"
         >
           Switch

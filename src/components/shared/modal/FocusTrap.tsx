@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, PropsWithChildren } from "react";
+import { useRef, useEffect, PropsWithChildren } from "react";
 
 const FocusTrap = ({ children }: PropsWithChildren) => {
   const trapRef = useRef<any>(null);

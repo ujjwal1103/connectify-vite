@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import useAudioRecorder from "@/hooks/useAudioRecorder";
 import { IoTrash } from "react-icons/io5";
 import { PiPauseCircle, PiPlay } from "react-icons/pi";

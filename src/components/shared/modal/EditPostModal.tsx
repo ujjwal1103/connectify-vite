@@ -9,7 +9,6 @@ import { toast } from "react-toastify";
 const EditPostModal = ({ isOpen, onClose, post }: any) => {
   const [caption, setCaption] = useState(post?.caption);
   const [updating, setUpdating] = useState(false);
-  const [isInValid, setIsInValid] = useState(false);
   const { updatePost: updateCurrenPost } = usePostSlice();
 
   const handleEditCaption = async () => {
@@ -83,7 +82,7 @@ const EditPostModal = ({ isOpen, onClose, post }: any) => {
                   </div>
                   <div className="md:mt-5 mt-2 flex sm:mt-4 sm:flex-row-reverse gap-3">
                     <button
-                      disabled={updating || isInValid}
+                      disabled={updating}
                       onClick={handleEditCaption}
                       className="mt-3 md:mt-0 inline-flex justify-center w-full sm:w-auto px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:text-sm
                       disabled:opacity-50 disabled:pointer-events-none
@@ -92,7 +91,7 @@ const EditPostModal = ({ isOpen, onClose, post }: any) => {
                       Save
                     </button>
                     <button
-                      disabled={updating || isInValid}
+                      disabled={updating}
                       type="button"
                       onClick={onClose}
                       className="mt-3 w-full sm:mt-0 sm:w-auto px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 disabled:opacity-50 disabled:pointer-events-none"

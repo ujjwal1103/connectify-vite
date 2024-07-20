@@ -1,15 +1,23 @@
-import { Link } from "react-router-dom";
-
 import { useState } from "react";
 import Avatar from "@/components/shared/Avatar";
 import FollowButton from "@/components/shared/FollowButton";
 import UsernameLink from "@/components/shared/UsernameLink";
-// import { followUser } from "../../profile/services/postServices";
 
 const Suggetion = ({ user }: any) => {
   const { _id: userId, avatar, username, name, isPrivate } = user;
   const [follow, setFollow] = useState(false);
   const [isRequested, setIsRequested] = useState(false);
+
+  const handleFollow = ({
+    isFollow,
+    isRequested,
+  }: {
+    isFollow: boolean;
+    isRequested: boolean;
+  }) => {
+    setFollow(isFollow);
+    setIsRequested(isRequested);
+  };
 
   return (
     <div className="py-2">
@@ -24,9 +32,7 @@ const Suggetion = ({ user }: any) => {
             className="inline-block bg-background size-8 rounded-full hover:scale-90 duration-500 object-cover"
           />
           <div className="flex flex-col">
-            <span className="text-sm font-medium text-primary">
-              {name}
-            </span>
+            <span className="text-sm font-medium text-primary">{name}</span>
             <span className="text-sm font-medium text-foreground-secondary ">
               {username}
             </span>
@@ -37,9 +43,7 @@ const Suggetion = ({ user }: any) => {
           size={"sm"}
           userId={userId}
           isFollow={follow}
-          callBack={({ isFollow, isRequested }) => {
-            console.log(isFollow, isRequested);
-          }}
+          callBack={handleFollow}
           showRemoveFollowerBtn={false}
           isRequested={isRequested}
           isPrivate={isPrivate}
