@@ -28,7 +28,6 @@ const Message = ({
     createdAt,
     seen,
     messageType,
-    attachments,
     _id,
     username,
     avatar,

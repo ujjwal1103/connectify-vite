@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import ChatListHeader from "./ChatListHeader";
 import { Loader, Search, X, XIcon } from "lucide-react";
 import InfiniteScroll from "react-infinite-scroll-component";

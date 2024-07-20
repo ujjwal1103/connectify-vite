@@ -17,12 +17,11 @@ const Register = () => {
   const navigator = useNavigate();
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
-  const { register, handleSubmit, setError, clearErrors, formState } =
-    useForm({
-      criteriaMode: "all",
-      mode: "onSubmit",
-    });
-  const { errors, isValid, isSubmitting, isLoading } = formState;
+  const { register, handleSubmit, setError, clearErrors, formState } = useForm({
+    criteriaMode: "all",
+    mode: "onSubmit",
+  });
+  const { errors, isValid, isSubmitting } = formState;
   const onSubmit = (data: any) => {
     userSignUp(data);
   };
@@ -61,8 +60,6 @@ const Register = () => {
     document.title = "connectify-register";
   }, []);
 
-
-
   return (
     <div className="w-full h-full relative bg-appcolor flex lg:flex-row flex-col items-center flex-1">
       <div className="w-full h-[400px] bg-black absolute top-0 lg:block hidden" />
@@ -85,35 +82,34 @@ const Register = () => {
             Register To Connectify
           </div>
 
-    
-            <Input
-              autoFocus={true}
-              type="text"
-              placeholder="Username"
-              prefix={<UsernameIcon size={24} />}
-              error={errors?.username}
-              {...register("username", {
-                required: "Username is Required",
-                pattern: {
-                  value: /^(?=[a-z_])[a-z0-9_]{5,20}$/,
-                  message: "Invalid Username",
-                },
-                validate: (val) => {
-                  return val !== "ujjwallade" || "Value should be ujjwal lade";
-                },
-              })}
-            />
-            <Input
-              type="text"
-              placeholder="Name"
-              prefix={<PersonFill size={24} />}
-              error={errors?.name}
-              {...register("name", { required: "Name is Required" })}
-              required={true}
-            />
-        
+          <Input
+            autoFocus={true}
+            type="text"
+            placeholder="Username"
+            prefix={<UsernameIcon size={24} />}
+            error={errors?.username}
+            {...register("username", {
+              required: "Username is Required",
+              pattern: {
+                value: /^(?=[a-z_])[a-z0-9_]{5,20}$/,
+                message: "Invalid Username",
+              },
+              validate: (val) => {
+                return val !== "ujjwallade" || "Value should be ujjwal lade";
+              },
+            })}
+          />
+          <Input
+            autoFocus={false}
+            type="text"
+            placeholder="Name"
+            prefix={<PersonFill size={24} />}
+            error={errors?.name}
+            {...register("name", { required: "Name is Required" })}
+          />
 
           <Input
+            autoFocus={false}
             type="text"
             placeholder="Email"
             prefix={<Mail size={24} />}
@@ -128,6 +124,7 @@ const Register = () => {
           />
 
           <Input
+            autoFocus={false}
             {...register("password", {
               required: "Password is Required",
               minLength: {
@@ -161,6 +158,6 @@ const Register = () => {
       </div>
     </div>
   );
-};  
+};
 
 export default Register;

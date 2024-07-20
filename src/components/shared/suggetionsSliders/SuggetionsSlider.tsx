@@ -124,9 +124,6 @@ const People = ({ avatar, username, name, _id }: any) => (
         size="sm"
         isFollow={false}
         userId={_id}
-        callBack={function (data: any) {
-          throw new Error("Function not implemented.");
-        }}
         showRemoveFollowerBtn={false}
         isRequested={false}
         isPrivate={false}

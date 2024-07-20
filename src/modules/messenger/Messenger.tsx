@@ -1,8 +1,8 @@
-import { Outlet, useNavigate, useParams } from "react-router-dom";
+import { Outlet, useParams } from "react-router-dom";
 import ChatList from "./components/ChatList";
 import { MessengerLine } from "@/components/icons";
 import { useChatSlice } from "@/redux/services/chatSlice";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { getChatByChatId } from "@/api";
 const NoSelectedChat = () => {
   return (

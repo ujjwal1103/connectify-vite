@@ -6,18 +6,20 @@ import { X } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 
-const Followers = ({ userId }: any) => {
-  const [followers, setFollowers] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [page, setPage] = useState(1);
-  const [query, setQuery] = useState("");
-  const [error, setError] = useState(false);
-  const [hasNextPage, setNextPage] = useState(false);
+const Followers = ({ userId }: { userId: string }) => {
+  const [followers, setFollowers] = useState<IUser[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [page, setPage] = useState<number>(1);
+  const [query, setQuery] = useState<string>("");
+  const [error, setError] = useState<boolean>(false);
+  const [hasNextPage, setHasNextPage] = useState<boolean>(false);
 
   const fetchFollowers = useCallback(async () => {
     try {
+      setIsLoading(true);
       const res = (await getFollowers(page, userId, query)) as any;
-      setFollowers(res.followers);
+      setFollowers((prev: IUser[]) => [...prev, ...res.followers]);
+      setHasNextPage(res.pagination.hasNext);
     } catch (error) {
       setError(false);
     }
@@ -32,6 +34,9 @@ const Followers = ({ userId }: any) => {
   useEffect(() => {
     fetchFollowers();
   }, [fetchFollowers]);
+
+  if (error) return <div>Something Went Wrong</div>;
+  if (isLoading) return <div>Loading...</div>;
 
   return (
     <div className="w-full h-full" id="scrollableDiv">

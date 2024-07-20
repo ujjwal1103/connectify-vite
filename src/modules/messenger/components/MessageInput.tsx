@@ -43,7 +43,7 @@ export const Loader = () => {
   );
 };
 
-const MessageInput = ({ userId }: any) => {
+const MessageInput = () => {
   const [messageText, setMessageText] = useState("");
   const { chatId } = useParams<{ chatId: string }>();
   const [openDial, setOpenDial] = useState(false);

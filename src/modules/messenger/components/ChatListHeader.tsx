@@ -2,8 +2,8 @@ import Avatar from "@/components/shared/Avatar";
 import UsernameLink from "@/components/shared/UsernameLink";
 import { motion, AnimatePresence } from "framer-motion";
 import { getCurrentUser } from "@/lib/localStorage";
-import { Edit, EllipsisVertical, Loader, Loader2, X } from "lucide-react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { Edit, EllipsisVertical, Loader, X } from "lucide-react";
+import { ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
 import { useClickOutside } from "@react-hookz/web";
 import { useChatSlice } from "@/redux/services/chatSlice";
 import Modal from "@/components/shared/modal/Modal";
@@ -169,16 +169,16 @@ const AddNewUser = ({ onClose }: any) => {
     getAllUsers();
   }, [getAllUsers]);
 
-  const handleChange = (e: any) => {
-    setSearchTerm(e.target.value);
+  // const handleChange = (e: any) => {
+  //   setSearchTerm(e.target.value);
 
-    if (e.target.value === "") {
-      getAllUsers(false);
-    }
-    setUsers((prevs) =>
-      prevs.filter((user) => user?.username.includes(e.target.value))
-    );
-  };
+  //   if (e.target.value === "") {
+  //     getAllUsers(false);
+  //   }
+  //   setUsers((prevs) =>
+  //     prevs.filter((user) => user?.username.includes(e.target.value))
+  //   );
+  // };
 
   const handleUserSelect = async () => {
     try {
@@ -246,8 +246,6 @@ const AddNewUser = ({ onClose }: any) => {
                 </span>
               )}
             </div>
-
-
           </div>
           {!isLoading && users.length === 0 && (
             <div className="flex items-center p-4 gap-3 m-2 bg-zinc-800 rounded-xl">
@@ -376,12 +374,12 @@ const AddNewUser = ({ onClose }: any) => {
 };
 
 const CreateGroup = ({ selectedUsers, onClose }: any) => {
-  const [avatar, setAvatar] = useState(null);
-  const [file, setFile] = useState(null);
+  const [avatar, setAvatar] = useState<string | null>(null);
+  const [file, setFile] = useState<File | null>(null);
   const [groupName, setGroupName] = useState("");
 
   const handleCreateNewGroup = async () => {
-    const users = selectedUsers.map((u) => u.userId);
+    const users = selectedUsers.map((u: any) => u.userId);
     const formData = new FormData();
     formData.set("users", JSON.stringify(users));
     formData.set("groupName", groupName);
@@ -392,9 +390,9 @@ const CreateGroup = ({ selectedUsers, onClose }: any) => {
     console.log(res);
   };
 
-  const handleImagePic = async (e) => {
-    const f = e.target.files[0];
-    const url = await readFileAsDataURL(f);
+  const handleImagePic = async (e: ChangeEvent<HTMLInputElement>) => {
+    const f = e.target.files![0];
+    const url = (await readFileAsDataURL(f)) as string;
     setAvatar(url);
     setFile(f);
   };
@@ -412,7 +410,7 @@ const CreateGroup = ({ selectedUsers, onClose }: any) => {
         </div>
         <div>
           <div className="flex flex-wrap px-3 pb-2 gap-2">
-            {selectedUsers.map((user) => {
+            {selectedUsers.map((user: { username: string }) => {
               return (
                 <span className="bg-black px-2 rounded-md flex items-center gap-2">
                   <span>{user?.username}</span>
@@ -444,7 +442,7 @@ const CreateGroup = ({ selectedUsers, onClose }: any) => {
               htmlFor="avatar"
               className="flex items-center justify-center"
             >
-              <Avatar className="size-24" src={avatar} />
+              <Avatar className="size-24" src={avatar!} />
               <input
                 type="file"
                 name="avatar"

@@ -1,14 +1,12 @@
-import { getCurrentUser } from "@/api";
 import Avatar from "@/components/shared/Avatar";
 import { TabControl } from "@/components/shared/TabControl";
 import { Button } from "@/components/ui/button";
 import { Bookmark, Grid } from "lucide-react";
-import { useCallback, useEffect, useLayoutEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { IoIosSettings } from "react-icons/io";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import Posts from "./components/Posts";
 import SavedPost from "./components/SavedPost";
-import { useProfileSlice } from "@/redux/services/profileSlice";
 import Counts from "./components/Counts";
 import PageLoading from "@/components/shared/Loading/PageLoading";
 import PageError from "@/components/shared/Error/PageError";
