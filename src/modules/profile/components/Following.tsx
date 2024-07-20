@@ -6,20 +6,20 @@ import { X } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 
-const Following = ({ userId }: any) => {
-  const [following, setFollowing] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [page, setPage] = useState(1);
-  const [query, setQuery] = useState("");
-  const [error, setError] = useState(false);
-  const [hasNextPage, setHasNextPage] = useState(false);
+const Following = ({ userId }: { userId: string }) => {
+  const [following, setFollowing] = useState<IUser[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [page, setPage] = useState<number>(1);
+  const [query, setQuery] = useState<string>("");
+  const [error, setError] = useState<boolean>(false);
+  const [hasNextPage, setHasNextPage] = useState<boolean>(false);
 
   const fetchFollowers = useCallback(async () => {
     try {
       setIsLoading(true);
       const res = await getFollowing(page, userId, query);
       if (res.isSuccess) {
-        setFollowing(prev=>([...prev,...res.following]));
+        setFollowing((prev: IUser[]) => [...prev, ...res.following]);
         setHasNextPage(res.pagination.hasNext);
       }
     } catch (error) {
@@ -35,13 +35,16 @@ const Following = ({ userId }: any) => {
 
   const handleLoadMore = () => {
     if (hasNextPage) {
-      console.log('next')
+      console.log("next");
       setPage(page + 1);
     }
   };
 
+  if (error) return <div>Something Went Wrong</div>;
+  if (isLoading) return <div>Loading...</div>;
+
   return (
-    <div className=" w-full h-full " >
+    <div className=" w-full h-full ">
       <div>
         <div className="flex bg-neutral-900 my-2 items-center rounded-md h-10 mx-2">
           <input

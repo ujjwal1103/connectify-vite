@@ -1,6 +1,4 @@
-import React from "react";
-
-const Google = ({ size, fill, className }:any) => {
+const Google = ({ className }: any) => {
   return (
     <svg viewBox="0 0 48 48" width="48px" height="48px" className={className}>
       <path
