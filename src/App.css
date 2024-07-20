@@ -1,0 +1,55 @@
+:root {
+  font-size: 16px;
+}
+
+#root {
+  height: 100dvh;
+  width: 100dvw;
+  overflow: hidden;
+  background-color: hsl(var(--background));
+}
+
+.slick-next {
+  right: 10px !important;
+}
+
+.slick-prev {
+  left: 10px !important;
+  z-index: 1;
+}
+
+body {
+  margin: 0;
+  max-height: 100dvh;
+  max-width: 100dvw;
+  overflow: hidden;
+  min-width: 375px;
+  font-size: 14px;
+}
+
+.infinite-scroll {
+  border: 1px solid #ccc;
+  padding: 10px;
+  width: 300px;
+  margin: 0 auto;
+}
+
+.item {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.item:last-child {
+  border-bottom: none;
+}
+
+#waveform ::part(cursor) {
+  height: 14px !important;
+  top: 35%;
+  border-radius: 7px;
+  background-color: black;
+}
+
+* {
+  transition: background-color 0.1s ease-in;
+}
