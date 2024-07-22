@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import ImageCropper from "@/components/shared/ImageCropper";
+import ImageCropper from "@/components/crop/ImageCropper";
 import CaptionComponent from "./CaptionComponent";
 import ImagePicker from "./ImagePicker";
 
-type Step = "Crop" | "Caption" | null;
+type Step = "Crop" | "Caption" | "Pick";
 
 function extractCroppedImageUrls(data: any) {
   const croppedImageUrls = [];
@@ -26,9 +26,9 @@ function extractCroppedImageUrls(data: any) {
 const CreatePost = ({ onClose }: any) => {
   const [cropedImagesUrls, setCropedImagesUrls] = useState<any>([]);
   const [selectedImage, setSelectedImage] = useState<any>({});
-  const [step, setStep] = useState<Step>(null);
+  const [step, setStep] = useState<Step>("Pick");
   const [imageData, setImageData] = useState<any>({});
-  const [aspectRatio, setAspectRation] = useState<any>(1 / 1);
+  const [aspectRatio, setAspectRatio] = useState<any>(1 / 1);
 
   useEffect(() => {
     setCropedImagesUrls(extractCroppedImageUrls(imageData));
@@ -67,7 +67,7 @@ const CreatePost = ({ onClose }: any) => {
     setCropedImagesUrls([]);
     setSelectedImage({});
     setImageData({});
-    setStep(null);
+    setStep("Pick");
   };
 
   const onImageCrop = (file: File, imageUrl: string, allowNext: boolean) => {
@@ -90,7 +90,7 @@ const CreatePost = ({ onClose }: any) => {
     }
   };
 
-  const handleClearImage = (name: any) => {
+  const handleClearImage = (name: string) => {
     deleteAndSet(name);
     setCropedImagesUrls((prev: any) =>
       prev.filter((img: any) => img.name !== name)
@@ -107,13 +107,12 @@ const CreatePost = ({ onClose }: any) => {
       transition={{ duration: 1 }}
       className="w-auto flex justify-center items-center  bg-zinc-950 rounded-md"
     >
-      {!step && <ImagePicker onImageSelect={handleImagePick} />}
+      {step === "Pick" && <ImagePicker onImageSelect={handleImagePick} />}
 
       {step === "Crop" && (
         <ImageCropper
-          cropedImagesUrls={cropedImagesUrls}
-          setCropedImagesUrls={setCropedImagesUrls}
-          imageData={imageData}
+          croppedImagesUrls={cropedImagesUrls}
+          setCroppedImagesUrls={setCropedImagesUrls}
           image={selectedImage}
           onCrop={onImageCrop}
           onImagePick={handleImagePick}
@@ -121,7 +120,7 @@ const CreatePost = ({ onClose }: any) => {
           selectImage={handleSelectImage}
           onResetAndClose={reset}
           aspectRatio={aspectRatio}
-          setAspectRation={setAspectRation}
+          setAspectRatio={setAspectRatio}
         />
       )}
 

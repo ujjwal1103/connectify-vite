@@ -12,12 +12,12 @@ const RichTextEditor = ({
   const [textContent, setTextContent] = useState(value);
 
   return (
-    <div className="relative flex-1 h-full w-full flex max-h-72 ">
+    <div className="relative flex-1 h-full w-full flex md:max-h-64 max-h-44 ">
       {textContent === "" && (
         <motion.span
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
-          className="absolute top-3 left-3 text-gray-400 pointer-events-none"
+          className="absolute top-0 left-0 text-gray-400 pointer-events-none"
         >
           {placeholder}
         </motion.span>

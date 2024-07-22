@@ -8,7 +8,7 @@ const GOOGLE_PROD_OAUTH_REDIRECT_URI = import.meta.env
   .VITE_PROD_GOOGLE_OAUTH_REDIRECT_URI;
 const GOOGLE_DEV_OAUTH_REDIRECT_URI = import.meta.env
   .VITE_DEV_GOOGLE_OAUTH_REDIRECT_URI;
-const NODE_ENV = import.meta.env.NODE_ENV;
+const NODE_ENV = import.meta.env.MODE;
 const DEV = "development";
 
 const BASE_URL = NODE_ENV === DEV ? DEV_BASE_URL : PROD_BASE_URL;

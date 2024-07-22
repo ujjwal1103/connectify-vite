@@ -57,11 +57,11 @@ const CaptionComponent = ({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 2 }}
-      className="flex relative w-128 md:w-192 lg:aspect-video  flex-col h-full "
+      className="flex relative w-screen md:w-192 lg:aspect-video flex-col h-dvh md:h-full"
     >
-      <div className="p-2 flex justify-between bg-secondary gap-5 ">
+      <div className="p-2 flex justify-between bg-secondary">
         <button
-          className="middle  none center rounded-md  py-2 px-4 font-sans text-sm font-bold uppercase text-white   transition-all   focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+          className="middle  none center rounded-md  md:py-2 md:px-4 font-sans text-sm font-bold uppercase text-white   transition-all   focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
           data-ripple-light="true"
           onClick={() => {
             setStep("Crop");
@@ -88,8 +88,8 @@ const CaptionComponent = ({
           </button>
         )}
       </div>
-      <div className="flex relative flex-col h-full max-h-full lg:flex-row">
-        <div className="flex flex-1 justify-center items-center h-full gap-5">
+      <div className="flex md:flex-1 relative flex-col lg:flex-row">
+        <div className="flex flex-1  ">
           <ImageSlider
             images={cropedImagesUrls.map((c: any) => ({
               url: c.croppedUrl,
@@ -98,17 +98,20 @@ const CaptionComponent = ({
             height="100%"
           />
         </div>
-        <div className="flex-1 h-full flex flex-col justify-between">
+        <div className="flex-1 grid grid-rows-[auto_1fr_auto] overflow-hidden">
           <div className="py-3 px-4 flex items-center gap-3">
             <Avatar src={user?.avatar?.url} className="border-none size-8" />
             <span className="text-sm">{user?.username}</span>
           </div>
-          <RichTextEditor
-            value={caption}
-            onChange={setCaption}
-            className="overflow-y-scroll w-full flex-1 h-64 lg:h-full scrollbar-none p-3  focus-visible:outline-none"
-          />
-          <div className="py-3 px-4 flex items-center justify-between gap-3">
+          <div className="w-full scrollbar-thin p-3 md:h-64 h-full ">
+            <RichTextEditor
+              value={caption}
+              onChange={setCaption}
+              className="overflow-hidden w-full h-full  focus-visible:outline-none"
+            />
+          </div>
+
+          <div className="py-3  px-4 flex items-center justify-between gap-3 fixed bottom-0 md:static w-full">
             <motion.div drag>
               <DropdownMenu>
                 <DropdownMenuTrigger className="pr-2">

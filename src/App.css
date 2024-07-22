@@ -3,8 +3,9 @@
 }
 
 #root {
-  height: 100dvh;
-  width: 100dvw;
+  min-height: 100dvh;
+  min-width: 100dvw;
+  max-width: 100dvw;
   overflow: hidden;
   background-color: hsl(var(--background));
 }

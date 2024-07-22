@@ -5,10 +5,10 @@ import Tabs from "./Tabs";
 import { useLocation } from "react-router-dom";
 
 const Counts = ({ posts, followers, following, userId }: any) => {
+  const location = useLocation();
   const [followersOrFollowing, setFollowersOrFollowing] = useState<
     "following" | "followers" | null
   >(null);
-  const location = useLocation();
 
   useEffect(() => {
     setFollowersOrFollowing(null);

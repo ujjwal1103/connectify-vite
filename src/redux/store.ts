@@ -8,6 +8,7 @@ import profileReducer from "./services/profileSlice";
 import { messageApi } from "./services/messageApi";
 import savedPostSlice from "./services/savedPostSlice";
 import suggetionSlice from "./services/suggetionSlice";
+import modalStateSlice from "./services/modalStateSlice";
 
 export const store = configureStore({
   reducer: {
@@ -20,12 +21,11 @@ export const store = configureStore({
     story: storyReducer,
     profile: profileReducer,
     [messageApi.reducerPath]: messageApi.reducer,
+    [modalStateSlice.name]: modalStateSlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(messageApi.middleware),
 });
 
-// Infer the `RootState` and `AppDispatch` types from the store itself
 export type RootState = ReturnType<typeof store.getState>;
-// Inferred type: {posts: PostsState, comments: CommentsState, users: UsersState}
 export type AppDispatch = typeof store.dispatch;

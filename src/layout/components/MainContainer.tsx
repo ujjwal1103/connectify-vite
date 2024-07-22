@@ -10,7 +10,7 @@ const MainContainer = () => {
     <main className="flex h-full w-full flex-1 md:flex-row flex-col bg-background-secondary  text-foreground">
       <Sidebar />
       <Appbar hideAppBar={hideAppBar} show={show} />
-      <main className="h-full md:w-full flex-1 lg:flex-1 md:bg-inherit flex flex-col">
+      <main className="h-dvh md:w-full flex-1 lg:flex-1 md:bg-inherit flex flex-col">
         <Outlet context={setHideAppBar} />
       </main>
       <TabBar hideAppBar={hideAppBar} show={show} />

@@ -15,13 +15,14 @@ import {
   User2,
 } from "lucide-react";
 
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useRef } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import CreateNewPost from "../NewPost/CreateNewPost";
 import MoreMenu from "@/components/shared/MoreMenu";
 import Notification from "@/modules/notifications/Notifications";
 import { AnimatePresence } from "framer-motion";
 import Modal from "@/components/shared/modal/Modal";
+import { useModalStateSlice } from "@/redux/services/modalStateSlice";
 
 const sidebarRoutes: SidebarRoute[] = [
   { route: "/", label: "Home", icon: <Home /> },
@@ -68,12 +69,14 @@ interface SidebarRoute {
 }
 
 const Sidebar = () => {
-  const [modalStates, setModalStates] = useState({
-    searchSheet: false,
-    moreOptions: false,
-    notiSheet: false,
-    openPostModal: false,
-  });
+  const {
+    setModalState,
+    notiSheet,
+    searchSheet,
+    moreOptions,
+    openPostModal,
+    resetModalState,
+  } = useModalStateSlice();
 
   const sidebarRef = useRef<any>();
   const location = useLocation();
@@ -84,27 +87,22 @@ const Sidebar = () => {
   );
 
   const handleResize = useCallback(() => {
-    setModalStates((prev) => ({
-      ...prev,
-      searchSheet: false,
-      moreOptions: false,
-      notiSheet: false,
-    }));
+    // resetModalState();
   }, []);
-
-  // useEffect(() => {
-  //   window.addEventListener("resize", handleResize);
-  //   return () => {
-  //     window.removeEventListener("resize", handleResize);
-  //   };
-  // }, [handleResize]);
+  
+  useEffect(() => {
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [handleResize]);
 
   useEffect(() => {
     handleResize();
   }, [location.pathname]);
 
-  const handleModalToggle = (modalName: keyof typeof modalStates) => {
-    setModalStates((prev) => ({ ...prev, [modalName]: !prev[modalName] }));
+  const handleModalToggle = (modalName: string) => {
+    setModalState(modalName);
   };
 
   const handleModalClose = (
@@ -119,13 +117,13 @@ const Sidebar = () => {
     );
     if (modalElement && modalElement.contains(target as Node)) return;
 
-    setModalStates((prev) => ({ ...prev, [modalName]: false }));
+    setModalState(modalName);
   };
 
   const renderRouteItem = useCallback(
     ({ route, label, icon, modal, modalName }: SidebarRoute) => {
       const isDisabled = modal
-        ? modalStates[modalName as keyof typeof modalStates]
+        ? notiSheet || searchSheet || moreOptions || openPostModal
         : false;
       return (
         <li key={route} className="last:mt-auto" id={label.toLowerCase()}>
@@ -143,7 +141,7 @@ const Sidebar = () => {
             onClick={(e) => {
               if (modal) {
                 e.preventDefault();
-                handleModalToggle(modalName as keyof typeof modalStates);
+                handleModalToggle(modalName!);
               }
             }}
           >
@@ -159,7 +157,7 @@ const Sidebar = () => {
         </li>
       );
     },
-    [modalStates]
+    []
   );
 
   return (
@@ -168,7 +166,7 @@ const Sidebar = () => {
         ref={sidebarRef}
         id="sidebar"
         className={cn(
-          "lg:flex-[0.1] max-w-[300px] md:flex flex-col h-full bg-background text-foreground font-semibold  p-2 hidden z-30",
+          "lg:flex-[0.1] max-w-[300px] md:flex flex-col h-dvh bg-background text-foreground font-semibold p-2 hidden z-30",
           { " lg:flex-[0.001]": isMessenger }
         )}
       >
@@ -189,11 +187,9 @@ const Sidebar = () => {
       </aside>
 
       <AnimatePresence>
-        {modalStates.searchSheet && (
+        {searchSheet && (
           <SidePannel
-            width={
-              modalStates.searchSheet ? sidebarRef?.current?.offsetWidth : -400
-            }
+            width={searchSheet ? sidebarRef?.current?.offsetWidth : -400}
             onClose={(e: any) =>
               handleModalClose("searchSheet", "search", e.target)
             }
@@ -203,23 +199,22 @@ const Sidebar = () => {
         )}
       </AnimatePresence>
       <AnimatePresence>
-        {modalStates.notiSheet && (
+        {notiSheet && (
           <SidePannel
             onClose={(e: any) =>
               handleModalClose("notiSheet", "notifications", e.target)
             }
-            width={
-              modalStates.notiSheet ? sidebarRef?.current?.offsetWidth : -400
-            }
+            width={notiSheet ? sidebarRef?.current?.offsetWidth : -400}
           >
             <Notification />
           </SidePannel>
         )}
       </AnimatePresence>
       <AnimatePresence>
-        {modalStates.openPostModal && (
+        {openPostModal && (
           <Modal
             shouldCloseOutsideClick={false}
+            showCloseButton={false}
             onClose={(e: any) =>
               handleModalClose("openPostModal", "create", e?.target)
             }
@@ -229,8 +224,9 @@ const Sidebar = () => {
         )}
       </AnimatePresence>
       <AnimatePresence>
-        {modalStates.moreOptions && (
+        {moreOptions && (
           <Menu
+
             left={sidebarRef?.current?.offsetWidth}
             onClose={(e: any) =>
               handleModalClose("moreOptions", "more", e?.target)

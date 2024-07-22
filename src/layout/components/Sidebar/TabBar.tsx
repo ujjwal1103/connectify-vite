@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { useModalStateSlice } from "@/redux/services/modalStateSlice";
 import { motion } from "framer-motion";
 import { Home, SearchIcon, SquarePlus, Heart, User2 } from "lucide-react";
 import { NavLink } from "react-router-dom";
@@ -9,7 +10,6 @@ const sidebarRoutes: any[] = [
     route: "/search",
     label: "Search",
     icon: <SearchIcon />,
-    modal: true,
     modalName: "searchSheet",
   },
   // { route: "/explore", label: "Explore", icon: <Compass /> },
@@ -27,7 +27,6 @@ const sidebarRoutes: any[] = [
     route: "/notifications",
     label: "Notifications",
     icon: <Heart />,
-    modal: true,
     modalName: "notiSheet",
   },
   { route: "/profile", label: "Profile", icon: <User2 /> },
@@ -43,6 +42,8 @@ const TabBar = ({ hideAppBar, show }: any) => {
     },
   };
 
+  const { setModalState } = useModalStateSlice();
+
   return (
     <motion.div
       animate={hideAppBar ? "hidden" : "visible"}
@@ -55,9 +56,19 @@ const TabBar = ({ hideAppBar, show }: any) => {
     >
       <div className="">
         <ul className="flex justify-evenly">
-          {sidebarRoutes.map(({ route, label, icon }) => (
+          {sidebarRoutes.map(({ route, label, icon, modal }) => (
             <li key={label} className="cursor-pointer">
-              <NavLink to={route}>{icon}</NavLink>
+              <NavLink
+                to={route}
+                onClick={(e) => {
+                  if (modal) {
+                    e.preventDefault();
+                    setModalState("openPostModal");
+                  }
+                }}
+              >
+                {icon}
+              </NavLink>
             </li>
           ))}
         </ul>
