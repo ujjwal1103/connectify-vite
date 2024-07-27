@@ -22,7 +22,10 @@ import MoreMenu from '@/components/shared/MoreMenu'
 import Notification from '@/modules/notifications/Notifications'
 import { AnimatePresence } from 'framer-motion'
 import Modal from '@/components/shared/modal/Modal'
-import { useModalStateSlice } from '@/redux/services/modalStateSlice'
+import {
+  ModalStateNames,
+  useModalStateSlice,
+} from '@/redux/services/modalStateSlice'
 
 const sidebarRoutes: SidebarRoute[] = [
   { route: '/', label: 'Home', icon: <Home /> },
@@ -65,7 +68,7 @@ interface SidebarRoute {
   label: string
   icon: JSX.Element
   modal?: boolean
-  modalName?: string
+  modalName?: ModalStateNames
 }
 
 const Sidebar = () => {
@@ -94,12 +97,12 @@ const Sidebar = () => {
     handleResize()
   }, [location.pathname])
 
-  const handleModalToggle = (modalName: string) => {
+  const handleModalToggle = (modalName: ModalStateNames) => {
     setModalState(modalName)
   }
 
   const handleModalClose = (
-    modalName: string,
+    modalName: ModalStateNames,
     id: string,
     target: EventTarget
   ) => {

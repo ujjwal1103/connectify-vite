@@ -33,7 +33,7 @@ const modalStateSlice = createSlice({
   },
 })
 
-type ModalStateNames =
+export type ModalStateNames =
   | 'searchSheet'
   | 'moreOptions'
   | 'notiSheet'
