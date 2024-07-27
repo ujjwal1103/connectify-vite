@@ -36,11 +36,12 @@ makeRequest.interceptors.response.use(
     if (error?.response?.status === 401) {
       handleUnauthorizedAccess();
     }
+
     const myerror = {
       statusCode: error.response.status,
       statusText: error.response.statusText,
       message:
-        error.response?.data?.error?.error?.message ||
+        error.response?.data?.error?.message ||
         error?.message ||
         "something went wrong",
     };

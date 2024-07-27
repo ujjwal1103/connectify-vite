@@ -1,4 +1,5 @@
 import { getCurrentUser } from "@/api";
+import ConnectifyIcon from "@/components/icons/Connectify";
 import useResetStore from "@/hooks/useResetStore";
 import { saveUserAndTokenLocalstorage } from "@/lib/localStorage";
 import { IUser } from "@/lib/types";
@@ -11,6 +12,8 @@ import React, {
   useCallback,
   useMemo,
 } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 interface AuthContextType {
   user: IUser | null;
@@ -21,7 +24,13 @@ interface AuthContextType {
   getUser: () => void;
   updateUser: (user: IUser) => void;
 }
-
+const toastOptions = {
+  icon: <ConnectifyIcon size={34} />,
+  closeOnClick: true,
+  closeButton: true,
+  autoClose: 2000,
+  hideProgressBar: false,
+};
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const useAuth = (): AuthContextType => {
@@ -38,6 +47,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   const [user, setUser] = useState<IUser | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const reset = useResetStore();
+  const navigator = useNavigate();
 
   const getUser = useCallback(async () => {
     try {
@@ -76,6 +86,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   const login = async (res: any): Promise<void> => {
     saveUserAndTokenLocalstorage(res.user, res.accessToken, res.refreshToken);
     await getUser();
+    toast.success("Welcome Back!!", toastOptions);
+    navigator("/", { replace: true });
   };
 
   const logout = (): void => {

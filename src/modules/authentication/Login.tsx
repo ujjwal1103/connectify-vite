@@ -1,88 +1,54 @@
 import Input from "@/components/shared/Input";
-import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { Link } from "react-router-dom";
 
 import { DevTool } from "@hookform/devtools";
 import { useForm } from "react-hook-form";
-import { toast } from "react-toastify";
 import Connectify from "./components/Connectify";
-// import FadeInAnimation from "../../utils/Animation/FadeInAnimation";
 import { loginWithEmailAndPassword } from "@/api";
 import { PasswordLock, UsernameIcon } from "@/components/icons";
-import ConnectifyIcon from "@/components/icons/Connectify";
 import ConnectifyLogoText from "@/components/icons/ConnectifyLogoText";
 import { useAuth } from "@/context/AuthContext";
 import { GoogleButton } from "./components/GoogleButton";
 import { SubmitButton } from "./components/SubmitButton";
 
+type FormFields = {
+  username: string;
+  password: string;
+};
+
 const Login = () => {
-  const navigator = useNavigate();
   const { login } = useAuth();
-  const [loading, setLoading] = useState(false);
   const {
     register,
     handleSubmit,
     setError,
-    clearErrors,
     control,
-    formState: { errors, isValid, isSubmitting },
-  } = useForm({
-    defaultValues: {
-      username: "",
-      password: "",
-    },
+    formState: { errors, isValid, isSubmitting, isSubmitSuccessful },
+  } = useForm<FormFields>({
     criteriaMode: "all",
     mode: "onSubmit",
   });
 
-  const onSubmit = (data: any) => {
-    if (loading) return;
-    loginUserWithEmailAndPassword(data);
-  };
-  const loginUserWithEmailAndPassword = async ({ username, password }: any) => {
-    setLoading(true);
-
+  const onSubmit = async (data: FormFields) => {
     try {
-      const res = (await loginWithEmailAndPassword({
-        username,
-        password,
-      })) as any;
+      const res = await loginWithEmailAndPassword(data);
       if (res.isSuccess) {
         login(res);
-        toast.success("Welcome Back!!", {
-          icon: <ConnectifyIcon size={34} />,
-          closeOnClick: true,
-          closeButton: true,
-          autoClose: 2000,
-          hideProgressBar: false,
-        });
       }
-      setLoading(false);
-      navigator("/", { replace: true });
     } catch (error: any) {
-      console.log(error);
-      setError("root.serverError", {
-        type: error?.error?.statusCode,
+      setError("root", {
         message: error?.message,
       });
-      setLoading(false);
-      setTimeout(() => {
-        clearErrors();
-      }, 3000);
     }
   };
 
-  useEffect(() => {
-    document.title = "connectify-Login";
-  }, []);
-
   return (
-    <main className="relative w-full h-full bg-black  flex lg:flex-row flex-col items-center ">
+    <main className="relative w-full h-dvh bg-black  flex lg:flex-row flex-col items-center ">
       <div className=" h-[400px] absolute top-0 lg:block hidden" />
       <div className=" h-[400px] bg-appcolor absolute bottom-0 lg:block hidden " />
       <Connectify />
       <div className=" flex-1 flex justify-center items-center  h-screen w-screen bg-appcolor border-violet-950 p-8 backdrop-blur-sm  lg:rounded-tl-[200px]  ">
-        {/* <FadeInAnimation> */}
         <form
           onSubmit={handleSubmit(onSubmit)}
           className="flex flex-col justify-center items-center  mx-10  gap-5"
@@ -129,9 +95,13 @@ const Login = () => {
 
           <SubmitButton
             isSubmitting={isSubmitting}
-            isValid={isValid}
-            loading={loading}
+            disabled={!isValid || isSubmitting || isSubmitSuccessful}
           />
+          {errors.root && (
+            <div className="bg-red-300 text-red-700 px-2 py-1 rounded font-semibold">
+              {errors.root.message}
+            </div>
+          )}
 
           <p className="text-white">
             Dont have an account?
@@ -145,7 +115,6 @@ const Login = () => {
 
           <GoogleButton />
         </form>
-        {/* </FadeInAnimation> */}
       </div>
       <DevTool control={control} />
     </main>

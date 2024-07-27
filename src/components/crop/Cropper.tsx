@@ -1,38 +1,49 @@
-import { LegacyRef, forwardRef } from "react";
+import { LegacyRef, forwardRef } from 'react'
 import {
-  FixedCropper,
+  Cropper as MCropper,
   Priority,
   RectangleStencil,
   ImageRestriction,
-  FixedCropperRef,
-} from "react-advanced-cropper";
+  CropperRef,
+} from 'react-advanced-cropper'
+import {
+	zoomStencil,
+	fitStencilToImage,
+	resizeCoordinates,
+	transformImage,
+	defaultSize,
+	stencilConstraints,
+} from 'advanced-cropper/showcase/mobile';
 
 const Cropper = (
   { aspectRatio, src }: { aspectRatio: number; src: string },
-  ref: LegacyRef<FixedCropperRef> | undefined
+  ref: LegacyRef<CropperRef> | undefined
 ) => {
   const tensileProps = {
     aspectRatio: aspectRatio,
     handlers: false,
     lines: false,
     movable: false,
-    resizable: false,
-    className: "overlay transition-all ease-in-out shadow-md",
-    lineClassName: "",
-  };
+    resizable: true,
+    className: 'overlay transition-all ease-in-out shadow-md',
+  }
   return (
-    <FixedCropper
+    <MCropper
       ref={ref}
-      backgroundWrapperClassName="w-full md:h-500"
+      stencilConstraints={stencilConstraints}
       priority={Priority.visibleArea}
       stencilProps={tensileProps}
-      stencilSize={{ width: 500, height: 500 }}
       src={src}
-      className={"md:w-500 md:h-500 w-screen h-auto  cursor-move rounded-b-lg"}
+      postProcess={[fitStencilToImage, zoomStencil]}
+      className={'cursor-move rounded-b-lg md:h-500 md:w-500 w-screen h-96'}
       stencilComponent={RectangleStencil}
-      imageRestriction={ImageRestriction.fillArea}
+      imageRestriction={ImageRestriction.none}
+      transformImageAlgorithm={transformImage}
+      transitions={true}
+      defaultSize={defaultSize}
+      resizeCoordinates={resizeCoordinates}
     />
-  );
-};
+  )
+}
 
-export default forwardRef(Cropper);
+export default forwardRef(Cropper)

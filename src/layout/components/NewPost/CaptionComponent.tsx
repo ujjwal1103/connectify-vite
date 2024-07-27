@@ -57,7 +57,7 @@ const CaptionComponent = ({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 2 }}
-      className="flex relative w-screen md:w-192 lg:aspect-video flex-col h-dvh md:h-full"
+      className="flex relative w-screen md:w-192 lg:aspect-video flex-col h-dvh md:h-full bg-black"
     >
       <div className="p-2 flex justify-between bg-secondary">
         <button

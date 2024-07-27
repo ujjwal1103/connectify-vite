@@ -155,5 +155,6 @@ module.exports = {
     require("tailwindcss-animate"),
     require("tailwind-scrollbar"),
     require("daisyui"),
+    require("@tailwindcss/aspect-ratio")
   ],
 };

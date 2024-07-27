@@ -12,7 +12,17 @@ const asyncWrap = <T extends (...args: any[]) => Promise<any>>(fn: T): T => {
   }) as T;
 };
 
-const loginWithEmailAndPassword = async (data: any) => {
+interface LoginResponse {
+  accessToken: string;
+  refreshToken: string;
+  isSuccess: boolean;
+  user: IUser;
+}
+
+const loginWithEmailAndPassword = async (data: {
+  username: string;
+  password: string;
+}): Promise<LoginResponse> => {
   return await makeRequest.post("/login", data);
 };
 
