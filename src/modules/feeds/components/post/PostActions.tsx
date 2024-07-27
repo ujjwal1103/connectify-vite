@@ -41,7 +41,7 @@ const PostActions = ({
 
   return (
     <div className="flex justify-between text-primary items-center pt-2 px-2">
-      <div className="flex items-center gap-2 md:gap-3 text-base md:text-xl">
+      <div className="flex items-center gap-2 md:gap-3 text-xl">
         <LikeButton
           isLiked={post?.isLiked}
           size={size}
@@ -51,7 +51,7 @@ const PostActions = ({
         />
         {showCommentButton && (
           <CommentIcon
-            className="hover:text-muted-foreground cursor-pointer size-4 md:size-5"
+            className="hover:text-muted-foreground cursor-pointer size-5"
             onClick={showCurrentPost}
           />
         )}

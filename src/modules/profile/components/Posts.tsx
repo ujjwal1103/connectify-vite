@@ -81,7 +81,7 @@ const Posts = ({ isSelfPosts = true, userId }: any) => {
   }
 
   return (
-    <div className="scrollbar-thin">
+    <div className="overflow-hidden">
       <InfiniteScroll
         className="flex flex-col"
         dataLength={posts?.length}

@@ -26,7 +26,7 @@ const MoreMenu = () => {
   };
 
   return (
-    <div className="flex w-64 flex-col  justify-end  ">
+    <div className="flex w-64 flex-col justify-end z-100">
       <motion.div className=" mb-3  rounded-md">
         <AnimatePresence initial={false} mode="popLayout">
           {themeMenu && (
@@ -48,7 +48,7 @@ const MoreMenu = () => {
                   >
                     <ChevronBack size={20} />
                   </button>
-                  <div className="hidden md:inline-block">
+                  <div className="">
                     <span className="text-base font-semibold">
                       Switch theme
                     </span>
@@ -70,7 +70,7 @@ const MoreMenu = () => {
                     }
                   }}
                 >
-                  <div className="hidden md:inline-block">
+                  <div className="">
                     <span className="text-base font-semibold">Dark Mode</span>
                   </div>
                   <div className="mx-2">
@@ -110,7 +110,7 @@ const MoreMenu = () => {
                     <div className="mx-2">
                       <Settings2 />
                     </div>
-                    <div className="hidden md:inline-block">
+                    <div className="">
                       <span className="text-base font-semibold">Settings</span>
                     </div>
                   </Link>
@@ -125,7 +125,7 @@ const MoreMenu = () => {
                     <div className="mx-2">
                       <SquareActivity size={20} />
                     </div>
-                    <div className="hidden md:inline-block">
+                    <div className="">
                       <span className="text-base font-semibold">
                         Your Activity
                       </span>
@@ -142,7 +142,7 @@ const MoreMenu = () => {
                     <div className="mx-2">
                       <Bookmark size={20} />
                     </div>
-                    <div className="hidden md:inline-block">
+                    <div className="">
                       <span className="text-base font-semibold">Saved</span>
                     </div>
                   </Link>
@@ -161,7 +161,7 @@ const MoreMenu = () => {
                         <Sun size={20} />
                       )}
                     </div>
-                    <div className="hidden md:inline-block">
+                    <div className="">
                       <span className="text-base font-semibold">
                         Switch appearance
                       </span>
@@ -178,7 +178,7 @@ const MoreMenu = () => {
                     <span className="mx-2">
                       <LogOut size={20} />
                     </span>
-                    <div className="hidden md:inline-block">
+                    <div className="">
                       <span className="text-base font-semibold">Logout</span>
                     </div>
                   </button>
