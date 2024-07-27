@@ -1,10 +1,8 @@
 import { registerWithEmailAndPassword } from '@/api'
-import ConnectifyIcon from '@/components/icons/Connectify'
 import { useAuth } from '@/context/AuthContext'
 import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
-import { Link, useNavigate } from 'react-router-dom'
-import { toast } from 'react-toastify'
+import { Link } from 'react-router-dom'
 import Connectify from './components/Connectify'
 import ConnectifyLogoText from '@/components/icons/ConnectifyLogoText'
 import { GoogleButton } from './components/GoogleButton'
@@ -14,9 +12,8 @@ import Input from '@/components/shared/Input'
 import { Mail } from 'lucide-react'
 
 const Register = () => {
-  const navigator = useNavigate()
   const { login } = useAuth()
-  const { register, handleSubmit, setError, clearErrors, formState } = useForm({
+  const { register, handleSubmit, setError, formState } = useForm({
     criteriaMode: 'all',
     mode: 'onSubmit',
   })
