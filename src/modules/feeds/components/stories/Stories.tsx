@@ -3,6 +3,7 @@ import { useRef, useState } from 'react'
 import 'slick-carousel/slick/slick-theme.css'
 import 'slick-carousel/slick/slick.css'
 import { Plus } from 'lucide-react'
+import { IoChevronBackCircle, IoChevronForwardCircle } from 'react-icons/io5'
 
 const storyImages: any[] = []
 
@@ -28,10 +29,7 @@ const Stories = () => {
     }
   }
 
-
-  const handleAddStory = () => {
-    
-  }
+  const handleAddStory = () => {}
   return (
     <div className="relative z-0 flex min-h-16 w-full items-center overflow-hidden md:max-w-[625px]">
       <div
@@ -41,7 +39,10 @@ const Stories = () => {
         <div className="mr-2 flex basis-4 items-center justify-center first:ml-2">
           <div className="flex items-center justify-center rounded-full bg-secondary">
             <div className="flex items-center justify-center rounded-full p-[2px]">
-              <button className="flex h-12 w-12 items-center justify-center rounded-full object-cover">
+              <button
+                className="flex h-12 w-12 items-center justify-center rounded-full object-cover"
+                onClick={handleAddStory}
+              >
                 <Plus />
               </button>
             </div>
@@ -64,21 +65,20 @@ const Stories = () => {
         ))}
       </div>
 
-      {/* Scroll buttons */}
-      {/* <div className="flex justify-between mt-2 absolute top-6 -translate-y-1/2 w-full">
+      <div className="absolute top-6 mt-2 flex w-full -translate-y-1/2 justify-between">
         <button
           onClick={scrollLeft}
-          className="bg-transparent  text-sm ml-2 p-1  absoulute right-0  rounded-full disabled:opacity-50"
+          className="absoulute right-0 ml-2 rounded-full bg-transparent p-1 text-sm disabled:opacity-50"
         >
           <IoChevronBackCircle size={24} />
         </button>
         <button
           onClick={scrollRight}
-          className="bg-transparent text-sm mr-2 p-1 text-white absoulute right-0 rounded-full disabled:opacity-50"
+          className="absoulute right-0 mr-2 rounded-full bg-transparent p-1 text-sm text-white disabled:opacity-50"
         >
           <IoChevronForwardCircle size={24} />
         </button>
-      </div> */}
+      </div>
     </div>
   )
 }

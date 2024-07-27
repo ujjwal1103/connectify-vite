@@ -17,12 +17,6 @@ type ImagePickerProps = {
   onClose: () => void
 }
 
-const opacityTransition = {
-  initial: { opacity: 0 },
-  animate: { opacity: 1 },
-  transition: { duration: 2 },
-}
-
 const ImagePicker = ({ onImageSelect, onClose }: ImagePickerProps) => {
   const handleImagePick = async (e: ChangeEvent<HTMLInputElement>) => {
     const data = await pickImage(e)
@@ -30,9 +24,7 @@ const ImagePicker = ({ onImageSelect, onClose }: ImagePickerProps) => {
   }
 
   return (
-    <motion.div
-      className="relative flex h-96 bg-zinc-950 max-h-96 min-h-96 min-w-96 flex-col items-center justify-center gap-4 text-white"
-    >
+    <motion.div className="relative flex h-96 max-h-96 min-h-96 min-w-96 flex-col items-center justify-center gap-4 bg-zinc-950 text-white">
       <button className="absolute right-3 top-3" onClick={onClose}>
         <X />
       </button>

@@ -1,24 +1,23 @@
-import Input from "@/components/shared/Input";
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import Input from '@/components/shared/Input'
+import { Link } from 'react-router-dom'
 
-import { DevTool } from "@hookform/devtools";
-import { useForm } from "react-hook-form";
-import Connectify from "./components/Connectify";
-import { loginWithEmailAndPassword } from "@/api";
-import { PasswordLock, UsernameIcon } from "@/components/icons";
-import ConnectifyLogoText from "@/components/icons/ConnectifyLogoText";
-import { useAuth } from "@/context/AuthContext";
-import { GoogleButton } from "./components/GoogleButton";
-import { SubmitButton } from "./components/SubmitButton";
+import { DevTool } from '@hookform/devtools'
+import { useForm } from 'react-hook-form'
+import Connectify from './components/Connectify'
+import { loginWithEmailAndPassword } from '@/api'
+import { PasswordLock, UsernameIcon } from '@/components/icons'
+import ConnectifyLogoText from '@/components/icons/ConnectifyLogoText'
+import { useAuth } from '@/context/AuthContext'
+import { GoogleButton } from './components/GoogleButton'
+import { SubmitButton } from './components/SubmitButton'
 
 type FormFields = {
-  username: string;
-  password: string;
-};
+  username: string
+  password: string
+}
 
 const Login = () => {
-  const { login } = useAuth();
+  const { login } = useAuth()
   const {
     register,
     handleSubmit,
@@ -26,40 +25,40 @@ const Login = () => {
     control,
     formState: { errors, isValid, isSubmitting, isSubmitSuccessful },
   } = useForm<FormFields>({
-    criteriaMode: "all",
-    mode: "onSubmit",
-  });
+    criteriaMode: 'all',
+    mode: 'onSubmit',
+  })
 
   const onSubmit = async (data: FormFields) => {
     try {
-      const res = await loginWithEmailAndPassword(data);
+      const res = await loginWithEmailAndPassword(data)
       if (res.isSuccess) {
-        login(res);
+        login(res)
       }
     } catch (error: any) {
-      setError("root", {
+      setError('root', {
         message: error?.message,
-      });
+      })
     }
-  };
+  }
 
   return (
-    <main className="relative w-full h-dvh bg-black  flex lg:flex-row flex-col items-center ">
-      <div className=" h-[400px] absolute top-0 lg:block hidden" />
-      <div className=" h-[400px] bg-appcolor absolute bottom-0 lg:block hidden " />
+    <main className="relative flex h-dvh w-full flex-col items-center bg-black lg:flex-row">
+      <div className="absolute top-0 hidden h-[400px] lg:block" />
+      <div className="absolute bottom-0 hidden h-[400px] bg-appcolor lg:block" />
       <Connectify />
-      <div className=" flex-1 flex justify-center items-center  h-screen w-screen bg-appcolor border-violet-950 p-8 backdrop-blur-sm  lg:rounded-tl-[200px]  ">
+      <div className="flex h-screen w-screen flex-1 items-center justify-center border-violet-950 bg-appcolor p-8 backdrop-blur-sm lg:rounded-tl-[200px]">
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="flex flex-col justify-center items-center  mx-10  gap-5"
+          className="mx-10 flex flex-col items-center justify-center gap-5"
         >
-          <div className="mb-3 text-bold flex justify-center items-center lg:hidden">
+          <div className="text-bold mb-3 flex items-center justify-center lg:hidden">
             <ConnectifyLogoText />
           </div>
-          <div className="flex 4 flex-col gap-5 dark:text-white text-4xl font-bold">
+          <div className="4 flex flex-col gap-5 text-4xl font-bold dark:text-white">
             Welcome!
           </div>
-          <div className="flex flex-col gap-5 dark:text-white text-xl">
+          <div className="flex flex-col gap-5 text-xl dark:text-white">
             Sign In to Connectify
           </div>
 
@@ -69,25 +68,25 @@ const Login = () => {
             placeholder="Enter you username"
             prefix={<UsernameIcon size={24} />}
             error={errors?.username}
-            {...register("username", {
-              required: "Username is Required",
+            {...register('username', {
+              required: 'Username is Required',
               pattern: {
                 value: /^(?=[a-z_])[a-z0-9_]{5,20}$/,
-                message: "Invalid Username",
+                message: 'Invalid Username',
               },
             })}
           />
 
           <Input
             autoFocus={false}
-            {...register("password", {
-              required: "Password is Required",
+            {...register('password', {
+              required: 'Password is Required',
               minLength: {
                 value: 8,
-                message: "Password should be minimum 8 char long",
+                message: 'Password should be minimum 8 char long',
               },
             })}
-            type={"password"}
+            type={'password'}
             placeholder="Enter you password"
             prefix={<PasswordLock size={24} />}
             error={errors?.password}
@@ -98,7 +97,7 @@ const Login = () => {
             disabled={!isValid || isSubmitting || isSubmitSuccessful}
           />
           {errors.root && (
-            <div className="bg-red-300 text-red-700 px-2 py-1 rounded font-semibold">
+            <div className="rounded bg-red-300 px-2 py-1 font-semibold text-red-700">
               {errors.root.message}
             </div>
           )}
@@ -106,8 +105,8 @@ const Login = () => {
           <p className="text-white">
             Dont have an account?
             <Link
-              to={"/new-account"}
-              className="text-violet-200 cursor-pointer px-2"
+              to={'/new-account'}
+              className="cursor-pointer px-2 text-violet-200"
             >
               Register
             </Link>
@@ -118,7 +117,7 @@ const Login = () => {
       </div>
       <DevTool control={control} />
     </main>
-  );
-};
+  )
+}
 
-export default Login;
+export default Login

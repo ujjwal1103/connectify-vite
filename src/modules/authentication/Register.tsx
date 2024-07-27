@@ -1,84 +1,62 @@
-import { registerWithEmailAndPassword } from "@/api";
-import ConnectifyIcon from "@/components/icons/Connectify";
-import { useAuth } from "@/context/AuthContext";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { Link, useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
-import Connectify from "./components/Connectify";
-import ConnectifyLogoText from "@/components/icons/ConnectifyLogoText";
-import { GoogleButton } from "./components/GoogleButton";
-import { SubmitButton } from "./components/SubmitButton";
-import { PasswordLock, PersonFill, UsernameIcon } from "@/components/icons";
-import Input from "@/components/shared/Input";
-import { Mail } from "lucide-react";
+import { registerWithEmailAndPassword } from '@/api'
+import ConnectifyIcon from '@/components/icons/Connectify'
+import { useAuth } from '@/context/AuthContext'
+import { useEffect } from 'react'
+import { useForm } from 'react-hook-form'
+import { Link, useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify'
+import Connectify from './components/Connectify'
+import ConnectifyLogoText from '@/components/icons/ConnectifyLogoText'
+import { GoogleButton } from './components/GoogleButton'
+import { SubmitButton } from './components/SubmitButton'
+import { PasswordLock, PersonFill, UsernameIcon } from '@/components/icons'
+import Input from '@/components/shared/Input'
+import { Mail } from 'lucide-react'
 
 const Register = () => {
-  const navigator = useNavigate();
-  const [loading, setLoading] = useState(false);
-  const { login } = useAuth();
+  const navigator = useNavigate()
+  const { login } = useAuth()
   const { register, handleSubmit, setError, clearErrors, formState } = useForm({
-    criteriaMode: "all",
-    mode: "onSubmit",
-  });
-  const { errors, isValid, isSubmitting } = formState;
-  const onSubmit = (data: any) => {
-    userSignUp(data);
-  };
+    criteriaMode: 'all',
+    mode: 'onSubmit',
+  })
+  const { errors, isValid, isSubmitting, isSubmitSuccessful } = formState
 
-  const userSignUp = async (data: any) => {
-    setLoading(true);
+  const onSubmit = async (data: any) => {
     try {
-      const res = (await registerWithEmailAndPassword(data)) as any;
-
+      const res = (await registerWithEmailAndPassword(data)) as any
       if (res.isSuccess) {
-        setLoading(false);
-        login(res?.user);
-        toast.success(res.message, {
-          icon: <ConnectifyIcon size={34} />,
-          closeOnClick: true,
-          closeButton: true,
-          autoClose: 2000,
-          hideProgressBar: false,
-        });
-        navigator("/");
+        login(res)
       }
     } catch (error: any) {
-      setLoading(false);
-      setError("root.serverError", {
-        type: error?.statusCode,
+      setError('root', {
         message: error?.message,
-      });
-      toast.error(error?.response?.data?.message || error.message);
-      setTimeout(() => {
-        clearErrors();
-      }, 5000);
+      })
     }
-  };
+  }
 
   useEffect(() => {
-    document.title = "connectify-register";
-  }, []);
+    document.title = 'connectify-register'
+  }, [])
 
   return (
-    <div className="w-full h-full relative bg-appcolor flex lg:flex-row flex-col items-center flex-1">
-      <div className="w-full h-[400px] bg-black absolute top-0 lg:block hidden" />
-      <div className="w-full h-[400px]  absolute bottom-0 lg:block hidden " />
+    <div className="relative flex h-full w-full flex-1 flex-col items-center bg-appcolor lg:flex-row">
+      <div className="absolute top-0 hidden h-[400px] w-full bg-black lg:block" />
+      <div className="absolute bottom-0 hidden h-[400px] w-full lg:block" />
       <Connectify />
-      <div className="lg:flex-1 h-full flex justify-center items-center bg-appcolor p-3 lg:p-8 backdrop-blur-sm lg:rounded-tl-[200px]">
-        {/* <FadeInAnimation> */}
+      <div className="flex h-full items-center justify-center bg-appcolor p-3 backdrop-blur-sm lg:flex-1 lg:rounded-tl-[200px] lg:p-8">
         <form
           noValidate
           onSubmit={handleSubmit(onSubmit)}
-          className="flex flex-col justify-center items-center gap-3 "
+          className="flex flex-col items-center justify-center gap-3"
         >
-          <h1 className="text-bold flex justify-center items-center lg:hidden">
+          <h1 className="text-bold flex items-center justify-center lg:hidden">
             <ConnectifyLogoText />
           </h1>
-          <div className="flex flex-col gap-2 dark:text-white text-3xl font-bold">
+          <div className="flex flex-col gap-2 text-3xl font-bold dark:text-white">
             Welcome!
           </div>
-          <div className="flex flex-col gap-2 dark:text-white text-xl">
+          <div className="flex flex-col gap-2 text-xl dark:text-white">
             Register To Connectify
           </div>
 
@@ -88,14 +66,14 @@ const Register = () => {
             placeholder="Username"
             prefix={<UsernameIcon size={24} />}
             error={errors?.username}
-            {...register("username", {
-              required: "Username is Required",
+            {...register('username', {
+              required: 'Username is Required',
               pattern: {
                 value: /^(?=[a-z_])[a-z0-9_]{5,20}$/,
-                message: "Invalid Username",
+                message: 'Invalid Username',
               },
               validate: (val) => {
-                return val !== "ujjwallade" || "Value should be ujjwal lade";
+                return val !== 'ujjwallade' || 'Value should be ujjwal lade'
               },
             })}
           />
@@ -105,7 +83,7 @@ const Register = () => {
             placeholder="Name"
             prefix={<PersonFill size={24} />}
             error={errors?.name}
-            {...register("name", { required: "Name is Required" })}
+            {...register('name', { required: 'Name is Required' })}
           />
 
           <Input
@@ -114,50 +92,48 @@ const Register = () => {
             placeholder="Email"
             prefix={<Mail size={24} />}
             error={errors?.email}
-            {...register("email", {
-              required: "Email is Required",
+            {...register('email', {
+              required: 'Email is Required',
               pattern: {
                 value: /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/,
-                message: "Invalid Email",
+                message: 'Invalid Email',
               },
             })}
           />
 
           <Input
             autoFocus={false}
-            {...register("password", {
-              required: "Password is Required",
+            {...register('password', {
+              required: 'Password is Required',
               minLength: {
                 value: 8,
-                message: "Password should be minimum 8 char long",
+                message: 'Password should be minimum 8 char long',
               },
             })}
-            type={"password"}
+            type={'password'}
             placeholder="Password"
             prefix={<PasswordLock size={24} />}
             error={errors?.password}
           />
 
           <SubmitButton
-            title={"Register"}
+            title={'Register'}
             isSubmitting={isSubmitting}
-            isValid={isValid}
-            loading={loading}
+            disabled={!isValid || isSubmitting || isSubmitSuccessful}
           />
 
           <p className="text-white">
             Already have an account
-            <Link to={"/login"} className="text-violet-200 cursor-pointer px-2">
+            <Link to={'/login'} className="cursor-pointer px-2 text-violet-200">
               Login
             </Link>
           </p>
 
           <GoogleButton />
         </form>
-        {/* </FadeInAnimation> */}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Register;
+export default Register
