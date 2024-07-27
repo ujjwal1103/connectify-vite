@@ -1,5 +1,3 @@
-import 'react-resizable/css/styles.css'
-
 const Reels = () => {
   return (
     <div className="flex-col items-center justify-center">
