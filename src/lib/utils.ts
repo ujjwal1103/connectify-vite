@@ -104,7 +104,7 @@ function showNotification() {
   }
 }
 
-export const createNotification = (data: any) => {
+export const createNotification = () => {
   if (Notification.permission === 'granted') {
     showNotification()
   } else if (Notification.permission !== 'denied') {

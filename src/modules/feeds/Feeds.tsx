@@ -1,4 +1,3 @@
-import Stories from './components/stories/Stories'
 import { getAllPost } from '@/api'
 import Post from './components/post/Post'
 import InfiniteScroll from 'react-infinite-scroll-component'

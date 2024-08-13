@@ -73,8 +73,8 @@ const MessageList = () => {
   }
 
   const handleMessage = useCallback(
-    async (data) => {
-      createNotification(data)
+    async (data:any) => {
+      createNotification()
       if (data.from === selectedChat?.friend?._id) {
         addMessageFromSocket(data.message)
       }
