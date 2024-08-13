@@ -37,7 +37,7 @@ const Register = () => {
   }, [])
 
   return (
-    <div className="relative flex h-full w-full flex-1 flex-col items-center bg-appcolor lg:flex-row">
+    <div className="relative flex h-dvh w-full flex-1 flex-col items-center bg-appcolor lg:flex-row">
       <div className="absolute top-0 hidden h-[400px] w-full bg-black lg:block" />
       <div className="absolute bottom-0 hidden h-[400px] w-full lg:block" />
       <Connectify />

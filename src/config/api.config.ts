@@ -38,8 +38,8 @@ makeRequest.interceptors.response.use(
     }
 
     const myerror = {
-      statusCode: error.response.status,
-      statusText: error.response.statusText,
+      statusCode: error.response?.status,
+      statusText: error.response?.statusText,
       message:
         error.response?.data?.error?.message ||
         error?.message ||

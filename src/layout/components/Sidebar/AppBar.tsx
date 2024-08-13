@@ -1,7 +1,7 @@
 import Modal from '@/components/shared/modal/Modal'
 import MoreMenu from '@/components/shared/MoreMenu'
 import { cn } from '@/lib/utils'
-import { useModalStateSlice } from '@/redux/services/modalStateSlice'
+import { ModalStateNames, useModalStateSlice } from '@/redux/services/modalStateSlice'
 import { motion } from 'framer-motion'
 import { Menu, SendIcon } from 'lucide-react'
 import { Link } from 'react-router-dom'
@@ -39,7 +39,7 @@ const Appbar = ({ hideAppBar, show }: any) => {
         <button
           className="md:hidden"
           onClick={() => {
-            setModalState('mobileDrawer')
+            setModalState('mobileDrawer' as ModalStateNames)
           }}
         >
           <Menu />
@@ -49,7 +49,7 @@ const Appbar = ({ hideAppBar, show }: any) => {
       {mobileDrawer && (
         <Modal
           onClose={() => {
-            setModalState('mobileDrawer')
+            setModalState('mobileDrawer' as ModalStateNames)
           }}
         >
           <MoreMenu />

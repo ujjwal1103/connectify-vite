@@ -8,7 +8,7 @@ import { AnimatePresence, motion } from "framer-motion";
 const ChatBox = () => {
   const [showInfo, setShowInfo] = useState(false);
   return (
-    <div className="md:flex-1 flex flex-row flex-1  max-h-dvh w-full relative">
+    <div className="md:flex-1 flex flex-row flex-1 h-dvh min-w-80  max-h-dvh w-full relative">
       <motion.div className="flex-1 flex flex-col">
         <MessageListHeader
           toggleShowInfo={() => {

@@ -72,7 +72,7 @@ const Edit = () => {
   }
 
   return (
-    <div className="flex-1 scrollbar-none h-auto   md:text-sm text-sm overflow-y-scroll relative">
+    <div className="flex-1 scrollbar-none min-h-dvh md:text-sm text-sm overflow-y-scroll relative">
       <div className="sticky w-full top-0">
         <div className="md:w-1/2 w-3/4 mx-auto pt-3 rounded-sm">
           <div className="overflow-clip rounded-md">

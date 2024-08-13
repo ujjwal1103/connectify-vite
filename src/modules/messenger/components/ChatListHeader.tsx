@@ -34,7 +34,7 @@ const ChatListHeader = () => {
     <div className="flex-[0.1] flex items-center ">
       <div className="flex md:gap-4  gap-2 w-full p-2 items-center justify-between">
         <Avatar
-          src={user?.avatar.url}
+          src={user?.avatar?.url}
           className="inline-block lg:size-12 size-9 rounded-full hover:scale-90 duration-500 object-cover"
         />
         <div className="text-base 0 flex-1">

@@ -1,5 +1,4 @@
-import im from '../../../../public/assets/background/bgg.png'
-
+import backgroundImage from '../../../assets/background/bgg.png'
 import { motion } from "framer-motion";
 import ConnectifyLogoText from "@/components/icons/ConnectifyLogoText";
 import ConnectifyIcon from "@/components/icons/Connectify";
@@ -22,7 +21,7 @@ const Connectify = () => {
         and Share by Offering a Seamless, Intuitive, <br />
         and Personalized Environment.
       </h3>
-      <img src={im} alt="" className="absolute opacity-30 " loading="lazy" />
+      <img src={backgroundImage} alt="" className="absolute opacity-30 "/>
     </div>
   );
 };

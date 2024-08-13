@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import imageIcon from '../../../../public/assets/Icons/gallery.png'
+import imageIcon from '../../../assets/Icons/gallery.png'
 import { pickImage } from './helper'
 import { ChangeEvent } from 'react'
 import { X } from 'lucide-react'

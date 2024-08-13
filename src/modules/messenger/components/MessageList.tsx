@@ -1,14 +1,17 @@
-import { getAllMessages } from "@/api";
-import InfiniteScrollC from "@/components/shared/InfiniteScroll/InfiniteScrollC";
-import { useChatSlice } from "@/redux/services/chatSlice";
-import { Loader } from "lucide-react";
-import { Fragment, useCallback, useEffect, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
-import Message from "./Message";
-import { getCurrentUserId } from "@/lib/localStorage";
-import { IMessage } from "@/lib/types";
-import { formatDate } from "@/lib/utils";
-import { toast } from "react-toastify";
+import { getAllMessages } from '@/api'
+import InfiniteScrollC from '@/components/shared/InfiniteScroll/InfiniteScrollC'
+import { useChatSlice } from '@/redux/services/chatSlice'
+import { Loader } from 'lucide-react'
+import { Fragment, useCallback, useEffect, useRef, useState } from 'react'
+import { useParams } from 'react-router-dom'
+import Message from './Message'
+import { getCurrentUserId } from '@/lib/localStorage'
+import { IMessage } from '@/lib/types'
+import { createNotification, formatDate } from '@/lib/utils'
+import { toast } from 'react-toastify'
+import { useSocket } from '@/context/SocketContext'
+import { NEW_MESSAGE } from '@/constants/Events'
+import useSocketEvents from '@/hooks/useSocketEvent'
 
 const MessageList = () => {
   const {
@@ -16,81 +19,100 @@ const MessageList = () => {
     setMessages,
     selectedMessages,
     isLoadingMessages,
+    addMessageFromSocket,
     setIsLoadingMessage,
-  } = useChatSlice();
+    selectedChat,
+  } = useChatSlice()
 
-  const { chatId } = useParams();
+  const { chatId } = useParams()
 
-  const [page, setPage] = useState(1);
-  const [hasNext, setHasNext] = useState(true);
-  const hasNextRef = useRef(hasNext);
+  const [page, setPage] = useState(1)
+  const [hasNext, setHasNext] = useState(true)
+  const hasNextRef = useRef(hasNext)
+  const { socket } = useSocket()
 
   const fetchMessages = useCallback(async () => {
-    if (!hasNextRef.current) return;
+    if (!hasNextRef.current) return
 
     try {
       if (page === 1) {
-        setIsLoadingMessage(true);
-        setMessages([]);
+        setIsLoadingMessage(true)
+        setMessages([])
       }
 
-      const res = await getAllMessages(chatId!, page);
+      const res = await getAllMessages(chatId!, page)
       if (res) {
-        setMessages([...res.messages.reverse(), ...messages]);
-        setHasNext(res.pagination.hasNext);
-        hasNextRef.current = res.pagination.hasNext;
+        setMessages([...res.messages.reverse(), ...messages])
+        setHasNext(res.pagination.hasNext)
+        hasNextRef.current = res.pagination.hasNext
       }
     } catch (error) {
-      toast.error("Something went wrong");
+      toast.error('Something went wrong')
     } finally {
-      setIsLoadingMessage(false);
+      setIsLoadingMessage(false)
     }
-  }, [chatId, page]);
+  }, [chatId, page])
 
   useEffect(() => {
-    fetchMessages();
-  }, [fetchMessages]);
+    fetchMessages()
+  }, [fetchMessages])
 
   useEffect(() => {
     return () => {
-      setPage(1);
-      setMessages([]);
-      setHasNext(true);
-      hasNextRef.current = true;
-    };
-  }, [chatId]);
+      setPage(1)
+      setMessages([])
+      setHasNext(true)
+      hasNextRef.current = true
+    }
+  }, [chatId])
 
   const loadMoreItems = () => {
     if (hasNextRef.current) {
-      setPage((prev) => prev + 1);
+      setPage((prev) => prev + 1)
     }
-  };
+  }
+
+  const handleMessage = useCallback(
+    async (data) => {
+      createNotification(data)
+      if (data.from === selectedChat?.friend?._id) {
+        addMessageFromSocket(data.message)
+      }
+    },
+    [chatId]
+  )
+
+  const eventHandlers = {
+    [NEW_MESSAGE]: handleMessage,
+  }
+
+  useSocketEvents(socket, eventHandlers)
 
   if (isLoadingMessages) {
     return (
-      <div className="flex-[0.95] flex items-center justify-center">
+      <div className="flex flex-[0.95] items-center justify-center">
         <Loader className="animate-spin" />
       </div>
-    );
+    )
   }
 
   const shouldDisplayDateSeparator = (currentMessageIndex: number) => {
-    const currentMessage = messages[currentMessageIndex];
-    const previousMessage = messages[currentMessageIndex - 1];
+    const currentMessage = messages[currentMessageIndex]
+    const previousMessage = messages[currentMessageIndex - 1]
     if (!previousMessage) {
-      return true; // Display date separator for the first message
+      return true // Display date separator for the first message
     }
     // Compare timestamps of current and previous messages
     return (
       new Date(currentMessage.createdAt).toDateString() !==
       new Date(previousMessage.createdAt).toDateString()
-    );
-  };
+    )
+  }
 
   return (
     <InfiniteScrollC
       loadMore={loadMoreItems}
-      className="scrollbar-thin h-full overflow-y-scroll flex-[0.9] py-3"
+      className="h-full flex-[0.9] overflow-y-scroll py-3 scrollbar-thin"
       id={chatId}
     >
       <div></div>
@@ -98,8 +120,8 @@ const MessageList = () => {
         <Fragment key={message._id}>
           {/* Display date separator if required */}
           {shouldDisplayDateSeparator(index) && (
-            <div className="text-center mb-2 text-sm text-gray-500">
-              <span className="bg-zinc-900 px-2 rounded-md">
+            <div className="mb-2 text-center text-sm text-gray-500">
+              <span className="rounded-md bg-zinc-900 px-2">
                 {formatDate(message.createdAt, true)}
               </span>
             </div>
@@ -117,6 +139,6 @@ const MessageList = () => {
         </Fragment>
       ))}
     </InfiniteScrollC>
-  );
-};
-export default MessageList;
+  )
+}
+export default MessageList

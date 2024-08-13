@@ -3,7 +3,7 @@ import {
   AvatarFallback,
   AvatarImage,
 } from "@/components/ui/avatar";
-import noAvatar from "/assets/Icons/no_avatar.png";
+import noAvatar from "../../assets/Icons/no_avatar.png";
 
 const Avatar = ({
   src,

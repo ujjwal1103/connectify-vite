@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import MentionInput from "@/components/shared/MentionInput";
 import { cn } from "@/lib/utils";
+import { X } from "lucide-react";
 
 interface CommentInputProps {
   postId: string;
@@ -85,7 +86,7 @@ const CommentInput = ({
   return (
     <div className="flex justify-between relative  items-center flex-col">
       {reply.commentId && (
-        <span className=" w-full dark:bg-zinc-800 bg-gray-200 px-2 flex justify-between rounded-t-md text-sm">
+        <span className=" w-full bg-secondary  px-2 flex justify-between md:rounded-t-md text-sm py-1">
           <span>replied to {reply.repliedTo}</span>
           <button
             onClick={() =>
@@ -95,14 +96,14 @@ const CommentInput = ({
               })
             }
           >
-            clear
+            <X size={16}/>
           </button>
         </span>
       )}
       <div
         className={cn(
-          "flex items-center justify-between dark:bg-zinc-800 bg-gray-200 w-full gap-3  rounded-md",
-          { "rounded-t-none": reply.isReply }
+          "flex items-center justify-between  bg-secondary w-full gap-3  md:rounded-md",
+          { "md:rounded-t-none": reply.isReply }
         )}
       >
         <MentionInput
@@ -125,7 +126,7 @@ const CommentInput = ({
           <DropdownMenuTrigger className="pr-2">
             <EmojiSmile />
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="border-none rounded-md" align="start">
+          <DropdownMenuContent className="border-none rounded-md " align="start">
             <Picker
               data={data}
               onEmojiSelect={onEmojiClick}
