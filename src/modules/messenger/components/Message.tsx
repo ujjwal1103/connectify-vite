@@ -2,7 +2,6 @@ import { memo, useState, useEffect, useRef, Suspense } from "react";
 
 import { AnimatePresence, motion } from "framer-motion";
 import clsx from "clsx";
-import BubbleNotch from "@/components/icons/BubbleNotch";
 
 import { Link } from "react-router-dom";
 import { useChatSlice } from "@/redux/services/chatSlice";
@@ -15,6 +14,8 @@ import { cn, getReadableTime, tranformUrl } from "@/lib/utils";
 import { Check, Loader, Smile } from "lucide-react";
 import { useWaveProgress } from "@/hooks/useWaveProgress";
 import { Menu } from "@/components/shared/SidePannel/SidePannel";
+import Notch from "./Notch";
+import CheckBox from "./CheckBox";
 
 const Message = ({
   currentUserMessage,
