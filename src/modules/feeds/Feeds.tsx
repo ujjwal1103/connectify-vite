@@ -43,7 +43,7 @@ const Feeds = () => {
   return (
     <main
       ref={containerRef}
-      className="h-full w-full overflow-x-hidden overflow-y-scroll scrollbar-thin sm:my-0 md:flex md:justify-center md:p-2 lg:justify-start lg:scrollbar"
+      className="h-dvh w-full overflow-x-hidden overflow-y-scroll scrollbar-thin sm:my-0 md:flex md:justify-center md:p-2 lg:justify-start lg:scrollbar"
       id="scrollableDiv"
     >
       <section className="mt-10 flex flex-1 flex-col gap-2 py-1 md:mt-0 md:flex-[0.8] md:gap-3 md:p-3 lg:flex-[0.6]">

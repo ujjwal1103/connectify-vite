@@ -1,7 +1,14 @@
 import SidePannel, { Menu } from '@/components/shared/SidePannel/SidePannel'
 import { cn } from '@/lib/utils'
 import Search from '@/modules/search/Search'
-import { memo, MouseEvent, useCallback, useEffect, useRef } from 'react'
+import {
+  memo,
+  MouseEvent,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
 import { useLocation } from 'react-router-dom'
 import CreateNewPost from '../NewPost/CreateNewPost'
 import MoreMenu from '@/components/shared/MoreMenu'
@@ -15,8 +22,16 @@ import {
 import { SidebarRoute, sidebarRoutes } from './sidebarRoutes'
 import SidebarHeader from './SidebarHeader'
 import Route from './Route'
+import { useSocket } from '@/context/SocketContext'
+import { LIKE_POST, NEW_MESSAGE, NEW_REQUEST } from '@/constants/Events'
+import useSocketEvents from '@/hooks/useSocketEvent'
 
 const Sidebar = () => {
+  const [counts, setCounts] = useState({
+    messenger: 0,
+    notification: 0,
+  })
+  const { socket } = useSocket()
   const {
     setModalState,
     notiSheet,
@@ -55,8 +70,27 @@ const Sidebar = () => {
 
     setModalState(modalName)
   }
+  const handleNewMessage = (data) => {
+    console.log(data, 'nee')
+    setCounts((prev) => ({ ...prev, messenger: prev.messenger + 1 }))
+  }
+  const handleNewNotification = () => {
+    setCounts((prev) => ({ ...prev, notification: prev.notification + 1 }))
+  }
 
-  const handleModalClick = (e:MouseEvent<HTMLAnchorElement, globalThis.MouseEvent>, modalName: ModalStateNames, modal?:boolean) => {
+  const eventHandlers = {
+    [NEW_MESSAGE]: handleNewMessage,
+    [LIKE_POST]: handleNewNotification,
+    [NEW_REQUEST]: handleNewNotification,
+  }
+
+  useSocketEvents(socket, eventHandlers)
+
+  const handleModalClick = (
+    e: MouseEvent<HTMLAnchorElement, globalThis.MouseEvent>,
+    modalName: ModalStateNames,
+    modal?: boolean
+  ) => {
     if (modal) {
       e.preventDefault()
       handleModalToggle(modalName!)
@@ -67,14 +101,20 @@ const Sidebar = () => {
     const isDisabled = route.modal
       ? notiSheet || searchSheet || moreOptions || openPostModal
       : false
+    const count = route.badge
+      ? route.label === 'Messages'
+        ? counts.messenger
+        : counts.notification
+      : null
     return (
       <Route
         {...route}
         handleModalClick={handleModalClick}
         isDisabled={isDisabled}
+        count={count}
       />
     )
-  }, [])
+  }, [counts.messenger, counts.notification])
 
   return (
     <>

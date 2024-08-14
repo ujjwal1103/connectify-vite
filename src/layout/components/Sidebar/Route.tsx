@@ -11,6 +11,7 @@ interface Props extends SidebarRoute {
     modalName: ModalStateNames,
     modal?: boolean
   ) => void
+  count?: number | null
 }
 
 const Route = ({
@@ -21,10 +22,11 @@ const Route = ({
   modal,
   modalName,
   handleModalClick,
+  badge = false,
+  count,
 }: Props) => {
-
   return (
-    <li key={route} className="last:mt-auto" id={label.toLowerCase()}>
+    <li key={route} className="relative last:mt-auto" id={label.toLowerCase()}>
       <NavLink
         to={route}
         className={({ isActive }) =>
@@ -45,6 +47,11 @@ const Route = ({
           <span className="text-lg">{label}</span>
         </div>
       </NavLink>
+      {badge && count !== 0 && (
+        <span className="absolute right-3 top-1/2 z-50 hidden -translate-y-1/2 md:inline">
+          {count}
+        </span>
+      )}
     </li>
   )
 }

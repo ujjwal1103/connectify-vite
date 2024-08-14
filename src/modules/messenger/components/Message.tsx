@@ -759,35 +759,8 @@ const AudioPlayer = memo(({ src, getDurationAndCurrentTime }: any) => {
 });
 export { AudioPlayer };
 
-function Notch({ currentUserMessage }: any) {
-  return (
-    <div
-      className={`absolute bottom-0 z-[-1] ${
-        currentUserMessage ? "-right-2" : "-left-2"
-      }`}
-    >
-      <BubbleNotch
-        className={`${currentUserMessage ? "fill-zinc-800 " : "fill-black"}`}
-        style={{
-          transform: !currentUserMessage ? "rotateY(180deg)" : "rotate(360deg)",
-        }}
-      />
-    </div>
-  );
-}
 
-function CheckBox({ isMessageSelected, handleSelectMessage }: any) {
-  return (
-    <div className="flex items-center justify-center p-2">
-      <input
-        type="checkbox"
-        className="size-4 dark:bg-black"
-        checked={isMessageSelected}
-        onChange={handleSelectMessage}
-      />
-    </div>
-  );
-}
+
 
 function ImagePreview({ setPreviewImage, previewImage }: any) {
   return (
