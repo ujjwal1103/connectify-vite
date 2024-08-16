@@ -1,8 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useProfileSlice } from "./profileSlice";
-import { IPost, IUser } from "@/lib/types";
+import { IPost } from "@/lib/types";
 import { RootState } from "../store";
 import { IBookmark } from "@/interface/interfaces";
 

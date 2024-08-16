@@ -70,8 +70,7 @@ const Sidebar = () => {
 
     setModalState(modalName)
   }
-  const handleNewMessage = (data) => {
-    console.log(data, 'nee')
+  const handleNewMessage = () => {
     setCounts((prev) => ({ ...prev, messenger: prev.messenger + 1 }))
   }
   const handleNewNotification = () => {

@@ -16,7 +16,7 @@ export const PrivateUser = ({username}:{username:string}) => {
         </div>
       </div>
       <div className="lg:max-w-[834px] xl:max-w-[1000px] md:max-w-[750px] max-w-[1000px] mx-auto">
-        {/* <SuggetionsSlider username={username} /> */}
+        <SuggetionsSlider username={username} />
       </div>
     </>
   );

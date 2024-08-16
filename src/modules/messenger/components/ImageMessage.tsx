@@ -1,14 +1,12 @@
 import { DoubleCheckIcon } from '@/components/icons'
-import { cn, tranformUrl, getReadableTime } from '@/lib/utils'
-import { AnimatePresence, motion } from 'framer-motion'
+import { cn, getReadableTime } from '@/lib/utils'
+import { AnimatePresence } from 'framer-motion'
 import { Smile, Loader, Check } from 'lucide-react'
-import { useState, useRef, useCallback } from 'react'
+import { useRef } from 'react'
 import CheckBox from './CheckBox'
 import MessageMenu from './MessageMenu'
 import Notch from './Notch'
-import ImagePreview from './ImagePreview'
 import MessageImage from './MessageImage'
-import Wrapper from '@/components/Wrapper'
 
 const ImageMessage = ({
   message,
