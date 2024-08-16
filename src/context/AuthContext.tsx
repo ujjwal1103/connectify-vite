@@ -1,5 +1,6 @@
 import { getCurrentUser } from "@/api";
 import ConnectifyIcon from "@/components/icons/Connectify";
+import PageLoading from "@/components/shared/Loading/PageLoading";
 import useResetStore from "@/hooks/useResetStore";
 import { saveUserAndTokenLocalstorage } from "@/lib/localStorage";
 import { IUser } from "@/lib/types";
@@ -116,6 +117,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   return (
     <AuthContext.Provider value={value}>
       {!loading && children}
+      {loading && <PageLoading/>}
     </AuthContext.Provider>
   );
 };
