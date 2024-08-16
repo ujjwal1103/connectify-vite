@@ -225,7 +225,7 @@ const updatePost = async (caption: string, postId: string): Promise<any> => {
   return await makeRequest.patch(`post/${postId}`, { caption, postId })
 }
 
-const getFollowers = async (page: number, userId: string, query?: string) => {
+const getFollowers = async (page: number, userId: string, query?: string): Promise<any> => {
   let url = `/followers/${userId}?page=${page}`
   if (query && query.length > 3) {
     url = url + `&username=${query}`

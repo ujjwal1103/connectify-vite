@@ -77,6 +77,7 @@ const SelfProfile = () => {
               followers={user?.followers}
               following={user?.following}
               userId={user?._id}
+              canViewFollowers={true}
             />
             <div className="">
               <span>{user?.name}</span>

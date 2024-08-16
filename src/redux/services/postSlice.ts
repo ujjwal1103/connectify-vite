@@ -151,13 +151,12 @@ export const usePostSlice = () => {
   const postState = useSelector((state: RootState) => state.post);
   const dispatch = useDispatch();
   const actions = postSlice.actions;
-  const { setUser, user } = useProfileSlice();
 
   const addPost = useCallback(
     (post: IPost) => {
       dispatch(actions.addPost(post));
-      const u = { ...user, posts: user!.posts + 1 };
-      setUser(u as IUser);
+      // const u = { ...user, posts: user!.posts + 1 };
+      // setUser(u as IUser);
     },
     [dispatch]
   );

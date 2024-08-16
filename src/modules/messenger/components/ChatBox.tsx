@@ -25,7 +25,7 @@ const ChatBox = () => {
             animate={{ width: 288, x: 0 }}
             exit={{ width: 0, x: 288 }}
             transition={{ duration: 0.3 }}
-            className="absolute right-0 md:static bg-background border-l border-border h-dvh md:w-auto"
+            className="absolute z-100 right-0 md:static bg-background border-l border-border h-dvh md:w-auto"
           >
             <ChatInfo
               onClose={() => {

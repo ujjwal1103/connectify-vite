@@ -46,6 +46,8 @@ const OtherUserProfile = () => {
 
   useSocketEvents(socket, eventHandlers)
 
+  const isPrivateAndNotFollowed = user?.isPrivate && !user?.isFollow
+
   if (loading) return <PageLoading />
 
   if (!user && !loading)
@@ -75,10 +77,10 @@ const OtherUserProfile = () => {
               </div>
               <FollowButton
                 userId={user?._id!}
-                isFollow={user?.isFollow ?? false}
+                isFollow={user?.isFollow}
                 showRemoveFollowerBtn={false}
-                isRequested={user?.isRequested ?? false}
-                isPrivate={user?.isPrivate ?? false}
+                isRequested={user?.isRequested}
+                isPrivate={user?.isPrivate}
                 callBack={() => {
                   refetch()
                 }}
@@ -94,6 +96,7 @@ const OtherUserProfile = () => {
               followers={user?.followers}
               following={user?.following}
               userId={user?._id}
+              canViewFollowers={!isPrivateAndNotFollowed}
             />
             <div>
               <span>{user?.name}</span>
@@ -103,7 +106,7 @@ const OtherUserProfile = () => {
             </div>
           </div>
         </div>
-        {user?.isPrivate && !user?.isFollow ? (
+        {isPrivateAndNotFollowed ? (
           <PrivateUser username={user?.username} />
         ) : (
           <>

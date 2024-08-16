@@ -57,9 +57,12 @@ const Notifications = () => {
       await makeRequest.patch(`/accept/${requestId}`)
       getAllFollowRequestForUser()
       getAllNotifications()
-      return
+    } else {
+      await makeRequest.patch(`/accept/${requestId}?reject=true`)
+      getAllFollowRequestForUser()
+      getAllNotifications()
     }
-  }
+  } 
 
   const deleteNotification = async (id: string, groupId: string) => {
     const newNotications = notifications

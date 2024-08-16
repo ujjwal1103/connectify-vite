@@ -7,7 +7,7 @@ import { ChevronBack } from "@/components/icons";
 const Tabs = ({ userId, activeTab, onClose }: any) => {
   const [selectedTab, setSelectedTab] = useState(activeTab || "followers");
   return (
-    <div className="flex h-dvh flex-col  bg-background">
+    <div className="flex h-dvh flex-col  bg-background ">
       <div className="flex items-center ">
         <div className="absolute  md:hidden cursor-pointer left-2 z-[999]">
           <ChevronBack onClick={onClose} />

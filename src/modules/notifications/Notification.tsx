@@ -37,7 +37,8 @@ export const Notification = ({
               userId={notification.user._id}
               showRemoveFollowerBtn={false}
               isRequested={false}
-              isPrivate={false}          />
+              isPrivate={false}
+            />
           </div>
 
           <button
@@ -66,8 +67,8 @@ export const Notification = ({
               isFollow={!!notification.user.isFollow}
               userId={notification.user._id}
               showRemoveFollowerBtn={false}
-              isRequested={false}
-              isPrivate={false}
+              isRequested={!!notification.user.isRequested}
+              isPrivate={!!notification.user.isPrivate}
             />
           </div>
           <button
@@ -95,7 +96,10 @@ export const Notification = ({
           <div className="translate-x-10 cursor-pointer transition-transform group-hover:translate-x-0">
             <Link to={`/p/${notification?.postId!._id}`}>
               <img
-                src={tranformUrl(notification?.postId?.images[0]?.url, 50) ?? undefined}
+                src={
+                  tranformUrl(notification?.postId?.images[0]?.url, 50) ??
+                  undefined
+                }
                 alt={notification.postId?.images[0]?.url}
                 className={'size-10 rounded object-cover'}
               />
@@ -148,7 +152,7 @@ export const Notification = ({
           <div className="translate-x-10 transition-transform group-hover:translate-x-0">
             <FollowRequestButtons
               handleAccept={handleAccept}
-              requestId={notification._id}
+              requestId={notification.requestId!}
             />
           </div>
 

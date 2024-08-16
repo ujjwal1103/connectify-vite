@@ -1,21 +1,23 @@
-import { memo, useState, useEffect, useRef, Suspense } from "react";
+import { memo, useState, useEffect, useRef, Suspense } from 'react'
 
-import { AnimatePresence, motion } from "framer-motion";
-import clsx from "clsx";
+import { AnimatePresence } from 'framer-motion'
+import clsx from 'clsx'
 
-import { Link } from "react-router-dom";
-import { useChatSlice } from "@/redux/services/chatSlice";
-import { FaPause, FaPlay } from "react-icons/fa";
-import { DoubleCheckIcon, HeadSet } from "@/components/icons";
-import Modal from "@/components/shared/modal/Modal";
-import Avatar from "@/components/shared/Avatar";
-import UsernameLink from "@/components/shared/UsernameLink";
-import { cn, getReadableTime, tranformUrl } from "@/lib/utils";
-import { Check, Loader, Smile } from "lucide-react";
-import { useWaveProgress } from "@/hooks/useWaveProgress";
-import { Menu } from "@/components/shared/SidePannel/SidePannel";
-import Notch from "./Notch";
-import CheckBox from "./CheckBox";
+import { Link } from 'react-router-dom'
+import { useChatSlice } from '@/redux/services/chatSlice'
+import { FaPause, FaPlay } from 'react-icons/fa'
+import { DoubleCheckIcon, HeadSet } from '@/components/icons'
+import Avatar from '@/components/shared/Avatar'
+import UsernameLink from '@/components/shared/UsernameLink'
+import { cn, getReadableTime, tranformUrl } from '@/lib/utils'
+import { Check, Loader, Smile } from 'lucide-react'
+import { useWaveProgress } from '@/hooks/useWaveProgress'
+import Notch from './Notch'
+import CheckBox from './CheckBox'
+import MessageMenu from './MessageMenu'
+import TextMessage from './TextMessage'
+import ImageMessage from './ImageMessage'
+import ImagePreview from './ImagePreview'
 
 const Message = ({
   currentUserMessage,
@@ -37,30 +39,30 @@ const Message = ({
     postImages,
     isUnavailable,
     isLoading,
-  } = message;
+  } = message
 
-  const { isSelectMessages, setSelectedMessage } = useChatSlice();
-  const [showNotch, setShowNotch] = useState(false);
-  const [hoverd, setHoverd] = useState(false);
-  const [options, setOptions] = useState(false);
+  const { isSelectMessages, setSelectedMessage } = useChatSlice()
+  const [showNotch, setShowNotch] = useState(false)
+  const [hoverd, setHoverd] = useState(false)
+  const [options, setOptions] = useState(false)
 
   const handleSelectMessage = () => {
-    setSelectedMessage(_id);
-  };
+    setSelectedMessage(_id)
+  }
 
   const className = clsx(
-    "w-full transition-colors duration-500 flex mb-1",
-    isSelectMessages && "hover:bg-zinc-900 hover:bg-opacity-30",
-    isMessageSelected && "bg-zinc-900 bg-opacity-30"
-  );
+    'w-full transition-colors duration-500 flex mb-1',
+    isSelectMessages && 'hover:bg-zinc-900 hover:bg-opacity-30',
+    isMessageSelected && 'bg-zinc-900 bg-opacity-30'
+  )
 
   useEffect(() => {
     if (!isNextMessageUsMine || isLastMessagae) {
-      setShowNotch(true);
+      setShowNotch(true)
     }
-  }, []);
+  }, [])
 
-  if (messageType === "IMAGE") {
+  if (messageType === 'IMAGE') {
     return (
       <ImageMessage
         message={message}
@@ -77,9 +79,9 @@ const Message = ({
         options={options}
         setOptions={setOptions}
       />
-    );
+    )
   }
-  if (messageType === "POST_MESSAGE") {
+  if (messageType === 'POST_MESSAGE') {
     return (
       <PostMessage
         postImages={postImages}
@@ -98,9 +100,9 @@ const Message = ({
         isUnavailable={isUnavailable}
         showNotch={showNotch}
       />
-    );
+    )
   }
-  if (["AUDIO", "VOICE_MESSAGE"].includes(messageType)) {
+  if (['AUDIO', 'VOICE_MESSAGE'].includes(messageType)) {
     return (
       <AudioMessage
         className={className}
@@ -117,9 +119,9 @@ const Message = ({
         options={options}
         setOptions={setOptions}
       />
-    );
+    )
   }
-  if (messageType === "VIDEO") {
+  if (messageType === 'VIDEO') {
     return (
       <Suspense fallback={<div>"loading"</div>}>
         <VideoMessage
@@ -137,7 +139,7 @@ const Message = ({
           setOptions={setOptions}
         />
       </Suspense>
-    );
+    )
   }
 
   return (
@@ -155,242 +157,10 @@ const Message = ({
       options={options}
       setOptions={setOptions}
     />
-  );
-};
+  )
+}
 
-export default memo(Message);
-
-const TextMessage = ({
-  isSelectMessages,
-  isMessageSelected,
-  handleSelectMessage,
-  currentUserMessage,
-  allSeen,
-  className,
-  showNotch,
-  options,
-  setOptions,
-  message,
-}: any) => {
-  const { text, createdAt, seen, isLoading } = message;
-  const [showMore, setShowMore] = useState(false);
-  const messageLength = text?.length;
-  const longMessage = messageLength > 200 && messageLength - 200 > 250;
-
-  const buttonRef = useRef<HTMLButtonElement>(null);
-  const toggleShowMore = () => {
-    setShowMore(!showMore);
-  };
-
-  return (
-    <div className={cn("relative group overflow-hidden", className)}>
-      {isSelectMessages && (
-        <CheckBox
-          isMessageSelected={isMessageSelected}
-          handleSelectMessage={handleSelectMessage}
-        />
-      )}
-
-      <div
-        className={cn("z-10 mx-4  flex duration-700 text-gray-50 ", {
-          "self-end ml-auto": currentUserMessage,
-        })}
-      >
-        <div
-          className={cn("flex flex-row", {
-            "flex-row-reverse": !currentUserMessage,
-          })}
-        >
-          <div className="flex  items-center transition-all duration-300 p-2 relative">
-            <div className="dropdown dropdown-end ml-auto">
-              <button
-                ref={buttonRef}
-                tabIndex={0}
-                role="button"
-                disabled={options}
-                className={cn(
-                  "group-hover:translate-x-0 group-hover:opacity-100 -translate-x-12 opacity-0 transition-transform  duration-700 ",
-                  { "translate-x-12": currentUserMessage }
-                )}
-                onClick={() => setOptions(!options)}
-              >
-                <Smile />
-              </button>
-              <AnimatePresence>
-                {options && (
-                  <MessageMenu
-                    buttonRef={buttonRef}
-                    options={options}
-                    setOptions={setOptions}
-                  />
-                )}
-              </AnimatePresence>
-            </div>
-          </div>
-
-          <div
-            className={cn(
-              "max-w-md w-fit p-2 flex duration-700 bg-black flex-col text-gray-50 shadow-2xl relative transition-all rounded-xl",
-              {
-                "bg-zinc-800": currentUserMessage,
-              }
-            )}
-          >
-            <div className="overflow-hidden break-words text-sm">
-              {showMore
-                ? text
-                : text?.slice(0, 300) + (longMessage ? "..." : "")}
-            </div>
-
-            <div className="flex text-xss w-full justify-end items-center  float-right flex-col text-right text-gray-300">
-              {longMessage && (
-                <button
-                  onClick={toggleShowMore}
-                  className="text-sm font-semibold p-1 text-blue-500 rounded-2xl self-start"
-                >
-                  {showMore ? "Read Less" : "Read More"}
-                </button>
-              )}
-              <span className="flex z-[1] items-center gap-3 self-end">
-                {getReadableTime(createdAt)}
-
-                {currentUserMessage && (
-                  <>
-                    {isLoading && (
-                      <div>
-                        <Loader className="animate-spin" size={16} />
-                      </div>
-                    )}
-                    {seen || allSeen ? (
-                      <DoubleCheckIcon className="text-blue-500" />
-                    ) : (
-                      <Check />
-                    )}
-                  </>
-                )}
-              </span>
-            </div>
-            {showNotch && <Notch currentUserMessage={currentUserMessage} />}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-const ImageMessage = ({
-  message,
-  isSelectMessages,
-  isMessageSelected,
-  handleSelectMessage,
-  currentUserMessage,
-  allSeen,
-  className,
-  showNotch,
-  options,
-  setOptions,
-  isLoading = false,
-}: any) => {
-  const [previewImage, setPreviewImage] = useState();
-  const buttonRef = useRef<HTMLButtonElement>(null);
-
-  return (
-    <div className={cn("relative group overflow-hidden", className)}>
-      {isSelectMessages && (
-        <CheckBox
-          isMessageSelected={isMessageSelected}
-          handleSelectMessage={handleSelectMessage}
-        />
-      )}
-      <div
-        className={cn("z-10 mx-4 flex duration-700 text-gray-50 ", {
-          "self-end ml-auto": currentUserMessage,
-        })}
-      >
-        <div
-          className={cn("flex flex-row", {
-            "flex-row-reverse": !currentUserMessage,
-          })}
-        >
-          <div className="flex  items-center transition-all duration-300 p-2 relative">
-            <div className="dropdown dropdown-end ml-auto">
-              <button
-                ref={buttonRef}
-                tabIndex={0}
-                role="button"
-                disabled={options}
-                className={cn(
-                  "group-hover:translate-x-0 group-hover:opacity-100 -translate-x-12 opacity-0 transition-transform  duration-700 ",
-                  { "translate-x-12": currentUserMessage }
-                )}
-                onClick={() => setOptions(!options)}
-              >
-                <Smile />
-              </button>
-              <AnimatePresence>
-                {options && (
-                  <MessageMenu
-                    buttonRef={buttonRef}
-                    options={options}
-                    setOptions={setOptions}
-                  />
-                )}
-              </AnimatePresence>
-            </div>
-          </div>
-          <div
-            className={cn(
-              "max-w-md w-fit p-2 flex duration-700 bg-black flex-col text-gray-50 shadow-2xl relative transition-all rounded-xl",
-              {
-                "bg-zinc-800": currentUserMessage,
-              }
-            )}
-          >
-            <div className="overflow-hidden z-[1] w-72 min-h-48">
-              <motion.img
-                layoutId={message.attachments[0]}
-                className="rounded-xl "
-                alt={message.attachments[0]}
-                src={tranformUrl(message.attachments[0], 500)!}
-                onClick={() => setPreviewImage(message.attachments[0])}
-              />
-            </div>
-
-            <div className="absolute bottom-3 right-3 bg-black rounded-md p-1 flex text-xss justify-end items-center w-fit float-right flex-col text-right text-gray-300">
-              <span className="flex z-[1] items-center gap-3 text-white mix-blend-exclusion">
-                {getReadableTime(message.createdAt)}
-                {currentUserMessage && (
-                  <>
-                    {isLoading && (
-                      <div>
-                        <Loader className="animate-spin text-white" size={16} />
-                      </div>
-                    )}
-                    {message.seen || allSeen ? (
-                      <DoubleCheckIcon className="text-blue-500" />
-                    ) : (
-                      <Check />
-                    )}
-                  </>
-                )}
-              </span>
-            </div>
-
-            {showNotch && <Notch currentUserMessage={currentUserMessage} />}
-            <AnimatePresence>
-              {previewImage && (
-                <ImagePreview
-                  setPreviewImage={setPreviewImage}
-                  previewImage={previewImage}
-                />
-              )}
-            </AnimatePresence>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
+export default memo(Message)
 
 const VideoMessage = ({
   isSelectMessages,
@@ -406,23 +176,23 @@ const VideoMessage = ({
   showNotch,
   isLoading = false,
 }: any) => {
-  const videoRef = useRef<any>();
-  const [previewImage, setPreviewImage] = useState();
-  const [isPlaying, setIsPlaying] = useState(false);
-  const buttonRef = useRef<HTMLButtonElement>(null);
+  const videoRef = useRef<any>()
+  const [previewImage, setPreviewImage] = useState()
+  const [isPlaying, setIsPlaying] = useState(false)
+  const buttonRef = useRef<HTMLButtonElement>(null)
   const playPause = () => {
-    const video = videoRef.current;
-    console.dir(video);
+    const video = videoRef.current
+    console.dir(video)
     if (video?.paused) {
-      setIsPlaying(true);
-      video.play();
+      setIsPlaying(true)
+      video.play()
     } else {
-      video?.pause();
-      setIsPlaying(false);
+      video?.pause()
+      setIsPlaying(false)
     }
-  };
+  }
   return (
-    <div className={cn("relative group overflow-hidden", className)}>
+    <div className={cn('group relative overflow-hidden', className)}>
       {isSelectMessages && (
         <CheckBox
           isMessageSelected={isMessageSelected}
@@ -430,16 +200,16 @@ const VideoMessage = ({
         />
       )}
       <div
-        className={cn("z-10 mx-4 flex duration-700 text-gray-50 ", {
-          "self-end ml-auto": currentUserMessage,
+        className={cn('z-10 mx-4 flex text-gray-50 duration-700', {
+          'ml-auto self-end': currentUserMessage,
         })}
       >
         <div
-          className={cn("flex flex-row", {
-            "flex-row-reverse": !currentUserMessage,
+          className={cn('flex flex-row', {
+            'flex-row-reverse': !currentUserMessage,
           })}
         >
-          <div className="flex  items-center transition-all duration-300 p-2 relative">
+          <div className="relative flex items-center p-2 transition-all duration-300">
             <div className="dropdown dropdown-end ml-auto">
               <button
                 ref={buttonRef}
@@ -447,8 +217,8 @@ const VideoMessage = ({
                 role="button"
                 disabled={options}
                 className={cn(
-                  "group-hover:translate-x-0 group-hover:opacity-100 -translate-x-12 opacity-0 transition-transform  duration-700 ",
-                  { "translate-x-12": currentUserMessage }
+                  '-translate-x-12 opacity-0 transition-transform duration-700 group-hover:translate-x-0 group-hover:opacity-100',
+                  { 'translate-x-12': currentUserMessage }
                 )}
                 onClick={() => setOptions(!options)}
               >
@@ -467,16 +237,16 @@ const VideoMessage = ({
           </div>
           <div
             className={cn(
-              "max-w-md w-fit p-2 flex duration-700 bg-black flex-col text-gray-50 shadow-2xl relative transition-all rounded-xl",
+              'relative flex w-fit max-w-md flex-col rounded-xl bg-black p-2 text-gray-50 shadow-2xl transition-all duration-700',
               {
-                "bg-zinc-800": currentUserMessage,
+                'bg-zinc-800': currentUserMessage,
               }
             )}
           >
-            <div className="overflow-hidden break-words w-72 min-h-48">
+            <div className="min-h-48 w-72 overflow-hidden break-words">
               <button
                 onClick={playPause}
-                className=" text-white font-bold py-2 px-4 rounded absolute top-4 left-4 z-50"
+                className="absolute left-4 top-4 z-50 rounded px-4 py-2 font-bold text-white"
               >
                 {isPlaying ? <FaPause /> : <FaPlay />}
               </button>
@@ -492,8 +262,8 @@ const VideoMessage = ({
               </video>
             </div>
 
-            <div className="absolute bottom-3 right-3 bg-black rounded-md p-1 flex text-xss justify-end items-center w-fit float-right flex-col text-right text-gray-300">
-              <span className="flex z-[1] items-center gap-3 text-white mix-blend-exclusion">
+            <div className="absolute bottom-3 right-3 float-right flex w-fit flex-col items-center justify-end rounded-md bg-black p-1 text-right text-xss text-gray-300">
+              <span className="z-[1] flex items-center gap-3 text-white mix-blend-exclusion">
                 {getReadableTime(message.createdAt)}
                 {currentUserMessage && (
                   <>
@@ -525,8 +295,8 @@ const VideoMessage = ({
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
 const AudioMessage = memo(
   ({
@@ -542,12 +312,12 @@ const AudioMessage = memo(
     showNotch,
     isLoading = false,
   }: any) => {
-    const [duration, setDuration] = useState<number>(0);
-    const [currentTime, setCurrentTime] = useState<number>(0);
-    const buttonRef = useRef<HTMLButtonElement>(null);
+    const [duration, setDuration] = useState<number>(0)
+    const [currentTime, setCurrentTime] = useState<number>(0)
+    const buttonRef = useRef<HTMLButtonElement>(null)
 
     return (
-      <div className={cn("relative group overflow-hidden", className)}>
+      <div className={cn('group relative overflow-hidden', className)}>
         {isSelectMessages && (
           <CheckBox
             isMessageSelected={isMessageSelected}
@@ -555,16 +325,16 @@ const AudioMessage = memo(
           />
         )}
         <div
-          className={cn("z-10 mx-4 flex duration-700 text-gray-50 ", {
-            "self-end ml-auto": currentUserMessage,
+          className={cn('z-10 mx-4 flex text-gray-50 duration-700', {
+            'ml-auto self-end': currentUserMessage,
           })}
         >
           <div
-            className={cn("flex flex-row", {
-              "flex-row-reverse": !currentUserMessage,
+            className={cn('flex flex-row', {
+              'flex-row-reverse': !currentUserMessage,
             })}
           >
-            <div className="flex  items-center transition-all duration-300 p-2 relative">
+            <div className="relative flex items-center p-2 transition-all duration-300">
               <div className="dropdown dropdown-end ml-auto">
                 <button
                   ref={buttonRef}
@@ -572,8 +342,8 @@ const AudioMessage = memo(
                   role="button"
                   disabled={options}
                   className={cn(
-                    "group-hover:translate-x-0 group-hover:opacity-100 -translate-x-12 opacity-0 transition-transform  duration-700 ",
-                    { "translate-x-12": currentUserMessage }
+                    '-translate-x-12 opacity-0 transition-transform duration-700 group-hover:translate-x-0 group-hover:opacity-100',
+                    { 'translate-x-12': currentUserMessage }
                   )}
                   onClick={() => setOptions(!options)}
                 >
@@ -592,27 +362,27 @@ const AudioMessage = memo(
             </div>
             <div
               className={cn(
-                "max-w-md w-fit p-2 flex duration-700 bg-black flex-col text-gray-50 shadow-2xl relative transition-all rounded-xl",
+                'relative flex w-fit max-w-md flex-col rounded-xl bg-black p-2 text-gray-50 shadow-2xl transition-all duration-700',
                 {
-                  "bg-zinc-800": currentUserMessage,
+                  'bg-zinc-800': currentUserMessage,
                 }
               )}
             >
-              <div className="overflow-hidden break-words h-24">
+              <div className="h-24 overflow-hidden break-words">
                 <AudioPlayer
                   src={message.attachments[0]}
                   getDurationAndCurrentTime={(
                     duration: number,
                     currentTime: number
                   ) => {
-                    setDuration(duration);
-                    setCurrentTime(currentTime);
+                    setDuration(duration)
+                    setCurrentTime(currentTime)
                   }}
                 />
               </div>
 
-              <div className="absolute bottom-3 right-3 bg-black rounded-md p-1 flex text-xss justify-end items-center w-fit float-right flex-col text-right text-gray-300">
-                <span className="flex z-[1] items-center gap-3 text-white mix-blend-exclusion">
+              <div className="absolute bottom-3 right-3 float-right flex w-fit flex-col items-center justify-end rounded-md bg-black p-1 text-right text-xss text-gray-300">
+                <span className="z-[1] flex items-center gap-3 text-white mix-blend-exclusion">
                   <div className="text-xss">
                     <span>{currentTime}</span> / <span>{duration}</span>
                   </div>
@@ -642,9 +412,9 @@ const AudioMessage = memo(
           </div>
         </div>
       </div>
-    );
+    )
   }
-);
+)
 
 const PostMessage = ({
   isSelectMessages,
@@ -668,7 +438,7 @@ const PostMessage = ({
       <div className={className}>
         <div>Post unavailable</div>
       </div>
-    );
+    )
   }
 
   return (
@@ -680,20 +450,18 @@ const PostMessage = ({
         />
       )}
       <div
-        className={`
-      max-w-md w-fit p-2 mx-3 z-10 duration-700 transition-all rounded-xl ${
-        currentUserMessage ? "self-end bg-zinc-800  ml-auto" : "    bg-black "
-      } text-gray-50 shadow-2xl relative
-    `}
+        className={`z-10 mx-3 w-fit max-w-md rounded-xl p-2 transition-all duration-700 ${
+          currentUserMessage ? 'ml-auto self-end bg-zinc-800' : 'bg-black'
+        } relative text-gray-50 shadow-2xl`}
       >
-        <div className="py-2 flex gap-3 items-center">
-          <Avatar src={avatar.url} className={"size-10 rounded-full"} />
+        <div className="flex items-center gap-3 py-2">
+          <Avatar src={avatar.url} className={'size-10 rounded-full'} />
           <UsernameLink username={username}>{username}</UsernameLink>
         </div>
         <div className="">
           <Link to={`/p/${postId}`}>
             <img
-              className="rounded-xl w-52"
+              className="w-52 rounded-xl"
               alt={'postImage'}
               src={tranformUrl(postImages?.[0], 300)!}
             />
@@ -705,8 +473,8 @@ const PostMessage = ({
           </div>
         )}
 
-        <div className="p-1  flex text-xss justify-end items-center w-fit float-right flex-col text-right text-gray-300">
-          <span className="flex z-[1] items-center gap-3 text-white">
+        <div className="float-right flex w-fit flex-col items-center justify-end p-1 text-right text-xss text-gray-300">
+          <span className="z-[1] flex items-center gap-3 text-white">
             {getReadableTime(createdAt)}
             {currentUserMessage &&
               (seen || allSeen ? (
@@ -719,157 +487,40 @@ const PostMessage = ({
         {showNotch && <Notch currentUserMessage={currentUserMessage} />}
       </div>
     </div>
-  );
-};
+  )
+}
 
 const AudioPlayer = memo(({ src, getDurationAndCurrentTime }: any) => {
   const { containerRef, isPlaying, currentTime, onPlayPause, duration } =
-    useWaveProgress(src);
+    useWaveProgress(src)
 
   const formatTime = (time: number) => {
-    const minutes = Math.floor(time / 60);
-    const seconds = Math.floor(time % 60);
-    return `${minutes}:${seconds.toString().padStart(2, "0")}`;
-  };
+    const minutes = Math.floor(time / 60)
+    const seconds = Math.floor(time % 60)
+    return `${minutes}:${seconds.toString().padStart(2, '0')}`
+  }
 
   useEffect(() => {
-    const formatedTime = formatTime(currentTime);
-    const formatedDuration = formatTime(duration);
-    getDurationAndCurrentTime(formatedDuration, formatedTime);
-  }, [duration, currentTime, getDurationAndCurrentTime]);
+    const formatedTime = formatTime(currentTime)
+    const formatedDuration = formatTime(duration)
+    getDurationAndCurrentTime(formatedDuration, formatedTime)
+  }, [duration, currentTime, getDurationAndCurrentTime])
 
   return (
-    <div className="p-2 md:w-64 w-44">
-      <div className="flex gap-4 items-center">
-        <button
-          onClick={onPlayPause}
-          className=" text-white font-bold  rounded"
-        >
+    <div className="w-44 p-2 md:w-64">
+      <div className="flex items-center gap-4">
+        <button onClick={onPlayPause} className="rounded font-bold text-white">
           {isPlaying ? <FaPause /> : <FaPlay />}
         </button>
-        <div className=" flex flex-col relative w-96">
+        <div className="relative flex w-96 flex-col">
           <div ref={containerRef} id="waveform" />
         </div>
 
-        <div className="p-2 bg-yellow-500 rounded-full ">
+        <div className="rounded-full bg-yellow-500 p-2">
           <HeadSet className="text-base" />
         </div>
       </div>
     </div>
-  );
-});
-export { AudioPlayer };
-
-
-
-
-function ImagePreview({ setPreviewImage, previewImage }: any) {
-  return (
-    <Modal
-      onClose={() => setPreviewImage(undefined)}
-      animate={true}
-      overlayClasses={"flex items-center justify-center fixed"}
-      showCloseButton={false}
-      shouldCloseOutsideClick={true}
-    >
-      <div
-        className=" flex items-center justify-center   w-screen"
-        onClick={() => setPreviewImage(undefined)}
-      >
-        <div
-          className="flex items-center justify-center w-[80%] h-[80%]"
-          onClick={(e) => e.stopPropagation()}
-        >
-          <motion.img
-            src={previewImage}
-            alt={"IMAGE PREVIEW"}
-            className="object-contain" //   loaderClassName="w-screen animate-pulse h-dvh bg-zinc-950"
-          />
-        </div>
-      </div>
-    </Modal>
-  );
-}
-
-function MessageMenu({ buttonRef, options, setOptions }: any) {
-  return (
-    <Menu
-      triggerRef={buttonRef}
-      width={20}
-      open={options}
-      onClose={() => {
-        setOptions(false);
-      }}
-    >
-      <ul
-        tabIndex={0}
-        className="dropdown-content z-[100] mt-2 w-44 menu p-2 shadow bg-zinc-900 rounded-box "
-      >
-        <li className="text-sm flex flex-row flex-nowrap items-center justify-evenly ">
-          <span
-            className="p-2"
-            onClick={() => {
-              setOptions(false);
-              console.log("first");
-            }}
-          >
-            🙂
-          </span>
-          <span
-            className="p-2"
-            onClick={() => {
-              setOptions(false);
-              console.log("first");
-            }}
-          >
-            😊
-          </span>
-          <span
-            className="p-2"
-            onClick={() => {
-              setOptions(false);
-              console.log("first");
-            }}
-          >
-            😇
-          </span>
-          <span
-            className="p-2"
-            onClick={() => {
-              setOptions(false);
-              console.log("first");
-            }}
-          >
-            😘
-          </span>
-          <span
-            className="p-2"
-            onClick={() => {
-              setOptions(false);
-              console.log("first");
-            }}
-          >
-            👍
-          </span>
-        </li>
-        <li className="text-sm ">
-          <span>Profile</span>
-        </li>
-        <li
-          className="text-sm "
-          onClick={() => {
-            // setIsSelectMessages(true);
-          }}
-        >
-          <span>Select Messages</span>
-        </li>
-        <li className="text-sm ">
-          <span>Clear Chat</span>
-        </li>
-        <li className="text-sm ">
-          <span>Delete Chat</span>
-        </li>
-      </ul>
-    </Menu>
-  );
-}
+  )
+})
+export { AudioPlayer }

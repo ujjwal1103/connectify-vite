@@ -1,13 +1,17 @@
-import { DoubleCheckIcon } from "@/components/icons"
-import { cn, getReadableTime } from "@/lib/utils"
-import { AnimatePresence } from "framer-motion"
-import { Smile, Loader, Check } from "lucide-react"
-import { useState, useRef } from "react"
-import CheckBox from "./CheckBox"
-import Notch from "./Notch"
-import MessageMenu from "./MessageMenu"
+import { DoubleCheckIcon } from '@/components/icons'
+import { cn, tranformUrl, getReadableTime } from '@/lib/utils'
+import { AnimatePresence, motion } from 'framer-motion'
+import { Smile, Loader, Check } from 'lucide-react'
+import { useState, useRef, useCallback } from 'react'
+import CheckBox from './CheckBox'
+import MessageMenu from './MessageMenu'
+import Notch from './Notch'
+import ImagePreview from './ImagePreview'
+import MessageImage from './MessageImage'
+import Wrapper from '@/components/Wrapper'
 
-const TextMessage = ({
+const ImageMessage = ({
+  message,
   isSelectMessages,
   isMessageSelected,
   handleSelectMessage,
@@ -17,17 +21,9 @@ const TextMessage = ({
   showNotch,
   options,
   setOptions,
-  message,
+  isLoading = false,
 }: any) => {
-  const { text, createdAt, seen, isLoading } = message
-  const [showMore, setShowMore] = useState(false)
-  const messageLength = text?.length
-  const longMessage = messageLength > 200 && messageLength - 200 > 250
-
   const buttonRef = useRef<HTMLButtonElement>(null)
-  const toggleShowMore = () => {
-    setShowMore(!showMore)
-  }
 
   return (
     <div className={cn('group relative overflow-hidden', className)}>
@@ -37,7 +33,6 @@ const TextMessage = ({
           handleSelectMessage={handleSelectMessage}
         />
       )}
-
       <div
         className={cn('z-10 mx-4 flex text-gray-50 duration-700', {
           'ml-auto self-end': currentUserMessage,
@@ -74,7 +69,6 @@ const TextMessage = ({
               </AnimatePresence>
             </div>
           </div>
-
           <div
             className={cn(
               'relative flex w-fit max-w-md flex-col rounded-xl bg-black p-2 text-gray-50 shadow-2xl transition-all duration-700',
@@ -83,32 +77,19 @@ const TextMessage = ({
               }
             )}
           >
-            <div className="overflow-hidden break-words text-sm">
-              {showMore
-                ? text
-                : text?.slice(0, 300) + (longMessage ? '...' : '')}
-            </div>
+            <MessageImage src={message.attachments[0]} />
 
-            <div className="float-right flex w-full flex-col items-center justify-end text-right text-xss text-gray-300">
-              {longMessage && (
-                <button
-                  onClick={toggleShowMore}
-                  className="self-start rounded-2xl p-1 text-sm font-semibold text-blue-500"
-                >
-                  {showMore ? 'Read Less' : 'Read More'}
-                </button>
-              )}
-              <span className="z-[1] flex items-center gap-3 self-end">
-                {getReadableTime(createdAt)}
-
+            <div className="absolute bottom-3 right-3 float-right flex w-fit flex-col items-center justify-end rounded-md bg-black p-1 text-right text-xss text-gray-300">
+              <span className="z-[1] flex items-center gap-3 text-white mix-blend-exclusion">
+                {getReadableTime(message.createdAt)}
                 {currentUserMessage && (
                   <>
                     {isLoading && (
                       <div>
-                        <Loader className="animate-spin" size={16} />
+                        <Loader className="animate-spin text-white" size={16} />
                       </div>
                     )}
-                    {seen || allSeen ? (
+                    {message.seen || allSeen ? (
                       <DoubleCheckIcon className="text-blue-500" />
                     ) : (
                       <Check />
@@ -117,6 +98,7 @@ const TextMessage = ({
                 )}
               </span>
             </div>
+
             {showNotch && <Notch currentUserMessage={currentUserMessage} />}
           </div>
         </div>
@@ -125,4 +107,4 @@ const TextMessage = ({
   )
 }
 
-export default TextMessage
+export default ImageMessage

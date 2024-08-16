@@ -1,18 +1,21 @@
-import { uploadPosts } from "@/api";
-import Avatar from "@/components/shared/Avatar";
-import { ImageSlider } from "@/components/shared/ImageSlider/ImageSlider";
-import RichTextEditor from "@/components/shared/RichTextEditor";
-import { getCurrentUser } from "@/lib/localStorage";
-import EmojiPicker from "@emoji-mart/react";
+import { uploadPosts } from '@/api'
+import Avatar from '@/components/shared/Avatar'
+import { ImageSlider } from '@/components/shared/ImageSlider/ImageSlider'
+import RichTextEditor from '@/components/shared/RichTextEditor'
+import { useAuth } from '@/context/AuthContext'
+import { getCurrentUser } from '@/lib/localStorage'
+import { IUser } from '@/lib/types'
+import { usePostSlice } from '@/redux/services/postSlice'
+import EmojiPicker from '@emoji-mart/react'
 import {
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
-} from "@radix-ui/react-dropdown-menu";
-import { motion } from "framer-motion";
-import { ArrowLeft, Loader, SmileIcon } from "lucide-react";
-import { useState } from "react";
-import { toast } from "react-toastify";
+} from '@radix-ui/react-dropdown-menu'
+import { motion } from 'framer-motion'
+import { ArrowLeft, Loader, SmileIcon } from 'lucide-react'
+import { useState } from 'react'
+import { toast } from 'react-toastify'
 
 const CaptionComponent = ({
   setStep,
@@ -20,51 +23,55 @@ const CaptionComponent = ({
   aspectRatio,
   onClose,
 }: any) => {
-  const [caption, setCaption] = useState<string>("");
-  const [isLoading, setIsLoading] = useState<any>(false);
-  const user = getCurrentUser();
+  const [caption, setCaption] = useState<string>('')
+  const [isLoading, setIsLoading] = useState<any>(false)
+  const { addPost } = usePostSlice()
+  const { updateUser, user } = useAuth()
 
   const handlePost = async () => {
     if (!cropedImagesUrls.length) {
-      alert("Please select an image");
-      return;
+      alert('Please select an image')
+      return
     }
     try {
-      setIsLoading(true);
-      const formData = new FormData();
+      setIsLoading(true)
+      const formData = new FormData()
       for (let i = 0; i < cropedImagesUrls.length; i++) {
-        formData.append("postImage", cropedImagesUrls[i].file);
+        formData.append('postImage', cropedImagesUrls[i].file)
       }
-      formData.append("caption", caption || "");
-      formData.append("aspectRatio", aspectRatio);
-
-      const data = (await uploadPosts(formData)) as any;
+      formData.append('caption', caption || '')
+      formData.append('aspectRatio', aspectRatio)
+      const data = (await uploadPosts(formData)) as any
 
       if (data?.isSuccess) {
-        toast("Image Uploade SuccessFully");
-        onClose();
+        addPost(data.post)
+        const posts = user?.posts || 0
+        const newUser = { ...user, posts: posts + 1 } as IUser
+        updateUser(newUser)
+        toast('Image Uploade SuccessFully')
+        onClose()
       }
     } catch (error) {
-      console.log("ERROR UPLOADING POST", error);
-      toast.error("Error Uploading Post");
+      console.log('ERROR UPLOADING POST', error)
+      toast.error('Error Uploading Post')
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 2 }}
-      className="flex relative w-screen md:w-192 lg:aspect-video flex-col h-dvh md:h-full bg-black"
+      className="lg:aspect-video relative flex h-dvh w-screen flex-col bg-black md:h-full md:w-192"
     >
-      <div className="p-2 flex justify-between bg-secondary">
+      <div className="flex justify-between bg-secondary p-2">
         <button
-          className="middle  none center rounded-md  md:py-2 md:px-4 font-sans text-sm font-bold uppercase text-white   transition-all   focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+          className="middle none center rounded-md font-sans text-sm font-bold uppercase text-white transition-all focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none md:px-4 md:py-2"
           data-ripple-light="true"
           onClick={() => {
-            setStep("Crop");
+            setStep('Crop')
           }}
           disabled={!cropedImagesUrls.length}
         >
@@ -72,14 +79,14 @@ const CaptionComponent = ({
         </button>
         {isLoading ? (
           <span
-            className="middle none center rounded-lg  py-2 px-4 font-sans text-sm font-bold uppercase text-white   transition-all   focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+            className="middle none center rounded-lg px-4 py-2 font-sans text-sm font-bold uppercase text-white transition-all focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
             data-ripple-light="true"
           >
             <Loader className="animate-spin" />
           </span>
         ) : (
           <button
-            className="middle none center rounded-lg  py-2 px-4 font-sans text-sm font-bold uppercase text-white   transition-all   focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+            className="middle none center rounded-lg px-4 py-2 font-sans text-sm font-bold uppercase text-white transition-all focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
             data-ripple-light="true"
             onClick={handlePost}
             disabled={!cropedImagesUrls.length}
@@ -88,8 +95,8 @@ const CaptionComponent = ({
           </button>
         )}
       </div>
-      <div className="flex md:flex-1 relative flex-col lg:flex-row">
-        <div className="flex flex-1  ">
+      <div className="relative flex flex-col md:flex-1 lg:flex-row">
+        <div className="flex flex-1">
           <ImageSlider
             images={cropedImagesUrls.map((c: any) => ({
               url: c.croppedUrl,
@@ -98,20 +105,20 @@ const CaptionComponent = ({
             height="100%"
           />
         </div>
-        <div className="flex-1 grid grid-rows-[auto_1fr_auto] overflow-hidden">
-          <div className="py-3 px-4 flex items-center gap-3">
-            <Avatar src={user?.avatar?.url} className="border-none size-8" />
+        <div className="grid flex-1 grid-rows-[auto_1fr_auto] overflow-hidden">
+          <div className="flex items-center gap-3 px-4 py-3">
+            <Avatar src={user?.avatar?.url} className="size-8 border-none" />
             <span className="text-sm">{user?.username}</span>
           </div>
-          <div className="w-full scrollbar-thin p-3 md:h-64 h-full ">
+          <div className="h-full w-full p-3 scrollbar-thin md:h-64">
             <RichTextEditor
               value={caption}
               onChange={setCaption}
-              className="overflow-hidden w-full h-full  focus-visible:outline-none"
+              className="h-full w-full overflow-hidden focus-visible:outline-none"
             />
           </div>
 
-          <div className="py-3  px-4 flex items-center justify-between gap-3 fixed bottom-0 md:static w-full">
+          <div className="fixed bottom-0 flex w-full items-center justify-between gap-3 px-4 py-3 md:static">
             <motion.div drag>
               <DropdownMenu>
                 <DropdownMenuTrigger className="pr-2">
@@ -120,14 +127,14 @@ const CaptionComponent = ({
                   </span>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
-                  className="border-none rounded-md"
+                  className="rounded-md border-none"
                   align="end"
                 >
                   <EmojiPicker
                     onEmojiSelect={(event: any) => {
-                      const emoji = event.native;
-                      console.log(caption + emoji);
-                      setCaption((prev = "") => prev + emoji);
+                      const emoji = event.native
+                      console.log(caption + emoji)
+                      setCaption((prev = '') => prev + emoji)
                     }}
                     searchPosition="none"
                     previewPosition="none"
@@ -141,7 +148,7 @@ const CaptionComponent = ({
         </div>
       </div>
     </motion.div>
-  );
-};
+  )
+}
 
-export default CaptionComponent;
+export default CaptionComponent

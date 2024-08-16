@@ -1,112 +1,118 @@
-import { useState } from "react";
+import { memo, useEffect, useState } from 'react'
 
-import { Button } from "../ui/button";
-import { isCurrentUser } from "@/lib/localStorage";
+import { Button } from '../ui/button'
+import { isCurrentUser } from '@/lib/localStorage'
 import {
   cancelFollowRequest,
   followUsers,
   sentFriendRequest,
   unFollowUsers,
-} from "@/api";
+} from '@/api'
 
 type FollowButtonProps = {
-  userId: string;
-  callBack?: (data: any) => any;
-  isFollow: boolean;
-  showRemoveFollowerBtn: boolean;
-  isRequested: boolean;
-  isPrivate: boolean;
-  size?: "default" | "sm" | "lg" | "icon" | null | undefined;
-};
+  userId: string
+  callBack?: (data: any) => void
+  isFollow?: boolean
+  showRemoveFollowerBtn: boolean
+  isRequested?: boolean
+  isPrivate?: boolean
+  size?: 'default' | 'sm' | 'lg' | 'icon' | null | undefined
+}
 
 const FollowButton = ({
   userId,
   callBack = () => {},
-  isFollow,
-  showRemoveFollowerBtn,
-  isRequested,
-  isPrivate,
-  size = "sm",
+  isFollow = false,
+  showRemoveFollowerBtn = false,
+  isRequested = false,
+  isPrivate = true,
+  size = 'sm',
 }: FollowButtonProps) => {
-  const [follow, setFollow] = useState(isFollow);
-  const [isRequestSent, setIsRequestSent] = useState(isRequested);
+  const [follow, setFollow] = useState(isFollow)
+  const [isRequestSent, setIsRequestSent] = useState(false)
+
+  useEffect(() => {
+    setIsRequestSent(isRequested)
+    setFollow(isFollow)
+  }, [isRequested, isFollow])
 
   const handleFollowRequest = async () => {
     if (isPrivate) {
-      setIsRequestSent(true);
-      await sentFriendRequest(userId);
+      setIsRequestSent(true)
+      await sentFriendRequest(userId)
     } else {
-      const data = await followUsers(userId);
+      const data = await followUsers(userId)
       if (data.follow) {
-        setFollow(data.follow);
-        callBack(data);
+        setFollow(data.follow)
+        callBack(data)
       }
     }
-  };
+  }
   const handleCancelFollowRequest = async () => {
     if (isPrivate) {
-      setIsRequestSent(false);
-      await cancelFollowRequest(userId);
+      setIsRequestSent(false)
+      await cancelFollowRequest(userId)
     }
-  };
+  }
 
   const handleUnfollow = async () => {
-    if (!follow) return;
-    const data = await unFollowUsers(userId);
+    if (!follow) return
+    const data = await unFollowUsers(userId)
     if (data.unfollow) {
-      setFollow(false);
-      callBack(data);
+      setFollow(false)
+      callBack(data)
     }
-  };
+  }
 
+  console.log({ isFollow, isRequestSent, isRequested }, 'test')
   if (isCurrentUser(userId)) {
-    return <span></span>;
+    return <span></span>
   }
 
   if (showRemoveFollowerBtn) {
     return (
       <Button
-        className="text-sm bg-gradient-to-l from-blue-900 h-6 md:h-8 to-violet-900 text-sky-100 px-2 py-0.5"
+        className="h-6 bg-gradient-to-l from-blue-900 to-violet-900 px-2 py-0.5 text-sm text-sky-100 md:h-8"
         onClick={handleUnfollow}
         size={size}
       >
         Remove
       </Button>
-    );
+    )
   }
   if (isRequestSent) {
     return (
       <Button
-        className="  bg-zinc-900 hover:bg-zinc-800 h-6 md:h-8  text-sky-100 px-2 py-0.5"
+        className="h-6 bg-zinc-900 px-2 py-0.5 text-sky-100 hover:bg-zinc-800 md:h-8"
         onClick={handleCancelFollowRequest}
         size={size}
       >
         Requested
       </Button>
-    );
+    )
   }
 
   if (follow) {
     return (
       <Button
-        className="text-sm bg-gradient-to-l h-6 md:h-8 from-blue-900 to-violet-900 px-2  text-sky-100"
+        className="h-6 bg-gradient-to-l from-blue-900 to-violet-900 px-2 text-sm text-sky-100 md:h-8"
         onClick={handleUnfollow}
         size={size}
       >
         Following
       </Button>
-    );
+    )
   }
 
   return (
     <Button
-      className="  bg-blue-600  h-6 md:h-8 hover:bg-blue-800 text-sky-100 px-2 py-0.5 "
+      className="h-6 bg-blue-600 px-2 py-0.5 text-sky-100 hover:bg-blue-800 md:h-8"
       onClick={handleFollowRequest}
       size={size}
     >
       Follow
     </Button>
-  );
-};
+  )
+}
 
-export default FollowButton;
+export default memo(FollowButton)

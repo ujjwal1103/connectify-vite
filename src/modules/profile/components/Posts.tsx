@@ -32,7 +32,6 @@ const Posts = ({ isSelfPosts = true, userId }: any) => {
       }
       setPosts(res);
     } catch (error) {
-      console.log(error);
       alert("something went wrong");
     }
   }, [page, userId]);
