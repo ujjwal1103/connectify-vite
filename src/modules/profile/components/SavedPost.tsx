@@ -81,7 +81,7 @@ const SavedPost = () => {
       >
         <div className=" grid grid-cols-3 gap-px place-content-center ">
           {savedPost?.map(({ post }: any) => (
-            <ProfilePost key={post?._id} post={post} pageName="SavedPost" />
+            <ProfilePost key={post?._id} post={post} />
           ))}
         </div>
       </InfiniteScroll>

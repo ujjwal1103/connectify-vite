@@ -57,7 +57,7 @@ const MessageMenu = ({
 
   const handleReaction = async (emoji: string) => {
     reactMessage({ emoji, messageId })
-    const res = await reactCurrentMessage(messageId, emoji)
+    await reactCurrentMessage(messageId, emoji)
     setMoreOptions(false)
   }
 

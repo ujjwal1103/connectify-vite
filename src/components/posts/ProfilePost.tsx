@@ -23,7 +23,7 @@ import { useFeedSlice } from '@/redux/services/feedSlice'
 
 interface ProfilePostProps {
   post: IPost
-  isSelfPosts: boolean
+  isSelfPosts?: boolean
 }
 
 export const ProfilePost = ({

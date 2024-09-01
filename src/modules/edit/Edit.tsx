@@ -14,7 +14,7 @@ import { DevTool } from '@hookform/devtools'
 import { Loader } from 'lucide-react'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Link, useNavigate, useSearchParams } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { IoChevronBack } from 'react-icons/io5'
 import EditAvatar from './EditAvatar'
 import { updateDataInLocalStorage } from '@/lib/localStorage'
