@@ -1,4 +1,4 @@
-import { cn } from '@/lib/utils'
+import { cn, tranformUrl } from '@/lib/utils'
 import { memo } from 'react'
 import CheckBox from './CheckBox'
 import Avatar from '@/components/shared/Avatar'
@@ -62,7 +62,12 @@ const MessageWrap = ({
                   username={sender?.username}
                   className="flex gap-3"
                 >
-                  <Avatar src={sender?.avatar?.url} className="size-5" />
+                  <div className="size-5">
+                    <Avatar
+                      src={tranformUrl(sender?.avatar?.url, 100)!}
+                      className="size-5"
+                    />
+                  </div>
                   <span className="text-xs">{sender?.username}</span>
                 </UsernameLink>
               </div>
