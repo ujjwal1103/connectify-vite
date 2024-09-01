@@ -63,7 +63,7 @@ const SavedPost = () => {
     );
   }
   return (
-    <div className="">
+    <div className="h-full">
       <InfiniteScroll
         className="flex flex-col"
         dataLength={savedPost?.length}

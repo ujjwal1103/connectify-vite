@@ -4,7 +4,7 @@ import Followers from "./Followers";
 import Following from "./Following";
 import { ChevronBack } from "@/components/icons";
 
-const Tabs = ({ userId, activeTab, onClose }: any) => {
+const Tabs = ({ userId, activeTab, onClose, disabledTabs }: any) => {
   const [selectedTab, setSelectedTab] = useState(activeTab || "followers");
   return (
     <div className="flex h-dvh flex-col  bg-background ">
@@ -17,8 +17,8 @@ const Tabs = ({ userId, activeTab, onClose }: any) => {
           selectedTab={selectedTab}
           setSelectedTab={setSelectedTab}
           tabs={[
-            { name: "Followers", id: "followers" },
-            { name: "Following", id: "following" },
+            { name: "Followers", id: "followers", disabled: disabledTabs.followers },
+            { name: "Following", id: "following", disabled: disabledTabs.following },
           ]}
         />
       </div>

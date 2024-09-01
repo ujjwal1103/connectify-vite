@@ -33,23 +33,27 @@ export const SocketProvider = ({ children }: PropsWithChildren) => {
   const [users, setUsers] = useState<any[]>([])
   const { user } = useAuth()
 
-  const newSocket: Socket = useMemo(
-    () =>
-      io(SOCKET_SERVER_URL, {
+  const newSocket = useMemo(() => {
+    if (user) {
+      return io(SOCKET_SERVER_URL, {
         query: { user: JSON.stringify(user) },
         auth: { name: user?.name, username: user?.username, userId: user?._id },
-      }),
-    [user] // Add `user` as a dependency
-  )
+      })
+    }
+    return null
+  }, [user])
 
   useEffect(() => {
-    setSocket(newSocket);
+    if (newSocket) {
+      setSocket(newSocket)
 
-    // Cleanup function to disconnect the socket
-    return () => {
-      newSocket.disconnect();
-    };
-  }, [newSocket]);
+      // Listen for events or perform actions with the socket here
+
+      return () => {
+        newSocket.disconnect()
+      }
+    }
+  }, [newSocket])
 
   const isUserOnline = (userId: string) => {
     return users && users.some((user) => user.userId === userId)

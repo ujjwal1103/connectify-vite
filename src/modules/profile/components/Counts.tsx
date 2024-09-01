@@ -29,14 +29,14 @@ const Counts = ({
       </div>
       <button
         onClick={() => {
-          if (canViewFollowers) {
+          if (canViewFollowers && followers) {
             setFollowersOrFollowing('followers')
           }
         }}
         className={cn(
           'flex cursor-pointer flex-col items-center text-sm md:space-x-2 md:text-sm',
           {
-            'opacity-80 cursor-auto': !canViewFollowers,
+            'cursor-auto opacity-80': !(canViewFollowers && followers),
           }
         )}
       >
@@ -45,14 +45,14 @@ const Counts = ({
       </button>
       <button
         onClick={() => {
-          if (canViewFollowers) {
+          if (canViewFollowers && following) {
             setFollowersOrFollowing('following')
           }
         }}
         className={cn(
           'flex cursor-pointer flex-col items-center text-sm md:space-x-2 md:text-sm',
           {
-            'opacity-80 cursor-auto': !canViewFollowers,
+            'cursor-auto opacity-80': !(canViewFollowers && following),
           }
         )}
       >
@@ -86,6 +86,10 @@ const Counts = ({
               userId={userId}
               onClose={() => {
                 setFollowersOrFollowing(null)
+              }}
+              disabledTabs={{
+                followers: !(canViewFollowers && followers),
+                following: !(canViewFollowers && following),
               }}
             />
           </motion.div>

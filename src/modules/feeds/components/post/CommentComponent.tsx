@@ -23,6 +23,33 @@ const CommentComponent = ({ post, postId, setPost }: any) => {
     setIsLoading(false)
   }, [])
 
+  const addNewComment = (comment: IComment, isReply: boolean) => {
+    console.log({ comment, isReply })
+    const insertReply = (comments: IComment[], reply: IComment): IComment[] => {
+      return comments.map((c: IComment) => {
+        if (c._id === reply.parrentComment) {
+          return {
+            ...c,
+            childComments: [...(c.childComments || []), reply],
+          }
+        } else if (c.childComments) {
+          return {
+            ...c,
+            childComments: insertReply(c.childComments, reply),
+          }
+        }
+        return c
+      })
+    }
+
+    if (isReply) {
+      setComments((prevComments) => insertReply(prevComments, comment))
+    } else {
+      // Add new top-level comment
+      setComments((prevComments) => [comment, ...prevComments])
+    }
+  }
+
   useEffect(() => {
     getComments()
   }, [])
@@ -36,6 +63,7 @@ const CommentComponent = ({ post, postId, setPost }: any) => {
             setReply={setReply}
             comments={comments}
             isLoading={isLoading}
+            onLikeDislike={()=>{}}
           />
         ) : (
           <div className="flex h-full items-center justify-center">
@@ -73,9 +101,7 @@ const CommentComponent = ({ post, postId, setPost }: any) => {
         <div className="">
           <CommentInput
             postId={post?._id!}
-            onComment={function (): void {
-              getComments()
-            }}
+            onComment={addNewComment}
             setReply={setReply}
             reply={reply}
           />

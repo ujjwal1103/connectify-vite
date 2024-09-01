@@ -16,7 +16,7 @@ export const SubmitButton = ({
       <button
         type="submit"
         disabled={disabled}
-        className="w-full disabled:bg-slate-500 h-10 disabled:text-gray-400 disabled:cursor-not-allowed bg-zinc-950 rounded-xl  text-white  hover:bg-black"
+        className="w-full disabled:bg-slate-500 h-10 disabled:text-gray-400 disabled:cursor-not-allowed bg-zinc-950 rounded  text-white  hover:bg-black"
       >
         {isSubmitting ? (
           <span className="flex justify-center">

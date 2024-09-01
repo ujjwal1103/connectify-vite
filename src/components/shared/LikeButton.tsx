@@ -2,7 +2,7 @@ import { likePost, unLikePost } from "@/api";
 import { Heart, HeartFill } from "../icons";
 
 type LikeButtonProps = {
-  id: string;
+  id?: string;
   isLiked: boolean;
   postUserId: string;
   commentId?: string;

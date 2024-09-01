@@ -8,6 +8,7 @@ import {
   sentFriendRequest,
   unFollowUsers,
 } from '@/api'
+import { toast } from 'react-toastify'
 
 type FollowButtonProps = {
   userId: string
@@ -37,15 +38,23 @@ const FollowButton = ({
   }, [isRequested, isFollow])
 
   const handleFollowRequest = async () => {
-    if (isPrivate) {
-      setIsRequestSent(true)
-      await sentFriendRequest(userId)
-    } else {
-      const data = await followUsers(userId)
-      if (data.follow) {
-        setFollow(data.follow)
-        callBack(data)
+    try {
+      if (isPrivate) {
+        setIsRequestSent(true)
+        await sentFriendRequest(userId)
+      } else {
+        const data = await followUsers(userId)
+        if (data.follow) {
+          setFollow(data.follow)
+          callBack(data)
+          toast.success('Started Following')
+        }
       }
+    } catch (error: any) {
+      if ((error.message = 'ALREADY_FOLLOWING')) {
+        setFollow(true)
+      }
+      toast.error('Already Follow This User')
     }
   }
   const handleCancelFollowRequest = async () => {
@@ -64,7 +73,6 @@ const FollowButton = ({
     }
   }
 
-  console.log({ isFollow, isRequestSent, isRequested }, 'test')
   if (isCurrentUser(userId)) {
     return <span></span>
   }
@@ -72,7 +80,7 @@ const FollowButton = ({
   if (showRemoveFollowerBtn) {
     return (
       <Button
-        className="h-6 bg-gradient-to-l from-blue-900 to-violet-900 px-2 py-0.5 text-sm text-sky-100 md:h-8"
+        className="bg-gradient-to-l from-blue-900 to-violet-900 px-2 py-0.5 text-sm text-sky-100 md:h-8"
         onClick={handleUnfollow}
         size={size}
       >
@@ -83,7 +91,7 @@ const FollowButton = ({
   if (isRequestSent) {
     return (
       <Button
-        className="h-6 bg-zinc-900 px-2 py-0.5 text-sky-100 hover:bg-zinc-800 md:h-8"
+        className="bg-zinc-900 px-2 py-0.5 text-sky-100 hover:bg-zinc-800"
         onClick={handleCancelFollowRequest}
         size={size}
       >
@@ -94,22 +102,14 @@ const FollowButton = ({
 
   if (follow) {
     return (
-      <Button
-        className="h-6 bg-gradient-to-l from-blue-900 to-violet-900 px-2 text-sm text-sky-100 md:h-8"
-        onClick={handleUnfollow}
-        size={size}
-      >
+      <Button variant="following" onClick={handleUnfollow} size={size}>
         Following
       </Button>
     )
   }
 
   return (
-    <Button
-      className="h-6 bg-blue-600 px-2 py-0.5 text-sky-100 hover:bg-blue-800 md:h-8"
-      onClick={handleFollowRequest}
-      size={size}
-    >
+    <Button onClick={handleFollowRequest} size={size} variant={'follow'}>
       Follow
     </Button>
   )

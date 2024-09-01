@@ -26,6 +26,7 @@ body {
   overflow: hidden;
   min-width: 375px;
   font-size: 14px;
+  touch-action: manipulation;
 }
 
 .infinite-scroll {

@@ -4,6 +4,7 @@ import { ImageSlider } from '@/components/shared/ImageSlider/ImageSlider'
 import RichTextEditor from '@/components/shared/RichTextEditor'
 import { useAuth } from '@/context/AuthContext'
 import { IUser } from '@/lib/types'
+import { useFeedSlice } from '@/redux/services/feedSlice'
 import { usePostSlice } from '@/redux/services/postSlice'
 import EmojiPicker from '@emoji-mart/react'
 import {
@@ -25,6 +26,7 @@ const CaptionComponent = ({
   const [caption, setCaption] = useState<string>('')
   const [isLoading, setIsLoading] = useState<any>(false)
   const { addPost } = usePostSlice()
+  const { addNewFeed } = useFeedSlice()
   const { updateUser, user } = useAuth()
 
   const handlePost = async () => {
@@ -44,6 +46,7 @@ const CaptionComponent = ({
 
       if (data?.isSuccess) {
         addPost(data.post)
+        addNewFeed(data.post)
         const posts = user?.posts || 0
         const newUser = { ...user, posts: posts + 1 } as IUser
         updateUser(newUser)

@@ -1,26 +1,27 @@
-import { useRef, useState } from "react";
-import { EmojiSmile } from "@/components/icons";
-import data from "@emoji-mart/data";
-import Picker from "@emoji-mart/react";
-import { makeRequest } from "@/config/api.config";
+import { useRef, useState } from 'react'
+import { EmojiSmile } from '@/components/icons'
+import data from '@emoji-mart/data'
+import Picker from '@emoji-mart/react'
+import { makeRequest } from '@/config/api.config'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import MentionInput from "@/components/shared/MentionInput";
-import { cn } from "@/lib/utils";
-import { X } from "lucide-react";
+} from '@/components/ui/dropdown-menu'
+import MentionInput from '@/components/shared/MentionInput'
+import { cn } from '@/lib/utils'
+import { X } from 'lucide-react'
+import { toast } from 'react-toastify'
 
 interface CommentInputProps {
-  postId: string;
-  onComment: (comment: any, reply: boolean) => void;
-  setReply: (comment: any) => void;
+  postId: string
+  onComment: (comment: any, reply: boolean) => void
+  setReply: (comment: any) => void
   reply: {
-    commentId: string | null;
-    repliedTo: string | null;
-    isReply: boolean;
-  };
+    commentId: string | null
+    repliedTo: string | null
+    isReply: boolean
+  }
 }
 
 const CommentInput = ({
@@ -29,11 +30,11 @@ const CommentInput = ({
   setReply,
   reply,
 }: CommentInputProps) => {
-  const [commentText, setCommentText] = useState<string>();
-  const [cursorPosition, setCursorPosition] = useState<number>(0);
-  const [mentionedUsers, setMentionedUsers] = useState([]);
+  const [commentText, setCommentText] = useState<string>()
+  const [cursorPosition, setCursorPosition] = useState<number>(0)
+  const [mentionedUsers, setMentionedUsers] = useState([])
 
-  const inputRef = useRef<any>();
+  const inputRef = useRef<any>()
 
   const sendComment = async () => {
     try {
@@ -42,51 +43,52 @@ const CommentInput = ({
         comment: commentText,
         mentions: mentionedUsers,
         parrentComment: reply.commentId,
-      })) as any;
+      })) as any
       if (data.isSuccess) {
-        setCommentText("");
-        setMentionedUsers([]);
-        setCursorPosition(0);
-        onComment && onComment(data.comment, true);
+        toast.success('New Comment Added', { position: 'bottom-right' })
+        setCommentText('')
+        setMentionedUsers([])
+        setCursorPosition(0)
+        onComment && onComment(data.comment, !!data.comment.parrentComment)
         setReply({
           isReply: false,
           commentId: null,
           repliedTo: null,
-        });
+        })
       }
     } catch (error) {
-      console.log(error);
+      console.log(error)
     }
-  };
+  }
 
   const handleInputClick = (event: any) => {
-    setCursorPosition(event.target.selectionStart);
-  };
+    setCursorPosition(event.target.selectionStart)
+  }
 
   const handleInputBlur = () => {
-    setCursorPosition(inputRef?.current?.selectionStart ?? 0);
-  };
+    setCursorPosition(inputRef?.current?.selectionStart ?? 0)
+  }
 
   const onEmojiClick = (event: any) => {
-    console.log(event);
-    const emoji = event.native;
+    console.log(event)
+    const emoji = event.native
     const newInputValue =
       commentText &&
       commentText.substring(0, cursorPosition) +
         emoji +
-        commentText.substring(cursorPosition);
+        commentText.substring(cursorPosition)
 
-    setCommentText(newInputValue || emoji);
+    setCommentText(newInputValue || emoji)
 
-    const newCursorPosition = cursorPosition + emoji.length;
+    const newCursorPosition = cursorPosition + emoji.length
 
-    inputRef.current.setSelectionRange(newCursorPosition, newCursorPosition);
-    inputRef.current.focus();
-  };
+    inputRef.current.setSelectionRange(newCursorPosition, newCursorPosition)
+    inputRef.current.focus()
+  }
   return (
-    <div className="flex justify-between relative  items-center flex-col">
+    <div className="relative flex flex-col items-center justify-between">
       {reply.commentId && (
-        <span className=" w-full bg-secondary  px-2 flex justify-between md:rounded-t-md text-sm py-1">
+        <span className="flex w-full justify-between absolute bottom-9 bg-secondary px-2 py-1 text-sm ">
           <span>replied to {reply.repliedTo}</span>
           <button
             onClick={() =>
@@ -96,21 +98,20 @@ const CommentInput = ({
               })
             }
           >
-            <X size={16}/>
+            <X size={16} />
           </button>
         </span>
       )}
       <div
         className={cn(
-          "flex items-center justify-between  bg-secondary w-full gap-3  md:rounded-md",
-          { "md:rounded-t-none": reply.isReply }
+          'flex w-full items-center justify-between gap-3 bg-secondary'
         )}
       >
         <MentionInput
           ref={inputRef}
           text={commentText}
           setText={setCommentText}
-          placeholder={"Add a comment..."}
+          placeholder={'Add a comment...'}
           setCursorPosition={setCursorPosition}
           onClick={handleInputClick}
           onBlur={handleInputBlur}
@@ -118,7 +119,7 @@ const CommentInput = ({
           setMentionedUsers={setMentionedUsers}
         />
         {commentText && (
-          <button className="text-blue-400 text-sm" onClick={sendComment}>
+          <button className="text-sm text-blue-400" onClick={sendComment}>
             Post
           </button>
         )}
@@ -126,7 +127,7 @@ const CommentInput = ({
           <DropdownMenuTrigger className="pr-2">
             <EmojiSmile />
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="border-none rounded-md " align="start">
+          <DropdownMenuContent className="rounded-md border-none" align="start">
             <Picker
               data={data}
               onEmojiSelect={onEmojiClick}
@@ -138,7 +139,7 @@ const CommentInput = ({
         </DropdownMenu>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default CommentInput;
+export default CommentInput

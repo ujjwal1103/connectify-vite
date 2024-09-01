@@ -48,11 +48,10 @@ const Input = (props: InputProps, ref: ForwardedRef<HTMLInputElement>) => {
           {...props}
           type={showPassword ? "text" : type}
           className={cn(
-            "peer w-full rounded-xl p-2 px-10 border-2 border-gray-300  focus-visible:border-blue-500 ",
+            "peer w-full rounded p-2 px-10 border-[1px] border-background-secondary  focus-visible:border-blue-500 ",
             className,
             { "peer-focus-visible:border-red-500": error }
           )}
-          autoComplete={undefined}
           placeholder={placeholder}
           disabled={disabled}
         />

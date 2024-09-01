@@ -104,7 +104,7 @@ const MoreMenu = () => {
               <ul className="p-2">
                 <li className="hover:bg-secondary rounded">
                   <Link
-                    to="/edit"
+                    to="/edit?tab=settings"
                     className={cn("flex items-center gap-2 p-2 w-full ")}
                   >
                     <div className="mx-2">

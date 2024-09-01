@@ -50,7 +50,7 @@ export const Notification = ({
         </li>
       )
     }
-    case 'FOLLOWING': {
+    case NotificationType.FOLLOWING: {
       return (
         <li className="group flex items-center justify-between gap-4 rounded-md dark:text-gray-50">
           <Avatar
@@ -80,7 +80,7 @@ export const Notification = ({
         </li>
       )
     }
-    case 'LIKE_POST': {
+    case NotificationType.LIKE_POST: {
       return (
         <li className="group flex w-full items-center justify-between gap-4 rounded-md">
           <Avatar
@@ -94,13 +94,48 @@ export const Notification = ({
           />
 
           <div className="translate-x-10 cursor-pointer transition-transform group-hover:translate-x-0">
-            <Link to={`/p/${notification?.postId!._id}`}>
+            <Link to={`/p/${notification?.postId?._id}`}>
               <img
                 src={
                   tranformUrl(notification?.postId?.images[0]?.url, 50) ??
                   undefined
                 }
                 alt={notification.postId?.images[0]?.url}
+                className={'size-10 rounded object-cover'}
+              />
+            </Link>
+          </div>
+
+          <button
+            className="translate-x-10 transition-transform group-hover:translate-x-0"
+            onClick={() => deleteNotification(notification?._id)}
+          >
+            <Trash2 />
+          </button>
+        </li>
+      )
+    }
+    case NotificationType.LIKE_COMMENT: {
+      return (
+        <li className="group flex w-full items-center justify-between gap-4 rounded-md">
+          <Avatar
+            src={notification.user.avatar?.url}
+            className={'size-8 rounded-full object-cover'}
+          />
+          <NotificationText
+            text={notification.text}
+            username={notification.user.username}
+            date={notification.createdAt}
+          />
+
+          <div className="translate-x-10 cursor-pointer transition-transform group-hover:translate-x-0">
+            <Link to={`/p/${notification?.postId?._id}`}>
+              <img
+                src={
+                  tranformUrl(notification?.postId?.images[0]?.url, 50) ??
+                  undefined
+                }
+                alt={notification?.postId?.images[0]?.url}
                 className={'size-10 rounded object-cover'}
               />
             </Link>
@@ -115,7 +150,7 @@ export const Notification = ({
         </li>
       )
     }
-    case 'COMMENT_POST': {
+    case NotificationType.NEW_COMMENT: {
       return (
         <li className="group flex items-center justify-between gap-4 rounded-md dark:text-gray-50">
           <Avatar
@@ -123,10 +158,22 @@ export const Notification = ({
             className={'size-8 rounded-full object-cover'}
           />
           <NotificationText
-            text={notification.text}
-            username={notification.user.username}
-            date={notification.createdAt}
+            text={notification?.text}
+            username={notification?.user?.username}
+            date={notification?.createdAt}
           />
+          <div className="translate-x-10 cursor-pointer transition-transform group-hover:translate-x-0">
+            <Link to={`/p/${notification?.postId?._id}`}>
+              <img
+                src={
+                  tranformUrl(notification?.postId?.images[0]?.url, 50) ??
+                  undefined
+                }
+                alt={notification.postId?.images[0]?.url}
+                className={'size-10 rounded object-cover'}
+              />
+            </Link>
+          </div>
 
           <button
             className="translate-x-10 transition-transform group-hover:translate-x-0"

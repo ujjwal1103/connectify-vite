@@ -2,16 +2,18 @@ import { getAllMessages } from '@/api'
 import InfiniteScrollC from '@/components/shared/InfiniteScroll/InfiniteScrollC'
 import { useChatSlice } from '@/redux/services/chatSlice'
 import { Loader } from 'lucide-react'
-import { Fragment, useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import Message from './Message'
-import { getCurrentUserId } from '@/lib/localStorage'
+import { getCurrentUserId, getCurrentUsername } from '@/lib/localStorage'
 import { IMessage } from '@/lib/types'
 import { createNotification, formatDate } from '@/lib/utils'
 import { toast } from 'react-toastify'
 import { useSocket } from '@/context/SocketContext'
-import { NEW_MESSAGE } from '@/constants/Events'
+import { NEW_MESSAGE, SEEN_MESSAGES } from '@/constants/Events'
 import useSocketEvents from '@/hooks/useSocketEvent'
+import Avatar from '@/components/shared/Avatar'
+import { useAuth } from '@/context/AuthContext'
 
 const MessageList = () => {
   const {
@@ -22,15 +24,15 @@ const MessageList = () => {
     addMessageFromSocket,
     setIsLoadingMessage,
     selectedChat,
+    seenMessage,
   } = useChatSlice()
 
   const { chatId } = useParams()
-
   const [page, setPage] = useState(1)
   const [hasNext, setHasNext] = useState(true)
   const hasNextRef = useRef(hasNext)
   const { socket } = useSocket()
-
+  const { user } = useAuth()
   const fetchMessages = useCallback(async () => {
     if (!hasNextRef.current) return
 
@@ -73,10 +75,25 @@ const MessageList = () => {
   }
 
   const handleMessage = useCallback(
-    async (data:any) => {
+    async (data: any) => {
       createNotification()
-      if (data.from === selectedChat?.friend?._id) {
+      if (data.chat === chatId) {
         addMessageFromSocket(data.message)
+        socket!.emit(SEEN_MESSAGES, {
+          to: data.from,
+          chat: chatId,
+          from: getCurrentUserId(),
+          message: data.message._id,
+          notification: `${getCurrentUsername()} seen your Messages`,
+        })
+      }
+    },
+    [chatId]
+  )
+  const handleSeenMessage = useCallback(
+    async (data: any) => {
+      if (data.chat === chatId) {
+        seenMessage(data.message)
       }
     },
     [chatId]
@@ -84,6 +101,7 @@ const MessageList = () => {
 
   const eventHandlers = {
     [NEW_MESSAGE]: handleMessage,
+    [SEEN_MESSAGES]: handleSeenMessage,
   }
 
   useSocketEvents(socket, eventHandlers)
@@ -102,7 +120,6 @@ const MessageList = () => {
     if (!previousMessage) {
       return true // Display date separator for the first message
     }
-    // Compare timestamps of current and previous messages
     return (
       new Date(currentMessage.createdAt).toDateString() !==
       new Date(previousMessage.createdAt).toDateString()
@@ -115,9 +132,26 @@ const MessageList = () => {
       className="h-full flex-[0.9] overflow-y-scroll py-3 scrollbar-thin"
       id={chatId}
     >
-      <div></div>
+      {!hasNextRef.current && !selectedChat?.isGroup && (
+        <div className="relative flex h-44 w-full flex-col items-center justify-center gap-2">
+          <div className="relative flex h-full w-full">
+            <div className="absolute left-[50%] top-1/2 flex -translate-y-1/2 flex-col items-center justify-center rounded-full">
+              <Avatar
+                className="size-28 -rotate-6"
+                src={selectedChat?.friend?.avatar?.url}
+              />
+              <span>{selectedChat?.friend?.username}</span>
+            </div>
+            <div className="absolute right-[49%] top-1/2 flex -translate-y-1/2 flex-col items-center justify-center rounded-full">
+              <Avatar className="size-28 rotate-6" src={user?.avatar?.url} />
+              <span>{user?.username}</span>
+            </div>
+          </div>
+          <div>You Follow Each Other on Instagram</div>
+        </div>
+      )}
       {messages?.map((message: IMessage, index) => (
-        <Fragment key={message._id}>
+        <>
           {/* Display date separator if required */}
           {shouldDisplayDateSeparator(index) && (
             <div className="mb-2 text-center text-sm text-gray-500">
@@ -128,7 +162,7 @@ const MessageList = () => {
           )}
           {/* Render message component */}
           <Message
-            seen={true}
+            seen={false}
             key={message._id}
             currentUserMessage={message.from === getCurrentUserId()}
             message={message}
@@ -136,7 +170,7 @@ const MessageList = () => {
             isLastMessagae={!messages[index + 1]}
             isNextMessageUsMine={messages[index + 1]?.from === message.from}
           />
-        </Fragment>
+        </>
       ))}
     </InfiniteScrollC>
   )

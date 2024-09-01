@@ -1,7 +1,6 @@
 import Input from '@/components/shared/Input'
 import { Link } from 'react-router-dom'
 
-import { DevTool } from '@hookform/devtools'
 import { useForm } from 'react-hook-form'
 import Connectify from './components/Connectify'
 import { loginWithEmailAndPassword } from '@/api'
@@ -22,7 +21,6 @@ const Login = () => {
     register,
     handleSubmit,
     setError,
-    control,
     formState: { errors, isValid, isSubmitting, isSubmitSuccessful },
   } = useForm<FormFields>({
     criteriaMode: 'all',
@@ -43,9 +41,9 @@ const Login = () => {
   }
 
   return (
-    <main className="relative flex h-dvh w-full flex-col items-center bg-black lg:flex-row">
-      <div className="absolute top-0 hidden h-[400px] lg:block" />
-      <div className="absolute bottom-0 hidden h-[400px] bg-appcolor lg:block" />
+    <main className="relative flex h-dvh w-full flex-col items-center bg-appcolor lg:flex-row">
+      <div className="absolute top-0 hidden h-[400px] w-full bg-black lg:block" />
+      <div className="absolute bottom-0 hidden h-[400px] w-full lg:block" />
       <Connectify />
       <div className="flex h-screen w-screen flex-1 items-center justify-center border-violet-950 bg-appcolor p-8 backdrop-blur-sm lg:rounded-tl-[200px]">
         <form
@@ -115,7 +113,6 @@ const Login = () => {
           <GoogleButton />
         </form>
       </div>
-      <DevTool control={control} />
     </main>
   )
 }

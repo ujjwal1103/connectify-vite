@@ -1,4 +1,5 @@
 import BubbleNotch from '@/components/icons/BubbleNotch'
+import { memo } from 'react'
 
 function Notch({ currentUserMessage }: any) {
   return (
@@ -17,4 +18,4 @@ function Notch({ currentUserMessage }: any) {
   )
 }
 
-export default Notch
+export default memo(Notch)

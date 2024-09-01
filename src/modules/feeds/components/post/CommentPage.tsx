@@ -28,22 +28,85 @@ const CommentPage = ({ postId, onClose }: CommentPageProps) => {
   useEffect(() => {
     getComments()
   }, [])
+
+  const addNewComment = (comment: IComment, isReply: boolean) => {
+    const insertReply = (comments: IComment[], reply: IComment): IComment[] => {
+      return comments.map((c: IComment) => {
+        if (c._id === reply.parrentComment) {
+          return {
+            ...c,
+            childComments: [...(c.childComments || []), reply],
+          }
+        } else if (c.childComments) {
+          return {
+            ...c,
+            childComments: insertReply(c.childComments, reply),
+          }
+        }
+        return c
+      })
+    }
+
+    if (isReply) {
+      setComments((prevComments) => insertReply(prevComments, comment))
+    } else {
+      setComments((prevComments) => [comment, ...prevComments])
+    }
+  }
+
+  const updateCommentLikesDislikes = (
+    comments: IComment[],
+    commentId: string,
+    isLiked: boolean
+  ): IComment[] => {
+    return comments.map((c) => {
+      if (c._id === commentId) {
+        return {
+          ...c,
+          like: isLiked ? c.like + 1 : Math.max(c.like - 1, 0),
+          isLiked: isLiked,
+        }
+      } else if (c.childComments) {
+        return {
+          ...c,
+          childComments: updateCommentLikesDislikes(
+            c.childComments,
+            commentId,
+            isLiked
+          ),
+        }
+      }
+      return c
+    })
+  }
+
+  const onLikeDislike = (commentId: string, isLiked: boolean) => {
+    try {
+      setComments((prevComments) =>
+        updateCommentLikesDislikes(prevComments, commentId, isLiked)
+      )
+    } catch (error) {
+      console.error('Failed to update like/dislike', error)
+    }
+  }
+
   return (
-    <div className="relative h-screen w-screen overflow-hidden bg-background text-foreground md:h-auto md:w-500">
+    <div className="relative h-dvh w-screen overflow-hidden bg-background text-foreground md:h-auto md:w-500">
       <div className="flex items-center justify-between border-b border-border p-3">
         <h1>Comments {postId}</h1>
         <button onClick={onClose}>
           <X size={24} />
         </button>
       </div>
-      <div className=" relative">
-        <div className="flex-1 overflow-y-scroll text-sm scrollbar-none h-[calc(100dvh_-_85px)] md:h-500">
-          {comments.reverse().length > 0 ? (
+      <div className="relative">
+        <div className="h-[calc(100dvh_-_85px)] flex-1 overflow-y-scroll text-sm scrollbar-none md:h-500">
+          {comments.length > 0 ? (
             <Comments
               postId={postId!}
               setReply={setReply}
               comments={comments}
               isLoading={isLoading}
+              onLikeDislike={onLikeDislike}
             />
           ) : (
             <div className="flex h-full items-center justify-center">
@@ -54,7 +117,7 @@ const CommentPage = ({ postId, onClose }: CommentPageProps) => {
         <div className="">
           <CommentInput
             postId={postId}
-            onComment={getComments}
+            onComment={addNewComment}
             setReply={setReply}
             reply={reply}
           />

@@ -43,12 +43,12 @@ const Route = ({
         <div className="mx-2">
           <Icon />
         </div>
-        <div className={cn('hidden sm:hidden lg:inline-block')}>
+        <div className={cn('hidden lg:inline-block')}>
           <span className="text-lg">{label}</span>
         </div>
       </NavLink>
       {badge && count !== 0 && (
-        <span className="absolute right-3 top-1/2 z-50 hidden -translate-y-1/2 md:inline">
+        <span className="absolute right-3 top-1/2 z-50 hidden -translate-y-1/2 sm:inline">
           {count}
         </span>
       )}

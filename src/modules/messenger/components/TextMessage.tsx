@@ -1,125 +1,65 @@
-import { DoubleCheckIcon } from "@/components/icons"
-import { cn, getReadableTime } from "@/lib/utils"
-import { AnimatePresence } from "framer-motion"
-import { Smile, Loader, Check } from "lucide-react"
-import { useState, useRef } from "react"
-import CheckBox from "./CheckBox"
-import Notch from "./Notch"
-import MessageMenu from "./MessageMenu"
+import { cn } from '@/lib/utils'
+import { useState } from 'react'
+import Notch from './Notch'
+import MetaData from './MetaData'
 
 const TextMessage = ({
-  isSelectMessages,
-  isMessageSelected,
-  handleSelectMessage,
   currentUserMessage,
   allSeen,
-  className,
   showNotch,
-  options,
-  setOptions,
   message,
 }: any) => {
-  const { text, createdAt, seen, isLoading } = message
+  const { text, isLoading } = message
   const [showMore, setShowMore] = useState(false)
   const messageLength = text?.length
   const longMessage = messageLength > 200 && messageLength - 200 > 250
 
-  const buttonRef = useRef<HTMLButtonElement>(null)
   const toggleShowMore = () => {
     setShowMore(!showMore)
   }
 
+  const reaction = true
+
   return (
-    <div className={cn('group relative overflow-hidden', className)}>
-      {isSelectMessages && (
-        <CheckBox
-          isMessageSelected={isMessageSelected}
-          handleSelectMessage={handleSelectMessage}
-        />
+    <div
+      className={cn(
+        'relative z-10 flex w-fit max-w-md flex-col rounded-xl bg-black p-2 text-gray-50 shadow-2xl transition-all duration-700',
+        {
+          'bg-zinc-800': currentUserMessage,
+          'mb-2': reaction,
+        }
+      )}
+    >
+      <div className="overflow-hidden break-words text-sm">
+        {showMore ? text : text?.slice(0, 300) + (longMessage ? '...' : '')}
+      </div>
+
+      {longMessage && (
+        <button
+          onClick={toggleShowMore}
+          className="self-start rounded-2xl p-1 text-sm font-semibold text-blue-500"
+        >
+          {showMore ? 'Read Less' : 'Read More'}
+        </button>
       )}
 
+      <MetaData
+        createdAt={message.createdAt}
+        currentUserMessage={currentUserMessage}
+        isLoading={isLoading}
+        allSeen={allSeen}
+        seen={message.seen}
+        className="self-end"
+      />
+
+      {showNotch && <Notch currentUserMessage={currentUserMessage} />}
       <div
-        className={cn('z-10 mx-4 flex text-gray-50 duration-700', {
-          'ml-auto self-end': currentUserMessage,
+        className={cn('absolute -bottom-3 z-20 text-lg', {
+          '-left-2': currentUserMessage,
+          '-right-2': !currentUserMessage,
         })}
       >
-        <div
-          className={cn('flex flex-row', {
-            'flex-row-reverse': !currentUserMessage,
-          })}
-        >
-          <div className="relative flex items-center p-2 transition-all duration-300">
-            <div className="dropdown dropdown-end ml-auto">
-              <button
-                ref={buttonRef}
-                tabIndex={0}
-                role="button"
-                disabled={options}
-                className={cn(
-                  '-translate-x-12 opacity-0 transition-transform duration-700 group-hover:translate-x-0 group-hover:opacity-100',
-                  { 'translate-x-12': currentUserMessage }
-                )}
-                onClick={() => setOptions(!options)}
-              >
-                <Smile />
-              </button>
-              <AnimatePresence>
-                {options && (
-                  <MessageMenu
-                    buttonRef={buttonRef}
-                    options={options}
-                    setOptions={setOptions}
-                  />
-                )}
-              </AnimatePresence>
-            </div>
-          </div>
-
-          <div
-            className={cn(
-              'relative flex w-fit max-w-md flex-col rounded-xl bg-black p-2 text-gray-50 shadow-2xl transition-all duration-700',
-              {
-                'bg-zinc-800': currentUserMessage,
-              }
-            )}
-          >
-            <div className="overflow-hidden break-words text-sm">
-              {showMore
-                ? text
-                : text?.slice(0, 300) + (longMessage ? '...' : '')}
-            </div>
-
-            <div className="float-right flex w-full flex-col items-center justify-end text-right text-xss text-gray-300">
-              {longMessage && (
-                <button
-                  onClick={toggleShowMore}
-                  className="self-start rounded-2xl p-1 text-sm font-semibold text-blue-500"
-                >
-                  {showMore ? 'Read Less' : 'Read More'}
-                </button>
-              )}
-              <span className="z-[1] flex items-center gap-3 self-end">
-                {getReadableTime(createdAt)}
-
-                {currentUserMessage && (
-                  <>
-                    {isLoading && (
-                      <div>
-                        <Loader className="animate-spin" size={16} />
-                      </div>
-                    )}
-                    {seen || allSeen ? (
-                      <DoubleCheckIcon className="text-blue-500" />
-                    ) : (
-                      <Check />
-                    )}
-                  </>
-                )}
-              </span>
-            </div>
-            {showNotch && <Notch currentUserMessage={currentUserMessage} />}
-          </div>
-        </div>
+        {message?.reaction}
       </div>
     </div>
   )

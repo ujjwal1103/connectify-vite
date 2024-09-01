@@ -10,7 +10,7 @@ import moment from 'moment'
 import FollowRequests from './FollowRequests'
 import { GroupNotification, INotification } from './types'
 import { Notification } from './Notification'
-import { LIKE_POST, NEW_REQUEST } from '@/constants/Events'
+import { LIKE_POST, NEW_COMMENT, NEW_REQUEST } from '@/constants/Events'
 import useSocketEvents from '@/hooks/useSocketEvent'
 import { useSocket } from '@/context/SocketContext'
 
@@ -33,7 +33,6 @@ const Notifications = () => {
     setLoading(true)
     const res = await getAllNotification()
     if (res.isSuccess) {
-      console.log(res.data)
       setNotifications(res.data)
     }
     setLoading(false)
@@ -94,12 +93,13 @@ const Notifications = () => {
   const eventHandlers = {
     [NEW_REQUEST]: handleRequest,
     [LIKE_POST]: handleRequest,
+    [NEW_COMMENT]: handleRequest,
   }
 
   useSocketEvents(socket, eventHandlers)
 
   return (
-    <div className="flex h-dvh w-96 flex-1 flex-col overflow-y-scroll rounded-r-xl border-l-[1px] border-r-[1px] border-border bg-background text-primary drop-shadow-xl scrollbar-none">
+    <div className="flex h-dvh w-96 flex-1 flex-col overflow-y-scroll overflow-x-hidden rounded-r-xl border-l-[1px] border-r-[1px] border-border bg-background text-primary drop-shadow-xl scrollbar-none">
       {!showFollowRequests && (
         <>
           <div className="flex w-full justify-between p-2">

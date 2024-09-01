@@ -4,6 +4,7 @@ import { MessengerLine } from "@/components/icons";
 import { useChatSlice } from "@/redux/services/chatSlice";
 import { useEffect } from "react";
 import { getChatByChatId } from "@/api";
+import { IChat } from "@/lib/types";
 const NoSelectedChat = () => {
   return (
     <div className="flex-1  hidden  dark:text-gray-50 t h-screen lg:flex md:flex justify-center items-center">
@@ -23,7 +24,7 @@ const Messenger = () => {
   const { selectedChat, setSelectedChat, setMessagePage, setMessages } =
     useChatSlice();
 
-  const selectThisChat = (chat: any) => {
+  const selectThisChat = (chat: IChat) => {
     setMessagePage(1);
     setMessages([]);
     setSelectedChat(chat);
@@ -43,8 +44,6 @@ const Messenger = () => {
       fetchChat();
     }
   }, []);
-
-  
 
   return (
     <div className="flex-1 flex">

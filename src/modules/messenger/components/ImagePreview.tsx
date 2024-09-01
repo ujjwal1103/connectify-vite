@@ -21,7 +21,7 @@ function ImagePreview({ onClose, previewImage }: any) {
           <motion.img
             src={previewImage}
             alt={'IMAGE PREVIEW'}
-            className="max-w-screen md:h-[90%]  object-contain"
+            className="max-w-screen h-[90%] object-contain"
           />
         </div>
       </div>

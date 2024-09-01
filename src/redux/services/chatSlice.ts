@@ -98,7 +98,6 @@ const chatSlice = createSlice({
           (m) => m.tempId === message.tempId
         )
         if (index !== -1) {
-          console.log('found')
           state.messages[index] = message
         }
       }
@@ -148,15 +147,29 @@ const chatSlice = createSlice({
     },
     reorderChat: (state, action) => {
       const chatId = action.payload
-      // Find the index of the chat with the specified chatId
       const chatIndex = state.chats.findIndex((chat) => chat._id === chatId)
       if (chatIndex > 0) {
-        // Remove the chat from its current position
         const [chat] = state.chats.splice(chatIndex, 1)
-        // Add the chat to the beginning of the array
         state.chats.unshift(chat)
       }
-      // If chatIndex is 0 or chatId not found, do nothing
+    },
+    reactMessage: (state, action) => {
+      const message = state.messages.findIndex(
+        (msg) => msg._id === action.payload.messageId
+      )
+      state.messages[message] = {
+        ...state.messages[message],
+        reaction: action.payload.emoji,
+      }
+    },
+    seenMessage: (state, action) => {
+      const message = state.messages.findIndex(
+        (msg) => msg._id === action.payload
+      )
+      state.messages[message] = {
+        ...state.messages[message],
+        seen: true,
+      }
     },
 
     reset: () => initialState,
@@ -296,9 +309,18 @@ const useChatSlice = () => {
     dispatch(actions.setGroupName(payload))
   }, [])
 
+  const reactMessage = useCallback((payload: any) => {
+    dispatch(actions.reactMessage(payload))
+  }, [])
+  const seenMessage = useCallback((id: string) => {
+    dispatch(actions.seenMessage(id))
+  }, [])
+
   return {
     ...chat,
+    seenMessage,
     setChats,
+    reactMessage,
     setSelectedChat,
     removeChat,
     setGroupName,

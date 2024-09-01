@@ -59,6 +59,7 @@ const TabBar = ({ hideAppBar, show }: any) => {
           {sidebarRoutes.map(({ route, label, icon, modal }) => (
             <li key={label} className="cursor-pointer">
               <NavLink
+                
                 to={route}
                 onClick={(e) => {
                   if (modal) {

@@ -181,7 +181,11 @@ const searchUser = async (searchQuery: string): Promise<any> => {
   return await makeRequest<any>(`/users/search?query=${searchQuery}`)
 }
 
-const likePost = async (id: string, postUserId: string, commentId?: string) => {
+const likePost = async (
+  id?: string,
+  postUserId?: string,
+  commentId?: string
+) => {
   return makeRequest.post('/like', {
     postId: id,
     postUserId,
@@ -198,7 +202,7 @@ const deleteBookmark = async (postId: string) => {
   return await makeRequest.delete(`/bookmark?postId=${postId}`)
 }
 
-const unLikePost = async (id: string, commentId?: string) => {
+const unLikePost = async (id?: string, commentId?: string) => {
   return await makeRequest.delete(`/unLike?postId=${id}&commentId=${commentId}`)
 }
 
@@ -225,7 +229,11 @@ const updatePost = async (caption: string, postId: string): Promise<any> => {
   return await makeRequest.patch(`post/${postId}`, { caption, postId })
 }
 
-const getFollowers = async (page: number, userId: string, query?: string): Promise<any> => {
+const getFollowers = async (
+  page: number,
+  userId: string,
+  query?: string
+): Promise<any> => {
   let url = `/followers/${userId}?page=${page}`
   if (query && query.length > 3) {
     url = url + `&username=${query}`
@@ -288,7 +296,26 @@ const getRequest = asyncWrap(async (userId: string): Promise<ApiResponse> => {
   return await makeRequest.get(`/request/${userId}`)
 })
 
+const deleteMessageById = async (id: string) => {
+  return await makeRequest.delete(`/message/${id}`)
+}
+
+const reactCurrentMessage = async (id: string, reaction: string) => {
+  return await makeRequest.put(`/message/react/${id}?react=${reaction}`)
+}
+
+const createStory = async (formData: any) => {
+  return await makeRequest.postForm('/story', formData)
+}
+const getAllStories = async () => {
+  return await makeRequest.get('/stories')
+}
+
 export {
+  createStory,
+  getAllStories,
+  deleteMessageById,
+  reactCurrentMessage,
   getRequest,
   getSentRequest,
   makePrivate,

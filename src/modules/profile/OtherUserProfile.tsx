@@ -31,10 +31,10 @@ const tabs = [
 ]
 
 const OtherUserProfile = () => {
-  const { loading, user, initialTab, username, navigate, refetch } =
+  const { loading, user, initialTab, username, navigate, refetch, setUser } =
     useOtherUserProfile()
   const [selectedTab, setSelectedTab] = useState(initialTab)
-  const { socket } = useSocket() as any
+  const { socket } = useSocket()
 
   const handleRefech = useCallback(() => {
     refetch()
@@ -55,12 +55,16 @@ const OtherUserProfile = () => {
 
   return (
     <div
-      className="relative flex w-screen flex-1 overflow-x-hidden overflow-y-scroll scrollbar-thin scrollbar-none md:w-full md:flex-1"
+      className="relative flex w-screen min-h-dvh flex-1 overflow-x-hidden overflow-y-scroll scrollbar-thin scrollbar-none md:w-full md:flex-1"
       id="scrollableDiv"
     >
       <div className="w-screen flex-1 text-sm md:w-auto md:text-sm">
         {user?._id && (
-          <FollowRequest userId={user?._id} username={user?.username} />
+          <FollowRequest
+            userId={user?._id}
+            username={user?.username}
+            setUser={setUser}
+          />
         )}
         <div className="flex justify-center gap-3 px-2 py-3 md:mx-auto md:justify-evenly md:px-10 md:py-5 lg:w-[80%]">
           <div className="flex size-[90px] flex-col items-center justify-center rounded-full border-zinc-800 p-[4px] md:size-[162px] md:flex-row md:border-2">
@@ -81,9 +85,8 @@ const OtherUserProfile = () => {
                 showRemoveFollowerBtn={false}
                 isRequested={user?.isRequested}
                 isPrivate={user?.isPrivate}
-                callBack={() => {
-                  refetch()
-                }}
+                callBack={handleRefech}
+                size={'default'}
               />
               {user?.isFollow && (
                 <Button className="h-6 bg-gradient-to-l from-blue-900 to-violet-900 px-2 py-0.5 text-sm text-white hover:bg-zinc-900 md:h-8">

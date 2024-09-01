@@ -6,10 +6,12 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { X, CircleCheck, Circle } from 'lucide-react'
 import { useState, useCallback, useEffect } from 'react'
 
-const SendPost = ({ onClose }: any) => {
+const SendPost = ({ onClose, post }: any) => {
   const [users, setUsers] = useState<IUser[]>([])
   const [search, setSearch] = useState<string>('')
-  const [selectedUser, setSelectedUser] = useState<string[]>([])
+  const [selectedUser, setSelectedUser] = useState<
+    { username: string; id: string }[]
+  >([])
   const debounceSearch = useDebounce(search, 400)
 
   const fetchUsers = useCallback(async () => {
@@ -25,14 +27,16 @@ const SendPost = ({ onClose }: any) => {
     }
   }, [debounceSearch])
 
-  // const handleSendPost = useCallback(async (userId: string) => {
-  //   makeRequest.post("/message/u/send", {
-  //     userId,
-  //     post: post?._id,
-  //     messageType: "POST_MESSAGE",
-  //   });
-  //   onClose();
-  // }, []);
+  const handleSendPost = useCallback(async () => {
+    if (selectedUser[0]?.id) {
+      makeRequest.post('/message/u/send', {
+        userId: selectedUser[0].id,
+        post: post?._id,
+        messageType: 'POST_MESSAGE',
+      })
+      onClose()
+    }
+  }, [selectedUser])
 
   const handleChange = (e: any) => {
     setSearch(e.target.value)
@@ -48,13 +52,20 @@ const SendPost = ({ onClose }: any) => {
     }
   }
 
-  const toggleUserSelection = (user: IUser) => {
-    if (selectedUser.includes(user.username)) {
-      setSelectedUser((prev) => prev.filter((u) => u !== user.username))
+  console.log(selectedUser)
+
+  const toggleUserSelection = useCallback((user: IUser) => {
+    if (selectedUser.some((u) => u.username === user.username)) {
+      setSelectedUser((prev) =>
+        prev.filter((u) => u.username !== user.username)
+      )
     } else {
-      setSelectedUser((prev) => [...prev, user.username])
+      setSelectedUser((prev) => [
+        ...prev,
+        { username: user.username, id: user?._id },
+      ])
     }
-  }
+  }, [])
 
   useEffect(() => {
     fetchUsers()
@@ -83,12 +94,15 @@ const SendPost = ({ onClose }: any) => {
                   transition={{ duration: 0.2 }}
                   className="flex items-center gap-2 rounded-sm bg-background p-1 px-2"
                 >
-                  {user}
+                  {user.username}
                   <span
                     className="cursor-pointer"
                     onClick={() =>
                       setSelectedUser((prev) =>
-                        prev.filter((selectedUser) => selectedUser !== user)
+                        prev.filter(
+                          (selectedUser) =>
+                            selectedUser.username !== user.username
+                        )
                       )
                     }
                   >
@@ -115,7 +129,9 @@ const SendPost = ({ onClose }: any) => {
         <h1 className="px-3 pb-2">Suggested</h1>
         <ul className="">
           {users?.map((user) => {
-            const isSelected = selectedUser.includes(user.username)
+            const isSelected = selectedUser.some(
+              (u) => u.username === user.username
+            )
             return (
               <motion.li
                 key={user?._id}
@@ -136,7 +152,7 @@ const SendPost = ({ onClose }: any) => {
                   className={'size-10 rounded-full'}
                 />
                 <span>{user.username}</span>
-                <motion.span className="ml-auto flex" layout>
+                <motion.span className="ml-auto flex">
                   {isSelected ? (
                     <CircleCheck className="rounded-full bg-green-600" />
                   ) : (
@@ -151,6 +167,7 @@ const SendPost = ({ onClose }: any) => {
 
       <div className="w-full bg-transparent px-2 pb-3">
         <button
+          onClick={handleSendPost}
           disabled={!selectedUser.length}
           className="w-full rounded bg-blue-600 py-2 text-base disabled:opacity-55"
         >

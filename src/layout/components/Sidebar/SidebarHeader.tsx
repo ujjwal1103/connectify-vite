@@ -1,6 +1,5 @@
 import ConnectifyIcon from '@/components/icons/Connectify'
 import ConnectifyLogoText from '@/components/icons/ConnectifyLogoText'
-import { cn } from '@/lib/utils'
 import { Link } from 'react-router-dom'
 
 const SidebarHeader = () => {
@@ -9,7 +8,7 @@ const SidebarHeader = () => {
       <Link to={'/'}>
         <ConnectifyIcon size={42} />
       </Link>
-      <Link to={'/'} className={cn('sm:hidden lg:block')}>
+      <Link to={'/'} className={'sm:hidden lg:block'}>
         <ConnectifyLogoText w="200" h="44" />
       </Link>
     </div>

@@ -36,6 +36,7 @@ const useOtherUserProfile = () => {
     initialTab,
     username,
     refetch: fetchUserDetails,
+    setUser
   }
 }
 

@@ -13,7 +13,6 @@ const SentRequests: React.FC = () => {
   const fetchSentFollowRequests = useCallback(async () => {
     setLoading(true);
     const res = await getSentRequest();
-    console.log(res.isSuccess);
     if (res.isSuccess) {
       setSentRequests(res.sentRequests);
     } else {

@@ -96,24 +96,28 @@ const Sidebar = () => {
     }
   }
 
-  const renderRouteItem = useCallback((route: SidebarRoute) => {
-    const isDisabled = route.modal
-      ? notiSheet || searchSheet || moreOptions || openPostModal
-      : false
-    const count = route.badge
-      ? route.label === 'Messages'
-        ? counts.messenger
-        : counts.notification
-      : null
-    return (
-      <Route
-        {...route}
-        handleModalClick={handleModalClick}
-        isDisabled={isDisabled}
-        count={count}
-      />
-    )
-  }, [counts.messenger, counts.notification])
+  const renderRouteItem = useCallback(
+    (route: SidebarRoute) => {
+      const isDisabled = route.modal
+        ? notiSheet || searchSheet || moreOptions || openPostModal
+        : false
+      const count = route.badge
+        ? route.label === 'Messages'
+          ? counts.messenger
+          : counts.notification
+        : null
+      return (
+        <Route
+          {...route}
+          key={route.label}
+          handleModalClick={handleModalClick}
+          isDisabled={isDisabled}
+          count={count}
+        />
+      )
+    },
+    [counts.messenger, counts.notification]
+  )
 
   return (
     <>
@@ -121,7 +125,7 @@ const Sidebar = () => {
         ref={sidebarRef}
         id="sidebar"
         className={cn(
-          'z-30 hidden h-dvh max-w-[300px] flex-col bg-background p-2 font-semibold text-foreground md:flex lg:flex-[0.1]'
+          'z-30 hidden h-dvh max-w-[300px] flex-col bg-background p-2 font-semibold text-foreground sm:flex lg:flex-[0.1]'
         )}
       >
         <SidebarHeader />
