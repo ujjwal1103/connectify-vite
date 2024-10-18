@@ -1,6 +1,7 @@
 import { uploadPosts } from '@/api'
 import Avatar from '@/components/shared/Avatar'
 import { ImageSlider } from '@/components/shared/ImageSlider/ImageSlider'
+import ProgressLoading from '@/components/shared/Loading/ProgressLoading'
 import RichTextEditor from '@/components/shared/RichTextEditor'
 import { useAuth } from '@/context/AuthContext'
 import { IUser } from '@/lib/types'
@@ -13,7 +14,7 @@ import {
   DropdownMenuContent,
 } from '@radix-ui/react-dropdown-menu'
 import { motion } from 'framer-motion'
-import { ArrowLeft, Loader, SmileIcon } from 'lucide-react'
+import { ArrowLeft, SmileIcon } from 'lucide-react'
 import { useState } from 'react'
 import { toast } from 'react-toastify'
 
@@ -62,75 +63,52 @@ const CaptionComponent = ({
   }
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 2 }}
-      className="lg:aspect-video relative flex h-dvh w-screen flex-col bg-black md:h-full md:w-192"
-    >
-      <div className="flex justify-between bg-secondary p-2">
+    <motion.div className="flex h-dvh max-h-dvh w-screen flex-col bg-background md:m-auto md:w-2/3 lg:h-1/2 lg:w-4/5">
+      {isLoading && <ProgressLoading />}
+      <div className="flex w-full justify-between bg-secondary p-2">
         <button
           className="middle none center rounded-md font-sans text-sm font-bold uppercase text-white transition-all focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none md:px-4 md:py-2"
           data-ripple-light="true"
           onClick={() => {
             setStep('Crop')
           }}
-          disabled={!cropedImagesUrls.length}
+          disabled={!cropedImagesUrls.length || isLoading}
         >
           <ArrowLeft />
         </button>
-        {isLoading ? (
-          <span
-            className="middle none center rounded-lg px-4 py-2 font-sans text-sm font-bold uppercase text-white transition-all focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-            data-ripple-light="true"
-          >
-            <Loader className="animate-spin" />
-          </span>
-        ) : (
-          <button
-            className="middle none center rounded-lg px-4 py-2 font-sans text-sm font-bold uppercase text-white transition-all focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-            data-ripple-light="true"
-            onClick={handlePost}
-            disabled={!cropedImagesUrls.length}
-          >
-            Post
-          </button>
-        )}
+
+        <button
+          className="middle none center rounded-lg px-4 py-2 font-sans text-sm font-bold uppercase text-white transition-all focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+          data-ripple-light="true"
+          onClick={handlePost}
+          disabled={!cropedImagesUrls.length || isLoading}
+        >
+          Post
+        </button>
       </div>
-      <div className="relative flex flex-col md:flex-1 lg:flex-row">
-        <div className="flex flex-1">
-          <ImageSlider
-            images={cropedImagesUrls.map((c: any) => ({
-              url: c.croppedUrl,
-              type: c.type,
-            }))}
-            height="100%"
-          />
-        </div>
-        <div className="grid flex-1 grid-rows-[auto_1fr_auto] overflow-hidden">
-          <div className="flex items-center gap-3 px-4 py-3">
+      <div className="flex h-full flex-1 flex-col-reverse lg:flex-row-reverse">
+        <div className="flex h-full flex-1 flex-col lg:h-auto">
+          <div className="flex items-center gap-3 p-3">
             <Avatar src={user?.avatar?.url} className="size-8 border-none" />
             <span className="text-sm">{user?.username}</span>
           </div>
-          <div className="h-full w-full p-3 scrollbar-thin md:h-64">
+          <div className="h-full max-h-fit w-full flex-1  p-3">
             <RichTextEditor
               value={caption}
               onChange={setCaption}
-              className="h-full w-full overflow-hidden focus-visible:outline-none"
+              className="h-full max-h-[115px] w-full flex-1 overflow-y-scroll scrollbar-none outline-none lg:max-h-full"
             />
           </div>
-
-          <div className="fixed bottom-0 flex w-full items-center justify-between gap-3 px-4 py-3 md:static">
-            <motion.div drag>
+          <div className="flex items-center justify-between px-3 py-2">
+            <div className='z-10'>
               <DropdownMenu>
-                <DropdownMenuTrigger className="pr-2">
-                  <span>
-                    <SmileIcon />
-                  </span>
+                <DropdownMenuTrigger>
+                  <SmileIcon />
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
                   className="rounded-md border-none"
                   align="end"
+                  alignOffset={200}
                 >
                   <EmojiPicker
                     onEmojiSelect={(event: any) => {
@@ -144,9 +122,18 @@ const CaptionComponent = ({
                   />
                 </DropdownMenuContent>
               </DropdownMenu>
-            </motion.div>
+            </div>
             <span className="text-sm">{caption.length}/2,200</span>
           </div>
+        </div>
+        <div className="flex items-center justify-center lg:flex-1">
+          <ImageSlider
+            images={cropedImagesUrls.map((c: any) => ({
+              url: c.croppedUrl,
+              type: c.type,
+            }))}
+            height="100%"
+          />
         </div>
       </div>
     </motion.div>

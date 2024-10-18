@@ -1,12 +1,12 @@
-import { createBookmark, deleteBookmark } from "@/api";
-import { BookMark, BookMarkFill } from "../icons";
+import { createBookmark, deleteBookmark } from '@/api'
+import { BookmarkIcon } from 'lucide-react'
 
 type BookmarkButtonProps = {
-  postId: string;
-  isBookmarked: boolean;
+  postId: string
+  isBookmarked: boolean
 
-  onBookmarkClick: (isBookmarked: boolean, error: boolean) => void;
-};
+  onBookmarkClick: (isBookmarked: boolean, error: boolean) => void
+}
 
 export const BookmarkButton = ({
   postId,
@@ -14,32 +14,32 @@ export const BookmarkButton = ({
   onBookmarkClick,
 }: BookmarkButtonProps) => {
   const handleLikeClicked = async (isBookmarked: boolean) => {
-    onBookmarkClick(isBookmarked, false);
+    onBookmarkClick(isBookmarked, false)
     try {
       if (isBookmarked) {
-        await createBookmark(postId);
+        await createBookmark(postId)
       } else {
-        await deleteBookmark(postId);
+        await deleteBookmark(postId)
       }
     } catch (error) {
-      onBookmarkClick(isBookmarked, true);
+      onBookmarkClick(isBookmarked, true)
     }
-  };
+  }
 
   if (isBookmarked) {
     return (
-      <BookMarkFill
-        className="cursor-pointer text-base md:text-xl"
+      <BookmarkIcon
+        className="cursor-pointer fill-white text-base md:text-xl"
         onClick={() => handleLikeClicked(false)}
       />
-    );
+    )
   }
 
   return (
-    <BookMark
-      className="cursor-pointer text-base md:text-xl"
-      color=""
+    <BookmarkIcon
+      className="cursor-pointer text-base text-white md:text-xl"
+      
       onClick={() => handleLikeClicked(true)}
     />
-  );
-};
+  )
+}

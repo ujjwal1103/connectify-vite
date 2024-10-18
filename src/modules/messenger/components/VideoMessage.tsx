@@ -1,7 +1,6 @@
-import { DoubleCheckIcon } from '@/components/icons'
 import { cn, getReadableTime } from '@/lib/utils'
 import { AnimatePresence } from 'framer-motion'
-import { Loader, Check } from 'lucide-react'
+import { Loader, Check, CheckCheck } from 'lucide-react'
 import { memo, useRef, useState } from 'react'
 import { FaPause, FaPlay } from 'react-icons/fa'
 
@@ -79,7 +78,7 @@ const VideoMessage = ({
                 </div>
               )}
               {message.seen || allSeen ? (
-                <DoubleCheckIcon className="text-blue-500" />
+                <CheckCheck className="text-blue-500" />
               ) : (
                 <Check />
               )}

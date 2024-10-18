@@ -55,10 +55,10 @@ const OtherUserProfile = () => {
 
   return (
     <div
-      className="relative flex w-screen min-h-dvh flex-1 overflow-x-hidden overflow-y-scroll scrollbar-thin scrollbar-none md:w-full md:flex-1"
+      className="relative flex min-h-dvh w-screen flex-1 overflow-x-hidden overflow-y-scroll scrollbar-thin scrollbar-none md:w-full md:flex-1"
       id="scrollableDiv"
     >
-      <div className="w-screen flex-1 text-sm md:w-auto md:text-sm">
+      <div className="min-w-screen flex-1 text-sm md:w-auto md:text-sm">
         {user?._id && (
           <FollowRequest
             userId={user?._id}
@@ -66,7 +66,7 @@ const OtherUserProfile = () => {
             setUser={setUser}
           />
         )}
-        <div className="flex justify-center gap-3 px-2 py-3 md:mx-auto md:justify-evenly md:px-10 md:py-5 lg:w-[80%]">
+        <div className="flex justify-center gap-6  px-2 py-3 md:mx-auto mdjustify-evenly md:px-10 md:py-5 lg:w-[80%]">
           <div className="flex size-[90px] flex-col items-center justify-center rounded-full border-zinc-800 p-[4px] md:size-[162px] md:flex-row md:border-2">
             <Avatar
               src={user?.avatar?.url}
@@ -101,12 +101,20 @@ const OtherUserProfile = () => {
               userId={user?._id}
               canViewFollowers={!isPrivateAndNotFollowed}
             />
-            <div>
+            <div className='hidden md:block'>
               <span>{user?.name}</span>
             </div>
-            <div className="break-words">
-              <pre className="font-mono">{user?.bio}</pre>
+            <div className="hidden md:block">
+              <pre className="text-sm">{user?.bio}</pre>
             </div>
+          </div>
+        </div>
+        <div className="mx-5 mb-5 space-y-2 block md:hidden">
+          <div>
+            <span>{user?.name}</span>
+          </div>
+          <div className="block md:hidden">
+            <pre className="text-xs">{user?.bio}</pre>
           </div>
         </div>
         {isPrivateAndNotFollowed ? (

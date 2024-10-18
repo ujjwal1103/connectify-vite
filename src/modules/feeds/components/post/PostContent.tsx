@@ -1,20 +1,20 @@
 import { ImageSlider } from '@/components/shared/ImageSlider/ImageSlider'
 import { IIamge } from '@/lib/types'
 import { AnimatePresence, motion } from 'framer-motion'
-import { useEffect, useRef, useState } from 'react'
+import { memo, useEffect, useRef, useState } from 'react'
 
 type PostContentProps = {
-  contentUrls: IIamge[]
+  images: IIamge[]
 }
 
-const PostContent = ({ contentUrls }: PostContentProps) => {
+const PostContent = ({ images }: PostContentProps) => {
   const ref = useRef<any>()
 
   const [liked, setLiked] = useState(false)
   const timeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   const handleDoubleClick = () => {
-    console.log({liked})
+    console.log({ liked })
     setLiked(true)
 
     if (timeoutRef.current) {
@@ -30,6 +30,7 @@ const PostContent = ({ contentUrls }: PostContentProps) => {
       }
     }
   }, [])
+  
   return (
     <div className="overflow-hidden">
       <div
@@ -37,7 +38,7 @@ const PostContent = ({ contentUrls }: PostContentProps) => {
         style={{ display: 'block' }}
       >
         <div className="block h-full w-full" onDoubleClick={handleDoubleClick}>
-          <ImageSlider images={contentUrls} width={ref?.current?.clientWidth} />
+          <ImageSlider images={images} width={ref?.current?.clientWidth} />
           <AnimatePresence>
             {liked && (
               <motion.div
@@ -66,4 +67,4 @@ const PostContent = ({ contentUrls }: PostContentProps) => {
   )
 }
 
-export default PostContent
+export default memo(PostContent)

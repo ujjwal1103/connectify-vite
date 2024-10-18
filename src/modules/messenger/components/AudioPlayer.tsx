@@ -1,7 +1,6 @@
-import { HeadSet } from "@/components/icons"
 import { useWaveProgress } from "@/hooks/useWaveProgress"
+import { Headphones, Pause, Play } from "lucide-react"
 import { memo, useEffect } from "react"
-import { FaPause, FaPlay } from "react-icons/fa"
 
 const AudioPlayer = memo(({ src, getDurationAndCurrentTime }: any) => {
     const { containerRef, isPlaying, currentTime, onPlayPause, duration } =
@@ -23,14 +22,14 @@ const AudioPlayer = memo(({ src, getDurationAndCurrentTime }: any) => {
       <div className="w-44 p-2 md:w-64">
         <div className="flex items-center gap-4">
           <button onClick={onPlayPause} className="rounded font-bold text-white">
-            {isPlaying ? <FaPause /> : <FaPlay />}
+            {isPlaying ? <Pause /> : <Play />}
           </button>
           <div className="relative flex w-96 flex-col">
             <div ref={containerRef} id="waveform" />
           </div>
   
           <div className="rounded-full bg-yellow-500 p-2">
-            <HeadSet className="text-base" />
+            <Headphones className="text-base" />
           </div>
         </div>
       </div>

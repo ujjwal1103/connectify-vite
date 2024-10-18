@@ -1,4 +1,5 @@
 export interface IIamge {
+  type?: string
   publicId: string
   _id: string
   url: string
@@ -42,6 +43,7 @@ export interface IChat {
   groupAvatar?: IIamge
   members?: IUser[]
   groupAdmin?: string
+  unseenMessagesCount?: number
 }
 
 export interface IMessage {
@@ -63,6 +65,7 @@ export interface IMessage {
   isUnavailable?: boolean
   sender:IUser
   reaction?: string
+  isCurrentUserMessage?: boolean
 }
 
 export interface MessagesRootObject {

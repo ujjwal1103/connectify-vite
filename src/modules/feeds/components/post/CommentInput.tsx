@@ -1,5 +1,4 @@
-import { useRef, useState } from 'react'
-import { EmojiSmile } from '@/components/icons'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import data from '@emoji-mart/data'
 import Picker from '@emoji-mart/react'
 import { makeRequest } from '@/config/api.config'
@@ -10,8 +9,9 @@ import {
 } from '@/components/ui/dropdown-menu'
 import MentionInput from '@/components/shared/MentionInput'
 import { cn } from '@/lib/utils'
-import { X } from 'lucide-react'
+import { SmileIcon, X } from 'lucide-react'
 import { toast } from 'react-toastify'
+import { commentExpand } from '@/components/Events/CommentExpand'
 
 interface CommentInputProps {
   postId: string
@@ -36,6 +36,10 @@ const CommentInput = ({
 
   const inputRef = useRef<any>()
 
+  useEffect(() => {
+    inputRef.current.focus()
+  }, [reply.commentId])
+
   const sendComment = async () => {
     try {
       const data = (await makeRequest.post(`/comment`, {
@@ -44,6 +48,7 @@ const CommentInput = ({
         mentions: mentionedUsers,
         parrentComment: reply.commentId,
       })) as any
+
       if (data.isSuccess) {
         toast.success('New Comment Added', { position: 'bottom-right' })
         setCommentText('')
@@ -55,6 +60,7 @@ const CommentInput = ({
           commentId: null,
           repliedTo: null,
         })
+        commentExpand.dispatchEvent(new CustomEvent('expand', { detail: data }))
       }
     } catch (error) {
       console.log(error)
@@ -69,8 +75,7 @@ const CommentInput = ({
     setCursorPosition(inputRef?.current?.selectionStart ?? 0)
   }
 
-  const onEmojiClick = (event: any) => {
-    console.log(event)
+  const onEmojiClick = useCallback((event: any) => {
     const emoji = event.native
     const newInputValue =
       commentText &&
@@ -84,11 +89,12 @@ const CommentInput = ({
 
     inputRef.current.setSelectionRange(newCursorPosition, newCursorPosition)
     inputRef.current.focus()
-  }
+  }, [commentText])
+
   return (
-    <div className="relative flex flex-col items-center justify-between">
+    <div className="relative z-10 flex flex-col items-center justify-between">
       {reply.commentId && (
-        <span className="flex w-full justify-between absolute bottom-9 bg-secondary px-2 py-1 text-sm ">
+        <span className="absolute bottom-9 flex w-full justify-between bg-secondary px-2 py-1 text-sm">
           <span>replied to {reply.repliedTo}</span>
           <button
             onClick={() =>
@@ -125,9 +131,12 @@ const CommentInput = ({
         )}
         <DropdownMenu>
           <DropdownMenuTrigger className="pr-2">
-            <EmojiSmile />
+            <SmileIcon />
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="rounded-md border-none" align="start">
+          <DropdownMenuContent
+            className="z-[1000] rounded-md border-none"
+            align="start"
+          >
             <Picker
               data={data}
               onEmojiSelect={onEmojiClick}

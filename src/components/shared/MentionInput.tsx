@@ -121,6 +121,7 @@ const MentionInput = (
         placeholder={placeholder}
         onClick={onClick}
         onBlur={onBlur}
+        autoFocus={true}
       />
 
       {mentionStartIndex !== null && users.length > 0 && (

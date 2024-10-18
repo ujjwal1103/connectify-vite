@@ -1,37 +1,44 @@
+import {
+  useState,
+  useRef,
+  useLayoutEffect,
+  useEffect,
+  memo,
+  MouseEvent,
+} from 'react'
+import { createPortal } from 'react-dom'
+
+import { Info, LucideIcon, Reply, Smile, Trash2 } from 'lucide-react'
 import { deleteMessageById, reactCurrentMessage } from '@/api'
+import { IMessage } from '@/lib/types'
 import { cn } from '@/lib/utils'
 import { useChatSlice } from '@/redux/services/chatSlice'
 import { AnimatePresence, motion } from 'framer-motion'
-import { Smile } from 'lucide-react'
-import { useState, useRef, useLayoutEffect, useEffect, memo } from 'react'
-import { createPortal } from 'react-dom'
 
 interface MessageMenuOptions {
   currentUserMessage: boolean
   messageId: string
-  showNotch: boolean
+  message: IMessage
 }
 
 const reactionEmoji = ['👍', '🙂', '😊', '😇', '😘']
 
 const MessageMenu = ({
   currentUserMessage,
-  showNotch,
   messageId,
+  message,
 }: MessageMenuOptions) => {
   const [moreOptions, setMoreOptions] = useState(false)
   const [menuPosition, setMenuPosition] = useState<any>({
     top: 0,
     left: 0,
-    bottom: 'auto',
-    right: 'auto',
     origin: 'top left',
   })
-  const { reactMessage } = useChatSlice()
+  const { reactMessage, setCurrentMessageReply, removeMessage } = useChatSlice()
   const menuRef = useRef<HTMLDivElement>(null)
   const buttonRef = useRef<HTMLButtonElement>(null)
 
-  const handleClickOutside = (event: MouseEvent) => {
+  const handleClickOutside = (event: globalThis.MouseEvent) => {
     if (
       menuRef.current &&
       !menuRef.current.contains(event.target as Node) &&
@@ -51,8 +58,9 @@ const MessageMenu = ({
   }
 
   const handleDelete = async () => {
-    const res = await deleteMessageById(messageId)
-    console.log(res)
+    await deleteMessageById(messageId)
+    removeMessage(messageId)
+    setMoreOptions(false)
   }
 
   const handleReaction = async (emoji: string) => {
@@ -61,34 +69,46 @@ const MessageMenu = ({
     setMoreOptions(false)
   }
 
+  const handleReply = () => {
+    setCurrentMessageReply({
+      messageId,
+      sender: currentUserMessage ? 'You' : message.sender.username,
+      message: message,
+    })
+    setMoreOptions(false)
+  }
+
   useLayoutEffect(() => {
     if (moreOptions && buttonRef.current) {
       const buttonRect = buttonRef.current.getBoundingClientRect()
 
       const menuHeight = 160
-      const isSmall = window.innerWidth <= 768
-      let top = buttonRect.bottom + window.scrollY + 8
-      let left = isSmall
-        ? 'auto'
-        : currentUserMessage
-          ? buttonRect.left + 24 - 216
-          : buttonRect.left + 24
-      let bottom = 'auto'
-      let right = isSmall ? 10 : 'auto'
-      let origin = isSmall || currentUserMessage ? 'top right' : 'top left'
+      const menuWidth = 208
+      let top = buttonRect.bottom + window.scrollY
+      let left = currentUserMessage
+        ? buttonRect.right - menuWidth
+        : buttonRect.left
+
+      let origin = currentUserMessage ? 'top right' : 'top left'
+
+      if (left + menuWidth > window.innerWidth) {
+        left = window.innerWidth - menuWidth - 8 
+        origin = currentUserMessage ? 'top right' : 'top right'
+      }
+
+      if (left < 0) {
+        left = 8 
+        origin = currentUserMessage ? 'top left' : 'top left'
+      }
 
       if (window.innerHeight - buttonRect.bottom < menuHeight) {
-        top = buttonRect.top + window.scrollY - menuHeight - 8
-        origin = isSmall || currentUserMessage ? 'bottom right' : 'bottom left'
+        top = buttonRect.top + window.scrollY - menuHeight
+        origin = currentUserMessage ? 'bottom right' : 'bottom left'
       }
 
-      if (top < 0) {
-        top = 8
-        bottom = 'auto'
-      }
-      setMenuPosition({ top, left, bottom, right, origin })
+      setMenuPosition({ top, left, origin })
     }
-  }, [moreOptions])
+  }, [moreOptions, currentUserMessage])
 
   useEffect(() => {
     if (moreOptions) {
@@ -106,11 +126,7 @@ const MessageMenu = ({
   }, [moreOptions])
 
   return (
-    <div
-      className={cn('ml-auto', {
-        'mt-10': !currentUserMessage && showNotch,
-      })}
-    >
+    <div className="ml-auto">
       <button
         ref={buttonRef}
         tabIndex={0}
@@ -130,7 +146,7 @@ const MessageMenu = ({
           {moreOptions && (
             <motion.div
               ref={menuRef}
-              className="absolute z-50 rounded bg-background shadow-xl"
+              className="fixed z-100 bg-secondary"
               initial={{ opacity: 0, scale: 0.3 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.3 }}
@@ -138,26 +154,34 @@ const MessageMenu = ({
               style={{
                 top: menuPosition.top,
                 left: menuPosition.left,
-                bottom: menuPosition.bottom,
-                right: menuPosition.right,
                 transformOrigin: menuPosition.origin,
               }}
             >
-              <ul tabIndex={0} className="menu z-[100] mt-2 w-52 p-2">
-                <li className="flex flex-row flex-nowrap items-center justify-evenly text-sm">
+              <ul tabIndex={0} className="p-1.5">
+                <li className="flex flex-row flex-nowrap items-center justify-evenly  text-sm">
                   {reactionEmoji.map((emoji) => (
-                    <EmojiButton emoji={emoji} onClick={handleReaction} />
+                    <EmojiButton
+                      key={emoji}
+                      emoji={emoji}
+                      onClick={handleReaction}
+                    />
                   ))}
                 </li>
-                <li className="text-sm">
-                  <span>Message Info</span>
-                </li>
-                <li className="text-sm">
-                  <span>Reply</span>
-                </li>
-                <li className="text-sm" onClick={handleDelete}>
-                  <span>Delete</span>
-                </li>
+                <MenuListItem
+                  label={'Message Info'}
+                  onClick={() => {}}
+                  icon={Info}
+                />
+                <MenuListItem
+                  label={'Reply'}
+                  onClick={handleReply}
+                  icon={Reply}
+                />
+                <MenuListItem
+                  label={'Delete'}
+                  onClick={handleDelete}
+                  icon={Trash2}
+                />
               </ul>
             </motion.div>
           )}
@@ -178,8 +202,33 @@ export const EmojiButton = ({
   emoji: string
 }) => {
   return (
-    <span className="p-2" onClick={() => onClick(emoji)}>
+    <button
+      className="rounded px-2 py-2 text-sm hover:bg-background"
+      onClick={() => onClick(emoji)}
+    >
       {emoji}
-    </span>
+    </button>
+  )
+}
+
+interface MenuListItemProps {
+  label: string
+  onClick?: (e: MouseEvent<HTMLLIElement>, label?: string) => void
+  icon: LucideIcon
+}
+
+export const MenuListItem = ({
+  label,
+  onClick,
+  icon: Icon,
+}: MenuListItemProps) => {
+  return (
+    <li
+      className="flex items-center justify-between gap-2 px-2 py-2 text-sm hover:bg-background rounded cursor-pointer" tabIndex={0}
+      onClick={(e) => onClick?.(e, label)}
+    >
+      <Icon className="size-5" />
+      <span>{label}</span>
+    </li>
   )
 }

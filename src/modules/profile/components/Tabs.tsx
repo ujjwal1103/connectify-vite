@@ -2,7 +2,7 @@ import { TabControl } from "@/components/shared/TabControl";
 import { useState } from "react";
 import Followers from "./Followers";
 import Following from "./Following";
-import { ChevronBack } from "@/components/icons";
+import { ChevronLeft } from "lucide-react";
 
 const Tabs = ({ userId, activeTab, onClose, disabledTabs }: any) => {
   const [selectedTab, setSelectedTab] = useState(activeTab || "followers");
@@ -10,7 +10,7 @@ const Tabs = ({ userId, activeTab, onClose, disabledTabs }: any) => {
     <div className="flex h-dvh flex-col  bg-background ">
       <div className="flex items-center ">
         <div className="absolute  md:hidden cursor-pointer left-2 z-[999]">
-          <ChevronBack onClick={onClose} />
+          <ChevronLeft onClick={onClose} />
         </div>
         <TabControl
           tabId={"bubble"}

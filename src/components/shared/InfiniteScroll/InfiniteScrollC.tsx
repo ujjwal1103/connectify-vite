@@ -1,10 +1,10 @@
-import React, { useEffect, useRef, useLayoutEffect, ReactNode } from "react";
+import React, { useEffect, useRef, useLayoutEffect, ReactNode } from 'react'
 
 interface InfiniteScrollProps {
-  loadMore: () => void;
-  children: ReactNode;
-  className?: string;
-  id?: string;
+  loadMore: () => void
+  children: ReactNode
+  className?: string
+  id?: string
 }
 
 const InfiniteScrollC: React.FC<InfiniteScrollProps> = ({
@@ -13,52 +13,53 @@ const InfiniteScrollC: React.FC<InfiniteScrollProps> = ({
   className,
   id,
 }) => {
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const prevScrollHeightRef = useRef(0);
+  const scrollContainerRef = useRef<HTMLDivElement>(null)
+  const prevScrollHeightRef = useRef(0)
 
   const handleScroll = () => {
-    const scrollContainer = scrollContainerRef.current;
+    const scrollContainer = scrollContainerRef.current
 
     if (scrollContainer && scrollContainer.scrollTop === 0) {
-      loadMore();
+      loadMore()
     }
-  };
+  }
 
   useLayoutEffect(() => {
-    const scrollContainer = scrollContainerRef.current;
+    const scrollContainer = scrollContainerRef.current
 
     if (scrollContainer) {
-      const previousScrollTop = scrollContainer.scrollTop;
-      const previousScrollHeight = prevScrollHeightRef.current;
+      const previousScrollTop = scrollContainer.scrollTop
+      const previousScrollHeight = prevScrollHeightRef.current
       scrollContainer.scrollTop =
-        scrollContainer.scrollHeight - previousScrollHeight + previousScrollTop;
+        scrollContainer.scrollHeight - previousScrollHeight + previousScrollTop
     }
-  }, [children, id]);
+  }, [children, id])
 
   useEffect(() => {
-    const scrollContainer = scrollContainerRef.current;
+    const scrollContainer = scrollContainerRef.current
 
     if (scrollContainer) {
-      scrollContainer.scrollTop = scrollContainer.scrollHeight;
-      scrollContainer.addEventListener("scroll", handleScroll);
+      scrollContainer.scrollTop = scrollContainer.scrollHeight
+      scrollContainer.addEventListener('scroll', handleScroll)
       return () => {
-        scrollContainer.removeEventListener("scroll", handleScroll);
-      };
+        scrollContainer.removeEventListener('scroll', handleScroll)
+      }
     }
-  }, [id]);
+  }, [id])
 
   useEffect(() => {
-    const scrollContainer = scrollContainerRef.current;
+    const scrollContainer = scrollContainerRef.current
+
     if (scrollContainer) {
-      prevScrollHeightRef.current = scrollContainer.scrollHeight;
+      prevScrollHeightRef.current = scrollContainer.scrollHeight
     }
-  }, [children, id]);
+  }, [children, id])
 
   return (
     <div ref={scrollContainerRef} className={className}>
       {children}
     </div>
-  );
-};
+  )
+}
 
-export default InfiniteScrollC;
+export default InfiniteScrollC

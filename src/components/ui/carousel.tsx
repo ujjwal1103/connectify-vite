@@ -1,11 +1,11 @@
 import * as React from "react";
-import { IoChevronBackCircle, IoChevronForwardCircle } from "react-icons/io5";
 import useEmblaCarousel, {
   type UseEmblaCarouselType,
 } from "embla-carousel-react";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { CircleChevronLeft, CircleChevronRight } from "lucide-react";
 
 type CarouselApi = UseEmblaCarouselType[1];
 type UseCarouselParameters = Parameters<typeof useEmblaCarousel>;
@@ -217,7 +217,7 @@ const CarouselPrevious = React.forwardRef<
       onClick={scrollPrev}
       {...props}
     >
-      <IoChevronBackCircle className="h-5 w-5" />
+      <CircleChevronLeft className="h-5 w-5" />
       <span className="sr-only">Previous slide</span>
     </Button>
   );
@@ -250,7 +250,7 @@ const CarouselNext = React.forwardRef<
       onClick={scrollNext}
       {...props}
     >
-      <IoChevronForwardCircle className="h-5 w-5" />
+      <CircleChevronRight className="h-5 w-5" />
       <span className="sr-only">Next slide</span>
     </Button>
   );

@@ -14,7 +14,7 @@ const ImageMessage = ({
   return (
     <div
       className={cn(
-        'relative flex w-fit max-w-md flex-col rounded-xl bg-black p-2 text-gray-50 shadow-2xl transition-all duration-700',
+        'relative flex w-fit md:max-w-md max-w-[260px] flex-col rounded-xl bg-black p-2 text-gray-50 shadow-2xl transition-all duration-700',
         {
           'bg-zinc-800': currentUserMessage,
         }

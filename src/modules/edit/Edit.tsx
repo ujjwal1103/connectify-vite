@@ -11,11 +11,10 @@ import {
 } from '@/components/ui/select'
 import { z } from 'zod'
 import { DevTool } from '@hookform/devtools'
-import { Loader } from 'lucide-react'
+import { ChevronLeft, Loader } from 'lucide-react'
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { IoChevronBack } from 'react-icons/io5'
 import EditAvatar from './EditAvatar'
 import { updateDataInLocalStorage } from '@/lib/localStorage'
 import { useAuth } from '@/context/AuthContext'
@@ -24,6 +23,7 @@ import { TabControl } from '@/components/shared/TabControl'
 import Setting from '../settings/Settings'
 import { motion } from 'framer-motion'
 import { toast } from 'react-toastify'
+import { IUser } from '@/lib/types'
 
 const EditProfileSchema = z.object({
   bio: z.string().max(200, 'Bio cannot exceed 200 characters').optional(),
@@ -56,9 +56,11 @@ const Edit = () => {
   const navigate = useNavigate()
 
   const onSubmit = async (data: any) => {
-    const res = (await updateUserDetails(data)) as any
+    const res = (await updateUserDetails(data)) as Partial<{
+      updatedData: IUser
+    }>
     updateDataInLocalStorage(res.updatedData)
-    updateUser({ ...user, ...res.updatedData })
+    updateUser((prev) => prev && { ...prev, ...res.updatedData })
     toast.success('Post Updated Successfully')
     navigate(-1)
   }
@@ -74,6 +76,12 @@ const Edit = () => {
   if (!user && !loading) {
     return <div>User not found</div>
   }
+
+  console.log(!isDirty || !isValid, { isDirty, isValid }, user)
+
+  const userBio = watch('bio')?.trim() ?? ''
+  const rows =
+    userBio?.split('\n')?.length > 4 ? 5 : userBio?.split('\n').length
 
   return (
     <div className="relative min-h-dvh flex-1 overflow-y-scroll text-sm scrollbar-none md:text-sm">
@@ -107,7 +115,7 @@ const Edit = () => {
         >
           <header className="flex gap-2">
             <button className="block md:hidden" onClick={() => navigate(-1)}>
-              <IoChevronBack size={24} />
+              <ChevronLeft size={24} />
             </button>
             <h1 className="text-xl font-bold">Edit profile</h1>
           </header>
@@ -137,16 +145,18 @@ const Edit = () => {
                 <Textarea
                   id="bio"
                   placeholder="Tell us a little bit about yourself"
-                  className="h-fit max-h-40 min-h-14 resize-none border-[#363636] pr-14 scrollbar-none placeholder:text-[#363636] focus-visible:border-gray-300"
+                  className="resize-none border-[#363636] pr-14 scrollbar-none placeholder:text-[#363636] focus-visible:border-gray-300"
                   {...register('bio', {
                     maxLength: {
                       value: 200,
                       message: 'Bio cannot exceed 200 characters',
                     },
                   })}
+                  maxLength={200}
+                  rows={rows}
                 />
                 <span className="absolute bottom-2 right-3 text-sm text-[#838282]">
-                  {watch('bio')?.trim().length}/200
+                  {userBio?.length}/200
                 </span>
                 {errors.bio && (
                   <span className="text-red-600">{errors.bio.message}</span>
@@ -191,7 +201,7 @@ const Edit = () => {
                 disabled={!isDirty || !isValid}
                 type="submit"
                 variant={'follow'}
-                className="h-9 px-3 py-2 text-sm disabled:pointer-events-none disabled:opacity-50 md:text-sm"
+                size={'lg'}
               >
                 Submit
               </Button>

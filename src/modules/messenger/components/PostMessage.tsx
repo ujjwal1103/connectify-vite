@@ -1,10 +1,10 @@
-import { DoubleCheckIcon, Check } from '@/components/icons'
 import UsernameLink from '@/components/shared/UsernameLink'
 import { tranformUrl, getReadableTime } from '@/lib/utils'
 import Avatar from '@/components/shared/Avatar'
 import { Link } from 'react-router-dom'
 import Notch from './Notch'
 import { IMessage } from '@/lib/types'
+import { Check, CheckCheck } from 'lucide-react'
 
 interface PostMessageProps {
   currentUserMessage: boolean
@@ -66,7 +66,7 @@ const PostMessage = ({
           {getReadableTime(createdAt)}
           {currentUserMessage &&
             (seen || allSeen ? (
-              <DoubleCheckIcon className="text-blue-500" />
+              <CheckCheck className="text-blue-500" />
             ) : (
               <Check />
             ))}

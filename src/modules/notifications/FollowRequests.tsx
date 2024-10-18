@@ -1,7 +1,7 @@
-import { AngleLeft } from '@/components/icons'
 import Avatar from '@/components/shared/Avatar'
 import UsernameLink from '@/components/shared/UsernameLink'
 import FollowRequestButtons from './FollowRequestButtons'
+import { ChevronLeft } from 'lucide-react'
 
 interface FollowRequestsProps {
   requests: any[]
@@ -19,7 +19,7 @@ const FollowRequests = ({
       <div className="flex w-full justify-between p-2 pb-2">
         <h1 className="flex items-center gap-4 text-2xl font-semibold dark:text-gray-50">
           <button className="text-2xl" onClick={onClose}>
-            <AngleLeft />
+            <ChevronLeft />
           </button>
           Follow Request
         </h1>

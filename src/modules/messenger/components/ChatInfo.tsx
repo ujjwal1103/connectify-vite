@@ -24,7 +24,7 @@ const ChatInfo = ({ onClose }: any) => {
   }
 
   return (
-    <div className="z-100 p-2">
+    <div className="z-100 p-2 w-[288px]">
       <div className="flex items-center gap-4">
         <span className="cursor-pointer" onClick={onClose}>
           <X />

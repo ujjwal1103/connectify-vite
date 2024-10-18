@@ -226,7 +226,7 @@ const PostMenu = ({
 
   return (
     <>
-      <div ref={buttonRef} className="absolute right-2 top-2">
+      <div ref={buttonRef} className="absolute right-2 top-2 hidden md:block">
         <MoreHorizontal
           className="size-3 cursor-pointer md:size-6"
           onClick={handleMenuToggle}

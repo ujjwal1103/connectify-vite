@@ -7,9 +7,8 @@ import Connectify from './components/Connectify'
 import ConnectifyLogoText from '@/components/icons/ConnectifyLogoText'
 import { GoogleButton } from './components/GoogleButton'
 import { SubmitButton } from './components/SubmitButton'
-import { PasswordLock, PersonFill, UsernameIcon } from '@/components/icons'
 import Input from '@/components/shared/Input'
-import { Mail } from 'lucide-react'
+import { AtSign, Lock, Mail, User2 } from 'lucide-react'
 
 const Register = () => {
   const { login } = useAuth()
@@ -37,7 +36,7 @@ const Register = () => {
   }, [])
 
   return (
-    <div className="relative flex h-dvh w-full flex-1 flex-col items-center bg-appcolor lg:flex-row">
+    <div className="relative flex h-dvh w-full flex-1 flex-col items-center text-black bg-appcolor lg:flex-row">
       <div className="absolute top-0 hidden h-[400px] w-full bg-black lg:block" />
       <div className="absolute bottom-0 hidden h-[400px] w-full lg:block" />
       <Connectify />
@@ -50,10 +49,10 @@ const Register = () => {
           <h1 className="text-bold flex items-center justify-center lg:hidden">
             <ConnectifyLogoText />
           </h1>
-          <div className="flex flex-col gap-2 text-3xl font-bold dark:text-white">
+          <div className="flex flex-col gap-2 text-3xl font-bold ">
             Welcome!
           </div>
-          <div className="flex flex-col gap-2 text-xl dark:text-white">
+          <div className="flex flex-col gap-2 text-xl ">
             Register To Connectify
           </div>
 
@@ -61,7 +60,7 @@ const Register = () => {
             autoFocus={true}
             type="text"
             placeholder="Username"
-            prefix={<UsernameIcon size={24} />}
+            prefix={<AtSign size={24} />}
             error={errors?.username}
             {...register('username', {
               required: 'Username is Required',
@@ -78,7 +77,7 @@ const Register = () => {
             autoFocus={false}
             type="text"
             placeholder="Name"
-            prefix={<PersonFill size={24} />}
+            prefix={<User2 size={24} />}
             error={errors?.name}
             {...register('name', { required: 'Name is Required' })}
           />
@@ -109,7 +108,7 @@ const Register = () => {
             })}
             type={'password'}
             placeholder="Password"
-            prefix={<PasswordLock size={24} />}
+            prefix={<Lock size={24} />}
             error={errors?.password}
           />
 
@@ -119,9 +118,9 @@ const Register = () => {
             disabled={!isValid || isSubmitting || isSubmitSuccessful}
           />
 
-          <p className="text-white">
+          <p className="">
             Already have an account
-            <Link to={'/login'} className="cursor-pointer px-2 text-violet-200">
+            <Link to={'/login'} className="cursor-pointer px-2 text-blue-700">
               Login
             </Link>
           </p>

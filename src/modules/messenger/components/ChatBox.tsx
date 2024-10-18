@@ -1,41 +1,49 @@
-import { useState } from "react";
-import ChatInfo from "./ChatInfo";
-import MessageInput from "./MessageInput";
-import MessageList from "./MessageList";
-import MessageListHeader from "./MessageListHeader";
-import { AnimatePresence, motion } from "framer-motion";
+import { useEffect, useState } from 'react'
+import ChatInfo from './ChatInfo'
+import MessageInput from './MessageInput'
+import MessageList from './MessageList'
+import MessageListHeader from './MessageListHeader'
+import { AnimatePresence, motion } from 'framer-motion'
 
 const ChatBox = () => {
-  const [showInfo, setShowInfo] = useState(false);
+  const [showInfo, setShowInfo] = useState(false)
+
+  useEffect(() => {
+    return() => {
+      console.log('unmount chat box')
+    }
+  }, [])
+
   return (
-    <div className="md:flex-1 flex flex-row flex-1 h-dvh min-w-80  max-h-dvh w-full relative">
-      <motion.div className="flex-1 flex flex-col">
+    <div className="relative flex h-dvh max-h-dvh min-h-dvh w-full min-w-80 flex-1 md:flex-1">
+      <div className="flex flex-1 flex-col">
         <MessageListHeader
           toggleShowInfo={() => {
-            setShowInfo(!showInfo);
+            setShowInfo(!showInfo)
           }}
         />
         <MessageList />
         <MessageInput />
-      </motion.div>
+      </div>
+
       <AnimatePresence>
         {showInfo && (
           <motion.div
-            initial={{ width: 0, x: 288 }}
-            animate={{ width: 288, x: 0 }}
-            exit={{ width: 0, x: 288 }}
+            initial={{ width: 0, opacity: 0 }}
+            animate={{ width: 288, opacity: 100 }}
+            exit={{ width: 0, opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="absolute z-100 right-0 md:static bg-background border-l border-border h-dvh md:w-auto"
+            className="absolute right-0 z-100 h-dvh border-l border-border bg-background md:static"
           >
             <ChatInfo
               onClose={() => {
-                setShowInfo(!showInfo);
+                setShowInfo(!showInfo)
               }}
             />
           </motion.div>
         )}
       </AnimatePresence>
     </div>
-  );
-};
-export default ChatBox;
+  )
+}
+export default ChatBox

@@ -27,6 +27,7 @@ body {
   min-width: 375px;
   font-size: 14px;
   touch-action: manipulation;
+  pointer-events: auto !important;
 }
 
 .infinite-scroll {
@@ -64,7 +65,85 @@ body.dragging {
   display: none;
 }
 
-
-.advanced-cropper-rectangle-stencil{
+.advanced-cropper-rectangle-stencil {
   box-shadow: 0 0 0 200px black;
 }
+input:-webkit-autofill,
+input:-webkit-autofill:focus {
+  transition:
+    background-color 0s 600000s,
+    color 0s 600000s !important;
+  outline: none;
+}
+
+.loader {
+  height: 4px;
+  width: 100%;
+  --c: no-repeat linear-gradient(#6100ee 0 0);
+  background: var(--c), var(--c), #d7b8fc;
+  background-size: 60% 100%;
+  animation: l16 3s infinite;
+}
+@keyframes l16 {
+  0% {
+    background-position:
+      -150% 0,
+      -150% 0;
+  }
+  66% {
+    background-position:
+      250% 0,
+      -150% 0;
+  }
+  100% {
+    background-position:
+      250% 0,
+      250% 0;
+  }
+}
+
+/* HTML:  */
+.dots {
+  width: 30px;
+  aspect-ratio: 2;
+  --_g: no-repeat radial-gradient(circle closest-side, #fff 90%, transparent);
+  background:
+    var(--_g) 0% 50%,
+    var(--_g) 50% 50%,
+    var(--_g) 100% 50%;
+  background-size: calc(100% / 3) 50%;
+  animation: l3 1s infinite linear;
+}
+@keyframes l3 {
+  20% {
+    background-position:
+      0% 0%,
+      50% 50%,
+      100% 50%;
+  }
+  40% {
+    background-position:
+      0% 100%,
+      50% 0%,
+      100% 50%;
+  }
+  60% {
+    background-position:
+      0% 50%,
+      50% 100%,
+      100% 0%;
+  }
+  80% {
+    background-position:
+      0% 50%,
+      50% 50%,
+      100% 100%;
+  }
+}
+
+
+*:focus-visible {
+  outline: 2px solid yellow;
+  outline-offset: 2px;
+}
+

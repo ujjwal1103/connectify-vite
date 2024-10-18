@@ -1,14 +1,6 @@
-import Avatar from '@/components/shared/Avatar'
-import { cn, formatDate } from '@/lib/utils'
-import { useChatSlice } from '@/redux/services/chatSlice'
-import {
-  ArchiveIcon,
-  BellOff,
-  Ellipsis,
-  MessageSquareX,
-  ShieldBan,
-  Trash2,
-} from 'lucide-react'
+import { useNavigate, useParams } from 'react-router-dom'
+import { motion, AnimatePresence } from 'framer-motion'
+import { createPortal } from 'react-dom'
 import {
   useCallback,
   useEffect,
@@ -16,27 +8,59 @@ import {
   useRef,
   useState,
 } from 'react'
-import { createPortal } from 'react-dom'
-import { useNavigate, useParams } from 'react-router-dom'
-
-import { motion, AnimatePresence } from 'framer-motion'
+import {
+  ArchiveIcon,
+  AudioLines,
+  BellOff,
+  Ellipsis,
+  ImageIcon,
+  MessageSquareX,
+  ShieldBan,
+  Trash2,
+  VideoIcon,
+} from 'lucide-react'
+import { useChatSlice } from '@/redux/services/chatSlice'
+import Avatar from '@/components/shared/Avatar'
+import { MenuListItem } from './MessageMenu'
+import { cn, formatDate } from '@/lib/utils'
 import { deleteConversation } from '@/api'
-
-const truncateMessage = (message: string, maxLength = 50) => {
-  if (message.length <= maxLength) {
-    return message
-  }
-  return message.slice(0, maxLength) + '...'
-}
+import { IChat } from '@/lib/types'
+import { useSocket } from '@/context/SocketContext'
+import useSocketEvents from '@/hooks/useSocketEvent'
 
 const formatMessage = (message: string, messageType: string) => {
-  if (messageType !== 'TEXT_MESSAGE') {
-    return ''
+  if (messageType === 'IMAGE') {
+    return (
+      <span className="flex items-center gap-1 text-xs">
+        <ImageIcon className="size-3" /> Image
+      </span>
+    )
   }
-  return truncateMessage(message)
+  if (messageType === 'VIDEO') {
+    return (
+      <span className="flex items-center gap-1 text-xs">
+        <VideoIcon className="size-3" /> Image
+      </span>
+    )
+  }
+  if (messageType === 'AUDIO') {
+    return (
+      <span className="flex items-center gap-1 text-xs">
+        <AudioLines className="size-3" /> Image
+      </span>
+    )
+  }
+  if (messageType === 'TEXT_MESSAGE') {
+    return message
+  }
+  return ''
 }
 
-const Chat = ({ chat }: any) => {
+interface ChatProps {
+  chat: IChat
+}
+
+const Chat = ({ chat }: ChatProps) => {
   const { chatId } = useParams()
   const {
     selectChats,
@@ -47,7 +71,9 @@ const Chat = ({ chat }: any) => {
     setSelectedChats,
     selectedChats,
     removeChat,
+    setChatToFirst,
   } = useChatSlice()
+  const { socket } = useSocket()
   const [moreOptions, setMoreOptions] = useState(false)
   const [menuPosition, setMenuPosition] = useState<any>({
     top: 0,
@@ -64,7 +90,7 @@ const Chat = ({ chat }: any) => {
     if (selectedChat?._id !== chat._id || !chatId) {
       setMessagePage(1)
       setMessages([])
-      navigate(`/inbox/${chat._id}`)
+      navigate(`/inbox/${chat._id}`, { replace: true })
       setSelectedChat(chat)
     }
   }
@@ -138,9 +164,26 @@ const Chat = ({ chat }: any) => {
     }
   }, [moreOptions])
 
+  const handleMessage = useCallback((data: any) => {
+    if (data.chat) {
+      console.log('updating chat index')
+      setChatToFirst({
+        message: data.message,
+        shouldSetUnseenMessageCount: chatId !== data.chat,
+      })
+    }
+  }, [])
+
+  const event = `chat:${chat._id}:message`
+
+  const eventHandlers = {
+    [event]: handleMessage,
+  }
+
+  useSocketEvents(socket, eventHandlers)
+  
   return (
     <motion.div
-      initial={{ opacity: 0, y: -200 }}
       animate={{ opacity: 1, y: 0 }}
       layout
       transition={{ duration: 0.2 }}
@@ -159,6 +202,11 @@ const Chat = ({ chat }: any) => {
         chat={chat}
         setSelectedChats={setSelectedChats}
       />
+      {chat?.unseenMessagesCount! > 0 && (
+        <button className="ml-auto mr-3 h-5 w-5 rounded-full bg-gradient-to-l from-sky-900 to-indigo-900 text-xss text-sky-100">
+          {chat?.unseenMessagesCount}
+        </button>
+      )}
       <div
         className="flex flex-col overflow-hidden"
         onClick={(e) => e.stopPropagation()}
@@ -166,11 +214,6 @@ const Chat = ({ chat }: any) => {
         <motion.span className="text-xss">
           {formatDate(chat?.lastMessage?.createdAt!)}
         </motion.span>
-        {chat?.unreadMessageCount && (
-          <button className="h-4 w-4 rounded-full bg-gradient-to-l from-sky-900 to-indigo-900 text-xss text-sky-100">
-            {chat?.unreadMessageCount}
-          </button>
-        )}
 
         <button
           ref={buttonRef}
@@ -187,7 +230,7 @@ const Chat = ({ chat }: any) => {
             {moreOptions && (
               <motion.div
                 ref={menuRef}
-                className="absolute z-50 rounded bg-zinc-900 p-2 shadow-xl"
+                className="absolute z-50 rounded bg-secondary shadow-xl"
                 initial={{ opacity: 0, scale: 0.3 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.3 }}
@@ -211,67 +254,30 @@ const Chat = ({ chat }: any) => {
   )
 }
 export default Chat
+interface ChatMenuProps {
+  handleDeleteChat: () => void
+}
 
-const ChatMenu = ({ handleDeleteChat }: any) => {
+const ChatMenu = ({ handleDeleteChat }: ChatMenuProps) => {
   return (
-    <ul className="w-44">
-      <li className="cursor-pointer rounded-md p-2 hover:bg-zinc-800">
-        <button
-          type="button"
-          className="flex w-full items-center justify-between"
-        >
-          <span>
-            <ArchiveIcon />
-          </span>{' '}
-          <span>Archive Chat</span>
-        </button>
-      </li>
-
-      <li className="cursor-pointer rounded-md p-2 hover:bg-zinc-800">
-        <button
-          type="button"
-          className="flex w-full items-center justify-between"
-        >
-          <span>
-            <BellOff />
-          </span>
-          <span>Mute</span>
-        </button>
-      </li>
-      <li className="cursor-pointer rounded-md p-2 hover:bg-zinc-800">
-        <button
-          type="button"
-          className="flex w-full items-center justify-between"
-        >
-          <span>
-            <MessageSquareX />
-          </span>
-          <span>Clear Chat</span>
-        </button>
-      </li>
-      <li className="cursor-pointer rounded-md p-2 hover:bg-zinc-800">
-        <button
-          type="button"
-          className="flex w-full items-center justify-between"
-        >
-          <span>
-            <ShieldBan />
-          </span>
-          <span>Block</span>
-        </button>
-      </li>
-      <li className="cursor-pointer rounded-md p-2 text-red-600 hover:bg-zinc-800">
-        <button
-          type="button"
-          className="flex w-full items-center justify-between"
-          onClick={handleDeleteChat}
-        >
-          <span>
-            <Trash2 />
-          </span>
-          <span> Delete Chat</span>
-        </button>
-      </li>
+    <ul className="w-44 p-1.5 text-foreground">
+      <MenuListItem
+        label="Archive Chat"
+        onClick={() => {}}
+        icon={ArchiveIcon}
+      />
+      <MenuListItem label="Mute" onClick={() => {}} icon={BellOff} />
+      <MenuListItem
+        label="Clear Chat"
+        onClick={() => {}}
+        icon={MessageSquareX}
+      />
+      <MenuListItem label="Block" onClick={() => {}} icon={ShieldBan} />
+      <MenuListItem
+        label="Delete Chat"
+        onClick={handleDeleteChat}
+        icon={Trash2}
+      />
     </ul>
   )
 }
@@ -316,26 +322,19 @@ const AvatarAndCheckbox = ({
           name={chat.isGroup ? chat?.groupName : chat?.friend?.name}
           className="inline-block size-8 rounded-full bg-background object-cover duration-500 hover:scale-90"
         />
-        <div className="flex flex-col leading-none">
+        <div className="relative flex flex-col leading-none">
           <span className="text-forground text-sm font-medium">
             {chat.isGroup ? chat?.groupName : chat?.friend?.name}
           </span>
-          <span
-            className="text-sm font-medium text-gray-500 dark:text-gray-400"
+          <div
+            className="block max-w-32 overflow-hidden text-ellipsis whitespace-nowrap text-xs font-medium text-gray-500 dark:text-gray-400"
             title={chat?.lastMessage?.text}
-            style={{
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap',
-              display: 'block',
-              maxWidth: '200px',
-            }}
           >
             {formatMessage(
               chat?.lastMessage?.text,
               chat?.lastMessage?.messageType
             )}
-          </span>
+          </div>
         </div>
       </div>
     </div>

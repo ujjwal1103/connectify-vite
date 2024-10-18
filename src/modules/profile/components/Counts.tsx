@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
 import { XIcon } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { memo, useEffect, useState } from 'react'
 import Tabs from './Tabs'
 import { useLocation } from 'react-router-dom'
 import { cn } from '@/lib/utils'
@@ -99,4 +99,4 @@ const Counts = ({
   )
 }
 
-export default Counts
+export default memo(Counts)

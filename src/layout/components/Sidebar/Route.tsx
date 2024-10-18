@@ -31,9 +31,9 @@ const Route = ({
         to={route}
         className={({ isActive }) =>
           cn(
-            'inline-block items-center rounded p-2 transition-all duration-200 ease-linear hover:bg-primary-foreground lg:flex lg:gap-2',
+            'inline-block items-center rounded p-2 transition-all duration-200 ease-linear hover:bg-secondary/60 lg:flex lg:gap-2',
             {
-              'bg-primary-foreground shadow-lg': isActive,
+              'bg-secondary shadow-lg': isActive,
               'shadow-inner ring ring-background': isDisabled,
             }
           )

@@ -19,7 +19,7 @@ export const CommentList = ({
             onLikeDislike={onLikeDislike}
           />
         )
-      })}
+      })} 
     </div>
   )
 }

@@ -18,15 +18,12 @@ const TextMessage = ({
     setShowMore(!showMore)
   }
 
-  const reaction = true
-
   return (
     <div
       className={cn(
         'relative z-10 flex w-fit max-w-md flex-col rounded-xl bg-black p-2 text-gray-50 shadow-2xl transition-all duration-700',
         {
           'bg-zinc-800': currentUserMessage,
-          'mb-2': reaction,
         }
       )}
     >
@@ -50,17 +47,10 @@ const TextMessage = ({
         allSeen={allSeen}
         seen={message.seen}
         className="self-end"
+        reaction={message.reaction}
       />
 
       {showNotch && <Notch currentUserMessage={currentUserMessage} />}
-      <div
-        className={cn('absolute -bottom-3 z-20 text-lg', {
-          '-left-2': currentUserMessage,
-          '-right-2': !currentUserMessage,
-        })}
-      >
-        {message?.reaction}
-      </div>
     </div>
   )
 }

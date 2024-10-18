@@ -16,7 +16,6 @@ const useOtherUserProfile = () => {
     try {
       const res = (await getUserByUsername(username!)) as any
       if (res.user) {
-        console.log(res)
         setUser(res.user)
       }
       setLoading(false)
@@ -36,7 +35,7 @@ const useOtherUserProfile = () => {
     initialTab,
     username,
     refetch: fetchUserDetails,
-    setUser
+    setUser,
   }
 }
 

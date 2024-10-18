@@ -1,19 +1,18 @@
-import { ThreeDots } from '@/components/icons'
 import UsernameLink from '@/components/shared/UsernameLink'
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuLabel,
+  DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 
 import { Link } from 'react-router-dom'
 import Avatar from '@/components/shared/Avatar'
-import { IPost, IUser } from '@/lib/types'
+import { IUser } from '@/lib/types'
 import { getCurrentUserId } from '@/lib/localStorage'
 import { AnimatePresence } from 'framer-motion'
-import { Loader } from 'lucide-react'
-import { useState } from 'react'
+import { Ellipsis, Loader } from 'lucide-react'
+import { memo, useState } from 'react'
 import { usePostSlice } from '@/redux/services/postSlice'
 import { deleteThisPost } from '@/api'
 import { toast } from 'react-toastify'
@@ -23,36 +22,53 @@ import { useAuth } from '@/context/AuthContext'
 import { cn } from '@/lib/utils'
 
 type PostHeaderProps = {
-  post: IPost
+  postId: string
+  userId: string
+  userAvatar?: string
+  name: string
+  username: string
+  location?: string
 }
 
-const PostHeader = ({ post }: PostHeaderProps) => {
+const PostHeader = ({
+  postId,
+  userId,
+  userAvatar,
+  name,
+  username,
+  location,
+}: PostHeaderProps) => {
   return (
     <div className="text-secondary-foregroun flex w-full items-center justify-between gap-6 p-2">
       <div className="flex flex-1 items-center gap-3">
         <Avatar
-          src={post?.user?.avatar?.url}
+          src={userAvatar}
           className="size-8 rounded-full md:size-10"
-          name={post?.user?.name}
+          name={name}
         />
         <div className="flex flex-col">
-          <UsernameLink username={post?.user?.username} onClick={() => {}}>
-            <span className="text-sm">{post?.user?.username}</span>
+          <UsernameLink username={username} onClick={() => {}}>
+            <span className="text-sm">{username}</span>
           </UsernameLink>
-          <span>{post?.location}</span>
+          <span>{location}</span>
         </div>
       </div>
-      <PostHeaderMenu post={post} />
+      <PostHeaderMenu postId={postId} userId={userId} />
     </div>
   )
 }
 
-export default PostHeader
+export default memo(PostHeader)
 
-const PostHeaderMenu = ({ post }: { post: IPost }) => {
+interface PostHeaderMenuProps {
+  userId: string
+  postId: string
+}
+
+const PostHeaderMenu = ({ postId, userId }: PostHeaderMenuProps) => {
   const [isModalOpen, setModalOpen] = useState(false)
   const [menu, setMenu] = useState(false)
-  const selfPost = post.user._id === getCurrentUserId()
+  const selfPost = userId === getCurrentUserId()
   const [deletingPost, setDeletingPost] = useState(false)
   const { deletePost } = usePostSlice()
   const { updateUser, user } = useAuth()
@@ -71,10 +87,10 @@ const PostHeaderMenu = ({ post }: { post: IPost }) => {
   const handleDeletePost = async () => {
     try {
       setDeletingPost(true)
-      await deleteThisPost(post._id)
-      toast.success('Post Deleted Successfully',{position:'bottom-right'})
-      deletePost(post._id)
-      deleteFeed(post._id)
+      await deleteThisPost(postId)
+      toast.success('Post Deleted Successfully', { position: 'bottom-right' })
+      deletePost(postId)
+      deleteFeed(postId)
       const u = { ...user, posts: user!.posts - 1 }
       updateUser(u as IUser)
     } catch (error) {
@@ -88,23 +104,23 @@ const PostHeaderMenu = ({ post }: { post: IPost }) => {
     <div className="text-secondary-foreground">
       <DropdownMenu open={menu} onOpenChange={() => setMenu(!menu)}>
         <DropdownMenuTrigger>
-          <ThreeDots className="cursor-pointer" />
+          <Ellipsis className="cursor-pointer" />
         </DropdownMenuTrigger>
         <DropdownMenuContent
           className="rounded-md border-none bg-background-secondary"
           align="end"
         >
-          <DropdownMenuLabel>
-            <Link to={`p/${post._id}`} className="hover:text-primary">
+          <DropdownMenuItem asChild>
+            <Link to={`p/${postId}`} className="hover:text-primary">
               Open Post
             </Link>
-          </DropdownMenuLabel>
+          </DropdownMenuItem>
           {selfPost && (
-            <DropdownMenuLabel>
+            <DropdownMenuItem asChild>
               <button onClick={handleOpen} className="text-destructive">
                 Delete
               </button>
-            </DropdownMenuLabel>
+            </DropdownMenuItem>
           )}
         </DropdownMenuContent>
       </DropdownMenu>
@@ -130,10 +146,14 @@ const PostHeaderMenu = ({ post }: { post: IPost }) => {
                 <button
                   onClick={handleConfirm}
                   disabled={deletingPost}
-                  className="flex items-center relative justify-center gap-4 rounded bg-red-500 px-4 py-2 text-white hover:bg-red-600 disabled:pointer-events-none disabled:bg-red-400"
+                  className="relative flex items-center justify-center gap-4 rounded bg-red-500 px-4 py-2 text-white hover:bg-red-600 disabled:pointer-events-none disabled:bg-red-400"
                 >
-                  <span className={cn("visible",{ invisible: deletingPost })}>Delete</span>
-                  <span className={cn("absolute", { invisible: !deletingPost })}>
+                  <span className={cn('visible', { invisible: deletingPost })}>
+                    Delete
+                  </span>
+                  <span
+                    className={cn('absolute', { invisible: !deletingPost })}
+                  >
                     <Loader className="animate-spin" />
                   </span>
                 </button>

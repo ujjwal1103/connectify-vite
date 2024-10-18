@@ -1,17 +1,15 @@
-import { ImagePlus } from "lucide-react";
-import { ChangeEvent, useState } from "react";
-import { HiOutlineSquare2Stack } from "react-icons/hi2";
-import { IoClose } from "react-icons/io5";
-import { ReactSortable } from "react-sortablejs";
+import { ImagePlus, Layers2, XIcon } from 'lucide-react'
+import { ReactSortable } from 'react-sortablejs'
+import { ChangeEvent, useState } from 'react'
 
 const sortableOptions = {
   animation: 150,
   fallbackOnBody: true,
   swapThreshold: 0.65,
-  ghostClass: "ghost",
-  group: "shared",
+  ghostClass: 'ghost',
+  group: 'shared',
   forceFallback: true,
-};
+}
 
 const AddMoreImages = ({
   croppedImageUrls,
@@ -20,42 +18,42 @@ const AddMoreImages = ({
   selectImage,
   handleImagePick,
 }: {
-  croppedImageUrls: any[];
-  setCroppedImagesUrls: (url: string[]) => void;
-  clearImage: (name: string) => void;
-  selectImage: (name: string) => void;
-  handleImagePick: (e: ChangeEvent<HTMLInputElement>) => void;
+  croppedImageUrls: any[]
+  setCroppedImagesUrls: (url: string[]) => void
+  clearImage: (name: string) => void
+  selectImage: (name: string) => void
+  handleImagePick: (e: ChangeEvent<HTMLInputElement>) => void
 }) => {
-  const [openImages, setOpenImages] = useState(false);
+  const [openImages, setOpenImages] = useState(false)
   return (
     <div className="ml-auto">
       <button
         onClick={() => setOpenImages(!openImages)}
-        className="size-10 rounded-full m-2 bg-black bg-opacity-65 flex items-center justify-center"
+        className="m-2 flex size-10 items-center justify-center rounded-full bg-black bg-opacity-65"
       >
-        <HiOutlineSquare2Stack size={24} />
+        <Layers2 size={24} />
       </button>
       {openImages && (
-        <div className="flex gap-4 p-4  bg-zinc-950 absolute bg-opacity-85 rounded-md right-0 bottom-12 mr-2 mb-2">
+        <div className="absolute bottom-12 right-0 mb-2 mr-2 flex gap-4 rounded-md bg-zinc-950 bg-opacity-85 p-4">
           <ReactSortable
             list={croppedImageUrls}
             setList={setCroppedImagesUrls}
             {...sortableOptions}
-            className="flex gap-3 "
+            className="flex gap-3"
           >
             {croppedImageUrls?.map((img: any) => (
               <div className="relative">
                 <button
-                  className="absolute text-white font-semibold bg-red-500 p-1 -top-2 -right-2  rounded-md "
+                  className="absolute -right-2 -top-2 rounded-md bg-red-500 p-1 font-semibold text-white"
                   onClick={() => {
-                    clearImage(img.name);
+                    clearImage(img.name)
                   }}
                 >
-                  <IoClose size={16} />
+                  <XIcon size={16} />
                 </button>
-                {img.type === "VIDEO" ? (
+                {img.type === 'VIDEO' ? (
                   <video
-                    className="w-16 rounded-md h-16 object-cover"
+                    className="h-16 w-16 rounded-md object-cover"
                     onClick={() => selectImage(img.name)}
                   >
                     <source src={img.url} />
@@ -63,7 +61,7 @@ const AddMoreImages = ({
                 ) : (
                   <img
                     src={img.url}
-                    className="w-16 rounded-md h-16 object-cover"
+                    className="h-16 w-16 rounded-md object-cover"
                     alt={img.name}
                     onClick={() => selectImage(img.name)}
                   />
@@ -71,7 +69,7 @@ const AddMoreImages = ({
               </div>
             ))}
           </ReactSortable>
-          <div className="size-10 m-2 border border-dashed bg-black rounded-md flex items-center justify-center">
+          <div className="m-2 flex size-10 items-center justify-center rounded-md border border-dashed bg-black">
             <input
               type="file"
               name="imagePicker"
@@ -81,7 +79,7 @@ const AddMoreImages = ({
               onChange={handleImagePick}
             />
             <label
-              className="w-12 h-12 cursor-pointer flex justify-center items-center text-white"
+              className="flex h-12 w-12 cursor-pointer items-center justify-center text-white"
               htmlFor="imagePicker"
             >
               <ImagePlus size={24} />
@@ -90,7 +88,7 @@ const AddMoreImages = ({
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default AddMoreImages;
+export default AddMoreImages

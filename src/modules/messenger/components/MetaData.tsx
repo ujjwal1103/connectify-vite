@@ -1,6 +1,5 @@
-import { DoubleCheckIcon, Check } from '@/components/icons'
+import { Clock9Icon, Check, CheckCheck } from 'lucide-react'
 import { cn, getReadableTime } from '@/lib/utils'
-import { Loader } from 'lucide-react'
 
 const MetaData = ({
   createdAt,
@@ -12,11 +11,12 @@ const MetaData = ({
   showTimeStamp = false,
   currentTime,
   duration,
+  reaction,
 }: any) => {
   return (
     <div
       className={cn(
-        'float-right flex w-fit flex-col items-center justify-end rounded-md p-1 text-right text-xs text-xss text-gray-300',
+        'float-right flex w-fit flex-col items-center justify-end rounded-md px-1 pt-2 text-right text-xs text-xss text-gray-300',
         className
       )}
     >
@@ -26,44 +26,38 @@ const MetaData = ({
             <span>{currentTime}</span> / <span>{duration}</span>
           </div>
         )}
+        {reaction && (
+          <button
+            className={cn(
+              'z-20 rounded-xl border border-border bg-black/20 px-1 py-0 text-sm hover:bg-black',
+              {
+                '-left-2': currentUserMessage,
+                '-right-2': !currentUserMessage,
+              }
+            )}
+          >
+            {reaction}
+          </button>
+        )}
         {getReadableTime(createdAt)}
+
         {currentUserMessage && (
           <>
-            {isLoading && (
-              <div>
-                <Loader className="animate-spin text-white" size={16} />
-              </div>
-            )}
             {seen || allSeen ? (
-              <DoubleCheckIcon className="text-blue-500" />
+              <CheckCheck className="text-blue-500" />
             ) : (
-              <Check />
+              <>
+                {isLoading ? (
+                  <Clock9Icon className="text-xss text-white" size={10} />
+                ) : (
+                  <Check />
+                )}
+              </>
             )}
           </>
         )}
       </span>
     </div>
-
-    /* <div className="float-right flex w-full flex-col items-center justify-end text-right text-xss text-gray-300">
-<span className="z-[1] flex items-center gap-3 self-end">
-  {getReadableTime(createdAt)}
-
-  {currentUserMessage && (
-    <>
-      {isLoading && (
-        <div>
-          <Loader className="animate-spin" size={16} />
-        </div>
-      )}
-      {seen || allSeen ? (
-        <DoubleCheckIcon className="text-blue-500" />
-      ) : (
-        <Check />
-      )}
-    </>
-  )}
-</span>
-</div> */
   )
 }
 

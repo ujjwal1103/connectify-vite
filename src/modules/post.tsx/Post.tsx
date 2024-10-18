@@ -100,6 +100,7 @@ const Post = () => {
             <div className="flex -space-x-1">
               {superLikes.map((like) => (
                 <img
+                  key={like.src}
                   alt="Like Avatar"
                   src={like.src}
                   className="inline-block size-5 rounded-full ring-1 ring-background"

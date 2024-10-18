@@ -6,6 +6,7 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 import { EmptyPost } from './EmptyPost'
 import SuggetionsSlider from '@/components/shared/suggetionsSliders/SuggetionsSlider'
 import { Loader } from 'lucide-react'
+import { LoadingPosts } from './LoadingPosts'
 
 interface PostsProps {
   isSelfPosts?: boolean
@@ -84,19 +85,6 @@ const Posts = ({ isSelfPosts = true, userId }: PostsProps) => {
 }
 
 export default Posts
-
-const LoadingPosts: React.FC = () => (
-  <div className="flex h-full w-full flex-wrap place-content-center">
-    <div className="grid w-full grid-cols-3 place-content-center gap-[1px] overflow-hidden pt-10">
-      {[1, 2, 3, 4, 5, 6].map((i) => (
-        <div
-          key={i}
-          className="aspect-1 w-full border border-background bg-secondary"
-        ></div>
-      ))}
-    </div>
-  </div>
-)
 
 const NoPosts: React.FC = () => (
   <div className="py-10">

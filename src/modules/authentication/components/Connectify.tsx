@@ -5,7 +5,7 @@ import ConnectifyIcon from "@/components/icons/Connectify";
 
 const Connectify = () => {
   return (
-    <div className="relative hidden  dark:bg-black dark:text-white lg:flex-1 lg:h-screen   w-full   lg:p-8 p-6 lg:flex justify-center items-center flex-col lg:rounded-br-[200px]">
+    <div className="relative hidden bg-black dark:text-white lg:flex-1 lg:h-screen   w-full   lg:p-8 p-6 lg:flex justify-center items-center flex-col lg:rounded-br-[200px]">
       <h1 className="mb-3 text-bold flex justify-center items-center z-10">
         <ConnectifyLogoText/>
       </h1>

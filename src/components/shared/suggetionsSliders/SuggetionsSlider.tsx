@@ -1,10 +1,13 @@
-  import Avatar from '@/components/shared/Avatar'
-import UsernameLink from '../../shared/UsernameLink'
-import { Link } from 'react-router-dom'
-import FollowButton from '../FollowButton'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
-import { ChevronBack, ChevronForward } from '@/components/icons'
+import { Link } from 'react-router-dom'
+
 import useGetSuggestedUsers from '@/hooks/useGetSuggestedUsers'
+
+import FollowButton from '@/components/shared/FollowButton'
+import UsernameLink from '@/components/shared/UsernameLink'
+import Avatar from '@/components/shared/Avatar'
+
 import { IUser } from '@/lib/types'
 
 const SuggetionsSlider = ({ username }: { username?: string }) => {
@@ -87,14 +90,14 @@ const SuggetionsSlider = ({ username }: { username?: string }) => {
             onClick={handleScrollLeft}
             disabled={!canScrollLeft}
           >
-            <ChevronBack />
+            <ChevronLeft />
           </button>
           <button
             className="absoulute right-0 mr-2 rounded border bg-background p-1 text-sm disabled:opacity-50"
             onClick={handleScrollRight}
             disabled={!canScrollRight}
           >
-            <ChevronForward />
+            <ChevronRight />
           </button>
         </div>
         <div

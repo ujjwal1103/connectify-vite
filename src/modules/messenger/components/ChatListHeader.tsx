@@ -15,11 +15,11 @@ const ChatListHeader = () => {
   const [openNewChat, setOpenNewChat] = useState(false)
   const user = getCurrentUser()
   const { selectChats, setSelectChats } = useChatSlice()
-  const menuRef = useRef<any>(null)
-  const buttonRef = useRef<any>(null)
+  const menuRef = useRef<HTMLDivElement>(null)
+  const buttonRef = useRef<HTMLButtonElement>(null)
 
-  useClickOutside(menuRef, (e) => {
-    if (buttonRef.current && buttonRef.current.contains(e.target)) {
+  useClickOutside(menuRef, (e: Event) => {
+    if (buttonRef.current && buttonRef.current.contains(e.target as Node)) {
       return
     }
     setOpen(false)
@@ -33,7 +33,9 @@ const ChatListHeader = () => {
           className="inline-block size-9 rounded-full object-cover duration-500 hover:scale-90 lg:size-12"
         />
         <div className="0 flex-1 text-base">
-          <h4 className="text-sm font-semibold leading-4 line-clamp-1">{user?.name}</h4>
+          <h4 className="line-clamp-1 text-sm font-semibold leading-4">
+            {user?.name}
+          </h4>
           <UsernameLink
             username={user?.username}
             className="text-xss text-foreground lg:text-base"
@@ -42,10 +44,7 @@ const ChatListHeader = () => {
           </UsernameLink>
         </div>
         <div className="flex">
-          <div
-            className="tooltip tooltip-bottom md:tooltip-right"
-            data-tip="New Chat"
-          >
+          <div className="tooltip tooltip-bottom" data-tip="New Chat">
             <button
               className="mr-2"
               onClick={() => {
@@ -57,7 +56,7 @@ const ChatListHeader = () => {
           </div>
           <div className="relative inline-block">
             <div
-              className="tooltip tooltip-left cursor-pointer md:tooltip-right"
+              className="tooltip tooltip-bottom cursor-pointer"
               data-tip="Menu"
             >
               <button
@@ -85,11 +84,7 @@ const ChatListHeader = () => {
                   }}
                   className="absolute z-[90] rounded bg-primary-foreground shadow-lg"
                 >
-                  <ul
-                    ref={menuRef}
-                    tabIndex={0}
-                    className="menu z-[100] p-2 shadow"
-                  >
+                  <ul tabIndex={0} className="menu z-[100] p-2 shadow">
                     <li className="text-sm">
                       <span>Profile</span>
                     </li>

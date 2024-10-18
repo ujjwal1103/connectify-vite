@@ -2,18 +2,19 @@ import Avatar from '@/components/shared/Avatar'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import 'slick-carousel/slick/slick-theme.css'
 import 'slick-carousel/slick/slick.css'
-import { Plus } from 'lucide-react'
-import { IoChevronBackCircle, IoChevronForwardCircle } from 'react-icons/io5'
+import { ChevronLeftCircleIcon, ChevronRightCircle, Plus, XIcon } from 'lucide-react'
 import { getAllStories } from '@/api'
 
 import Modal from '@/components/shared/modal/Modal'
 import UserStory from './UserStory'
 import { AnimatePresence } from 'framer-motion'
+import { NewStory } from '@/modules/story/NewStory/NewStory'
 
 const storyImages: any[] = []
 
 const Stories = () => {
   const [stories, setStories] = useState<any[]>(storyImages)
+  const [storyModel, setStoryModel] = useState(false)
   const [openStoryView, setOpenStoryView] = useState(false)
   const scrollContainerRef = useRef<any>(null)
   const [openStories, setOpenStories] = useState([])
@@ -45,7 +46,9 @@ const Stories = () => {
     }
   }
 
-  const handleAddStory = () => {}
+  const handleAddStory = () => {
+    setStoryModel(true)
+  }
 
   return (
     <div className="relative z-0 flex min-h-16 w-full items-center overflow-hidden md:max-w-[625px]">
@@ -95,7 +98,7 @@ const Stories = () => {
                 />
               </div>
             </div>
-        </div>
+          </div>
         ))}
       </div>
 
@@ -104,13 +107,13 @@ const Stories = () => {
           onClick={scrollLeft}
           className="absoulute right-0 ml-2 rounded-full bg-transparent p-1 text-sm disabled:opacity-50"
         >
-          <IoChevronBackCircle size={24} />
+          <ChevronLeftCircleIcon size={24} />
         </button>
         <button
           onClick={scrollRight}
           className="absoulute right-0 mr-2 rounded-full bg-transparent p-1 text-sm text-white disabled:opacity-50"
         >
-          <IoChevronForwardCircle size={24} />
+          <ChevronRightCircle size={24} />
         </button>
       </div>
       <AnimatePresence>
@@ -135,8 +138,30 @@ const Stories = () => {
           </Modal>
         )}
       </AnimatePresence>
+      <AnimatePresence>
+        {storyModel && (
+          <Modal
+            showCloseButton={false}
+            onClose={() => setStoryModel(false)}
+            shouldCloseOutsideClick={false}
+          >
+            <StoryModal />
+          </Modal>
+        )}
+      </AnimatePresence>
     </div>
   )
 }
 
 export default Stories
+
+const StoryModal = ({ onClose }: any) => {
+  return (
+    <div className="relative h-96 w-screen bg-black md:w-96">
+      <button className="absolute right-3 top-3" onClick={onClose}>
+        <XIcon />
+      </button>
+      <NewStory />
+    </div>
+  )
+}

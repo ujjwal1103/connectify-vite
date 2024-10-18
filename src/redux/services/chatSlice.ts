@@ -4,6 +4,12 @@ import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../store'
 import { IChat, IMessage } from '@/lib/types'
 
+interface IReply {
+  messageId: string
+  sender: string
+  message: IMessage
+}
+
 interface IChatSlice {
   chats: IChat[]
   selectedChat: IChat | null
@@ -18,6 +24,7 @@ interface IChatSlice {
   hasNextMessage: boolean
   selectChats: boolean
   selectedChats: string[]
+  currentMessageReply?: IReply | null
 }
 
 const initialState: IChatSlice = {
@@ -34,6 +41,7 @@ const initialState: IChatSlice = {
   hasNextMessage: true,
   selectChats: false,
   selectedChats: [],
+  currentMessageReply: null,
 }
 
 const chatSlice = createSlice({
@@ -48,6 +56,10 @@ const chatSlice = createSlice({
     setSelectedChat: (state, action) => {
       state.messages = []
       state.selectedChat = action.payload
+      let chatIndex = state.chats.findIndex((c) => c._id === action.payload._id)
+      if (chatIndex === -1) return
+      let chat = state.chats[chatIndex]
+      chat.unseenMessagesCount = 0
     },
     setSelectChats: (state, action) => {
       state.selectChats = action.payload
@@ -60,6 +72,25 @@ const chatSlice = createSlice({
       } else {
         state.selectedChats.push(action.payload)
       }
+    },
+    setChatToFirst: (state, action) => {
+      let chatIndex = state.chats.findIndex(
+        (c) => c._id === action.payload.message.chat
+      )
+
+      if (chatIndex === -1) return
+
+      let chat = state.chats[chatIndex]
+      let message = action.payload.message as IMessage
+
+      chat.lastMessage = message
+
+      if (action.payload.shouldSetUnseenMessageCount) {
+        chat.unseenMessagesCount = (chat.unseenMessagesCount || 0) + 1
+      }
+
+      state.chats.splice(chatIndex, 1)
+      state.chats.unshift(chat)
     },
     resetSelectedChats: (state) => {
       state.selectedChats = []
@@ -125,6 +156,7 @@ const chatSlice = createSlice({
     },
     setIsSelectMessages: (state, action) => {
       state.isSelectMessages = action.payload
+      if (!action.payload) state.selectedMessages = []
     },
     removeChat: (state, action) => {
       state.chats = state.chats.filter((chat) => chat._id !== action.payload)
@@ -171,7 +203,28 @@ const chatSlice = createSlice({
         seen: true,
       }
     },
-
+    markAllMessagesAsSeen: (state) => {
+      state.messages = state.messages.map((message) => ({
+        ...message,
+        seen: true,
+      }))
+    },
+    setCurrentMessageReply: (state, action) => {
+      if (action.payload) {
+        state.currentMessageReply = {
+          messageId: action.payload.messageId,
+          sender: action.payload.sender,
+          message: action.payload.message,
+        }
+      } else {
+        state.currentMessageReply = null
+      }
+    },
+    removeMessage: (state, action) => {
+      state.messages = state.messages.filter(
+        (message) => message._id !== action.payload
+      )
+    },
     reset: () => initialState,
   },
 })
@@ -315,10 +368,29 @@ const useChatSlice = () => {
   const seenMessage = useCallback((id: string) => {
     dispatch(actions.seenMessage(id))
   }, [])
+  const markAllMessagesAsSeen = useCallback(() => {
+    dispatch(actions.markAllMessagesAsSeen())
+  }, [])
+  const setCurrentMessageReply = useCallback((payload: IReply | null) => {
+    dispatch(actions.setCurrentMessageReply(payload))
+  }, [])
+  const removeMessage = useCallback((id: string) => {
+    dispatch(actions.removeMessage(id))
+  }, [])
+  const setChatToFirst = useCallback(
+    (payload: { message: IMessage; shouldSetUnseenMessageCount: boolean }) => {
+      dispatch(actions.setChatToFirst(payload))
+    },
+    []
+  )
 
   return {
     ...chat,
+    setChatToFirst,
+    markAllMessagesAsSeen,
     seenMessage,
+    removeMessage,
+    setCurrentMessageReply,
     setChats,
     reactMessage,
     setSelectedChat,

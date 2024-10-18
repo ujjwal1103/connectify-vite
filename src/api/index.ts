@@ -4,6 +4,7 @@ import {
   GetFollowRequetsRoot,
   GetNotificationRoot,
 } from '@/modules/notifications/types'
+import { toast } from 'react-toastify'
 
 const asyncWrap = <T extends (...args: any[]) => Promise<any>>(fn: T): T => {
   return (async (...args: Parameters<T>): Promise<ReturnType<T>> => {
@@ -11,6 +12,7 @@ const asyncWrap = <T extends (...args: any[]) => Promise<any>>(fn: T): T => {
       return await fn(...args)
     } catch (error) {
       console.error('Error:', error)
+      toast.error('Something went Wrong')
       throw error
     }
   }) as T
@@ -99,7 +101,7 @@ const deleteConversation = async (chatId: string) => {
 
 //message apis
 const getAllMessages = async (chatId: string, page: number): Promise<any> => {
-  return await makeRequest.get(`/messages/${chatId}?page=${page}&limit=15`)
+  return await makeRequest.get(`/messages/${chatId}?page=${page}&limit=25`)
 }
 
 const sendMessage = async (
@@ -186,11 +188,18 @@ const likePost = async (
   postUserId?: string,
   commentId?: string
 ) => {
-  return makeRequest.post('/like', {
-    postId: id,
-    postUserId,
-    commentId,
-  })
+  let data = {} as any
+
+  if (id) {
+    data.postId = id
+  }
+  if (postUserId) {
+    data.postUserId = postUserId
+  }
+  if (commentId) {
+    data.commentId = commentId
+  }
+  return makeRequest.post('/like', data)
 }
 const createBookmark = async (postId: string) => {
   return makeRequest.post('/bookmark', {
@@ -203,7 +212,14 @@ const deleteBookmark = async (postId: string) => {
 }
 
 const unLikePost = async (id?: string, commentId?: string) => {
-  return await makeRequest.delete(`/unLike?postId=${id}&commentId=${commentId}`)
+  const params = new URLSearchParams()
+
+  if (id) params.append('postId', id)
+  if (commentId) params.append('commentId', commentId)
+
+  const url = `/unLike?${params.toString()}`
+
+  return await makeRequest.delete(url)
 }
 
 const deleteThisPost = async (postId: string) => {

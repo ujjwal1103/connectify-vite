@@ -2,8 +2,15 @@ import Avatar from '@/components/shared/Avatar'
 import { useChatSlice } from '@/redux/services/chatSlice'
 import { useClickOutside } from '@react-hookz/web'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Ellipsis } from 'lucide-react'
-import { useState, useRef } from 'react'
+import {
+  Ellipsis,
+  Info,
+  ListChecks,
+  MessageSquareX,
+  Trash2,
+} from 'lucide-react'
+import { useState, useRef, useEffect } from 'react'
+import { MenuListItem } from './MessageMenu'
 
 const MessageListHeader = ({
   toggleShowInfo,
@@ -23,6 +30,12 @@ const MessageListHeader = ({
     buttonRef?.current?.focus()
     setOpen(false)
   })
+
+  useEffect(() => {
+    return () => {
+      setIsSelectMessages(false)
+    }
+  }, [selectedChat?._id])
 
   const handleButtonClick = () => setOpen((prev) => !prev)
 
@@ -58,28 +71,23 @@ const MessageListHeader = ({
               exit={{ opacity: 0, scale: 0 }}
               layout
               transition={{ type: 'tween' }}
-              className="absolute right-10 z-100 origin-top-right rounded bg-zinc-900"
+              className="absolute right-10 z-100 origin-top-right rounded bg-accent w-44"
             >
-              <ul ref={menuRef} tabIndex={0} className="menu z-100 p-2 shadow">
-                <li className="text-sm">
-                  <span>Chat Info</span>
-                </li>
-                <li className="text-sm">
-                  <button
-                    onClick={() => {
-                      setIsSelectMessages(true)
-                      setOpen(false)
-                    }}
-                  >
-                    <span>Select Messages</span>
-                  </button>
-                </li>
-                <li className="text-sm">
-                  <span>Clear Chat</span>
-                </li>
-                <li className="text-sm">
-                  <span>Delete Chat</span>
-                </li>
+              <ul ref={menuRef} tabIndex={0} className="z-100 p-1 shadow">
+                <MenuListItem label="Chat Info" icon={Info} />
+                <MenuListItem
+                  label="Select Messages"
+                  icon={ListChecks}
+                  onClick={() => {
+                    setIsSelectMessages(true)
+                    setOpen(false)
+                  }}
+                />
+                <MenuListItem label="Clear Chat" icon={MessageSquareX} />
+                <MenuListItem label="Delete Chat" icon={Trash2} />
+
+   
+
               </ul>
             </motion.div>
           )}

@@ -3,6 +3,7 @@ import { motion } from 'framer-motion'
 import ImageCropper from '@/components/crop/ImageCropper'
 import CaptionComponent from './CaptionComponent'
 import ImagePicker from './ImagePicker'
+import Modal from '@/components/shared/modal/Modal'
 
 type Step = 'Crop' | 'Caption' | 'Pick'
 
@@ -124,16 +125,16 @@ const CreatePost = ({ onClose }: any) => {
           aspectRatio={aspectRatio}
           setAspectRatio={setAspectRatio}
         />
-       
       )}
 
       {step === 'Caption' && (
-        <CaptionComponent
-          setStep={setStep}
-          cropedImagesUrls={cropedImagesUrls}
-          aspectRatio={aspectRatio}
-          onClose={onClose}
-        />
+        <Modal showCloseButton={false} onClose={onClose}>
+          <CaptionComponent
+            setStep={setStep}
+            cropedImagesUrls={cropedImagesUrls}
+            aspectRatio={aspectRatio}
+          />
+        </Modal>
       )}
     </motion.div>
   )

@@ -1,7 +1,5 @@
+import { CropIcon, RectangleHorizontal, Square } from "lucide-react";
 import { useState } from "react";
-import { FiSquare } from "react-icons/fi";
-import { IoCropOutline } from "react-icons/io5";
-import { TbRectangle } from "react-icons/tb";
 
 interface AspectRatioOption {
   ratio: number;
@@ -10,8 +8,8 @@ interface AspectRatioOption {
 }
 
 const aspectRatioOptions: AspectRatioOption[] = [
-  { ratio: 1 / 1, label: "1/1", Icon: FiSquare },
-  { ratio: 4 / 3, label: "4/3", Icon: TbRectangle },
+  { ratio: 1 / 1, label: "1/1", Icon: Square },
+  { ratio: 4 / 3, label: "4/3", Icon: RectangleHorizontal },
   // { ratio: 16 / 9, label: "16/9", Icon: RectangleHorizontal },
   // { ratio: 9 / 16, label: "9/16", Icon: RectangleVertical },
 ];
@@ -31,7 +29,7 @@ const AspectRations = ({
         onClick={() => setOpenCropOptions(!openCropOptions)}
         className="size-10 rounded-full m-2 bg-black bg-opacity-65 flex items-center justify-center"
       >
-        <IoCropOutline size={24} />
+        <CropIcon size={24} />
       </button>
       {openCropOptions && (
         <div className="absolute text-white bottom-12 ml-2 mb-2 flex flex-col justify-center bg-black bg-opacity-80 w-24 rounded-lg">

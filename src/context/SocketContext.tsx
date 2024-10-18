@@ -31,24 +31,31 @@ export const useSocket = (): SocketContextProps => {
 export const SocketProvider = ({ children }: PropsWithChildren) => {
   const [socket, setSocket] = useState<Socket | null>(null)
   const [users, setUsers] = useState<any[]>([])
+  const [isConnected, setIsConnected] = useState(false)
   const { user } = useAuth()
 
   const newSocket = useMemo(() => {
     if (user) {
-      return io(SOCKET_SERVER_URL, {
+      const ioo = io(SOCKET_SERVER_URL, {
         query: { user: JSON.stringify(user) },
         auth: { name: user?.name, username: user?.username, userId: user?._id },
       })
+      return ioo
     }
+
     return null
   }, [user])
 
   useEffect(() => {
     if (newSocket) {
       setSocket(newSocket)
-
-      // Listen for events or perform actions with the socket here
-
+      newSocket.on('connect', () => {
+        setIsConnected(true)
+      })
+      newSocket.on('disconnect', () => {
+        setIsConnected(false)
+      })
+      newSocket.on('', () => {})
       return () => {
         newSocket.disconnect()
       }
@@ -62,6 +69,12 @@ export const SocketProvider = ({ children }: PropsWithChildren) => {
   return (
     <SocketContext.Provider value={{ socket, users, isUserOnline, setUsers }}>
       {children}
+
+      {isConnected && (
+        <span className="fixed bottom-0 z-[10000929] bg-green-500 px-2 text-primary">
+          Socket Connected
+        </span>
+      )}
     </SocketContext.Provider>
   )
 }

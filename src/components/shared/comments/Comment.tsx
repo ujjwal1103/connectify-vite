@@ -1,12 +1,13 @@
 import { getCommentsByPostId } from '@/api'
 import { IComment } from '@/interface/interfaces'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import Avatar from '../Avatar'
 import UsernameLink from '../UsernameLink'
 import moment from 'moment'
 import { LikeButton } from '../LikeButton'
 import { CommentText } from './CommentText'
 import { CommentList } from './CommentList'
+import { commentExpand } from '@/components/Events/CommentExpand'
 
 export const Comment = ({
   comment,
@@ -22,9 +23,14 @@ export const Comment = ({
   const [currentComment, setCurrentComment] = useState(comment)
   const [showHiddenReply, setShowHiddenReply] = useState(false)
 
+  const expand = () => {
+    setShowHiddenReply(true)
+  }
+
   useEffect(() => {
     setCurrentComment(comment)
-  }, [comment])
+    commentExpand.addEventListener('expand', expand)
+  }, [comment.childComments.length])
 
   const handleGetComments = async () => {
     try {
@@ -38,6 +44,13 @@ export const Comment = ({
       console.log(error)
     }
   }
+
+  const onLikeClick = useCallback(
+    (isLike: boolean) => {
+      onLikeDislike(currentComment?._id, isLike)
+    },
+    [currentComment]
+  )
 
   return (
     <div
@@ -89,9 +102,7 @@ export const Comment = ({
           postUserId={currentComment?.post?.userId}
           commentId={currentComment?._id}
           id={undefined}
-          onLikeClick={function (isLike) {
-            onLikeDislike(currentComment?._id, isLike)
-          }}
+          onLikeClick={onLikeClick}
         />
       </div>
 

@@ -1,4 +1,4 @@
-import { memo, useState, useEffect, useCallback } from 'react'
+import { memo, useCallback } from 'react'
 import clsx from 'clsx'
 
 import { useChatSlice } from '@/redux/services/chatSlice'
@@ -17,6 +17,7 @@ interface MessageProps {
   message: IMessage
   isNextMessageUsMine: boolean
   isLastMessagae: boolean
+  isPreviousMessageIsUrs: boolean
 }
 
 const Message = ({
@@ -26,21 +27,19 @@ const Message = ({
   message,
   isNextMessageUsMine,
   isLastMessagae,
+  isPreviousMessageIsUrs,
 }: MessageProps) => {
   const { messageType, _id } = message
 
   const { isSelectMessages, setSelectedMessage } = useChatSlice()
-  const [showNotch, setShowNotch] = useState(false)
 
   const handleSelectMessage = useCallback(() => {
-    setSelectedMessage(_id)
+    if (isSelectMessages) {
+      setSelectedMessage(_id)
+    }
   }, [_id, setSelectedMessage])
 
-  useEffect(() => {
-    if (!isNextMessageUsMine || isLastMessagae) {
-      setShowNotch(true)
-    }
-  }, [isNextMessageUsMine, isLastMessagae])
+  const showNotch = !isNextMessageUsMine || isLastMessagae
 
   const Messageprops = {
     message,
@@ -68,9 +67,9 @@ const Message = ({
   }
 
   const className = clsx(
-    'w-full transition-colors duration-500 flex mb-1',
-    isSelectMessages && 'hover:bg-zinc-900 hover:bg-opacity-30',
-    isMessageSelected && 'bg-zinc-900 bg-opacity-30'
+    'w-full transition-colors duration-300 flex mb-1',
+    isSelectMessages && 'hover:bg-zinc-950',
+    isMessageSelected && 'bg-zinc-950 bg-opacity-60'
   )
 
   return (
@@ -82,7 +81,8 @@ const Message = ({
       currentUserMessage={currentUserMessage}
       sender={message.sender}
       messageId={message._id}
-      showNotch={showNotch}
+      showProfile={!(isPreviousMessageIsUrs || currentUserMessage)}
+      message={message}
     >
       {renderMessageContent()}
     </MessageWrap>

@@ -1,7 +1,7 @@
-import { useState } from 'react'
+import { memo, useCallback, useState } from 'react'
 import { AnimatePresence } from 'framer-motion'
 
-import { CommentIcon, Send } from '@/components/icons'
+import { CommentIcon } from '@/components/icons'
 import { LikeButton } from '@/components/shared/LikeButton'
 import { IPost } from '@/lib/types'
 import { BookmarkButton } from '@/components/shared/BookmarkButton'
@@ -9,6 +9,7 @@ import { useFeedSlice } from '@/redux/services/feedSlice'
 import Modal from '@/components/shared/modal/Modal'
 import SendPost from './SendPost'
 import CommentPage from './CommentPage'
+import { Send } from 'lucide-react'
 
 type PostActionsProps = {
   post: IPost
@@ -30,11 +31,14 @@ const PostActions = ({
   const [showComments, setShowComments] = useState(false)
   const { addAndRemoveBookmark, likeUnlikePost } = useFeedSlice()
 
-  const handleLikeClicked = async (isLike: boolean, error: boolean) => {
-    if (error) return
-    onLike && onLike(isLike)
-    likeUnlikePost(isLike, post._id)
-  }
+  const handleLikeClicked = useCallback(
+    async (isLike: boolean, error: boolean) => {
+      if (error) return
+      onLike && onLike(isLike)
+      likeUnlikePost(isLike, post._id)
+    },
+    [post]
+  )
 
   return (
     <div className="flex items-center justify-between px-2 pt-2 text-primary">
@@ -94,4 +98,4 @@ const PostActions = ({
   )
 }
 
-export default PostActions
+export default memo(PostActions)

@@ -71,7 +71,7 @@ const Search = () => {
   return (
     <div
       ref={searchRef}
-      className="h-full pb-8 md:pb-0 scrollbar-none w-80 bg-background text-primary md:border-r-[1px] md:border-l-[1px] flex items-center border-border flex-1 flex-col md:rounded-r-xl"
+      className="h-full pb-8 md:pb-0 scrollbar-none md:w-80 bg-background text-primary md:border-r-[1px] md:border-l-[1px] flex items-center border-border flex-1 flex-col md:rounded-r-xl"
     >
       <h1 className="py-2 px-4 text-2xl w-full hidden md:block">Search</h1>
       <div className="md:w-[90%] w-[95%] flex p-2 md:p-0">

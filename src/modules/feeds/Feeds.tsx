@@ -20,7 +20,8 @@ const fetchPosts = (page: number) =>
   }))
 
 const Feeds = () => {
-  const { feeds, hasNextPage, setPage, page, isLoading } = useFetchFeeds<IPost>(fetchPosts)
+  const { feeds, hasNextPage, setPage, page, isLoading } =
+    useFetchFeeds<IPost>(fetchPosts)
   const setHide: any = useOutletContext()
 
   const containerRef = useRef<HTMLDivElement>(null)
@@ -75,7 +76,7 @@ const Feeds = () => {
             >
               {isLoading && <div>Loading</div>}
               {feeds.length === 0 && !isLoading && <NoPosts />}
-              {feeds?.map((feed: any) => <Post post={feed} />)}
+              {feeds?.map((feed: any) => <Post key={feed._id} post={feed} />)}
             </InfiniteScroll>
           </div>
         </div>

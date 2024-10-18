@@ -8,14 +8,13 @@ function ImagePreview({ onClose, previewImage }: any) {
       animate={true}
       overlayClasses={'flex items-center justify-center fixed'}
       showCloseButton={false}
-      shouldCloseOutsideClick={true}
     >
       <div
-        className="flex w-screen items-center justify-center"
+        className="flex w-screen h-auto items-center justify-center"
         onClick={onClose}
       >
         <div
-          className="flex h-dvh items-center justify-center"
+          className="flex md:h-dvh items-center justify-center"
           onClick={(e) => e.stopPropagation()}
         >
           <motion.img

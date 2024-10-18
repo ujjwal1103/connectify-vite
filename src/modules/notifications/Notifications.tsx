@@ -61,7 +61,7 @@ const Notifications = () => {
       getAllFollowRequestForUser()
       getAllNotifications()
     }
-  } 
+  }
 
   const deleteNotification = async (id: string, groupId: string) => {
     const newNotications = notifications
@@ -99,7 +99,7 @@ const Notifications = () => {
   useSocketEvents(socket, eventHandlers)
 
   return (
-    <div className="flex h-dvh w-96 flex-1 flex-col overflow-y-scroll overflow-x-hidden rounded-r-xl border-l-[1px] border-r-[1px] border-border bg-background text-primary drop-shadow-xl scrollbar-none">
+    <div className="flex h-dvh w-screen flex-1 flex-col overflow-x-hidden overflow-y-scroll bg-background text-primary drop-shadow-xl scrollbar-none md:w-96 md:rounded-r-xl md:border-l-[1px] md:border-r-[1px] md:border-border">
       {!showFollowRequests && (
         <>
           <div className="flex w-full justify-between p-2">

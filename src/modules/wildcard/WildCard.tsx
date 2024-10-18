@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-export function WildCard({}) {
+function WildCard({}) {
   return (
     <section className="bg-white h-full dark:bg-zinc-950">
       <div className="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
@@ -26,3 +26,6 @@ export function WildCard({}) {
     </section>
   );
 }
+
+
+export default WildCard;

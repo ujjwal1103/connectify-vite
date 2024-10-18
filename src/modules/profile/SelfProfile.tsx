@@ -56,28 +56,28 @@ const SelfProfile = () => {
               <div className="hidden md:inline">
                 <span>{user?.username}</span>
               </div>
-              <Button asChild>
+              <Button variant={'secondary'} asChild>
                 <Link
                   to="/edit"
-                  className="h-5 bg-secondary px-2 text-sm text-background-light hover:bg-secondary/85 md:h-9 md:px-4 md:text-sm"
+                  className="h-5 px-2 text-sm md:h-9 md:px-4 md:text-sm"
                 >
                   Edit Profile
                 </Link>
               </Button>
-              <Button asChild>
+              <Button variant={'secondary'} asChild>
                 <Link
                   to="/archives"
-                  className="h-5 bg-secondary px-2 text-sm text-background-light hover:bg-secondary/85 md:h-9 md:px-4 md:text-sm"
+                  className="h-5 px-2 text-sm md:h-9 md:px-4 md:text-sm"
                 >
                   View Archive
                 </Link>
               </Button>
-              <Button asChild>
+              <Button variant={'secondary'} asChild>
                 <Link
                   to="/edit?tab=settings"
-                  className="h-5 bg-secondary px-2 text-sm text-background-light hover:bg-secondary/85 md:h-9 md:px-4 md:text-sm"
+                  className="h-5 px-2 text-sm md:h-9 md:px-4 md:text-sm"
                 >
-                  <IoIosSettings size={24} className="size-5 text-foreground" />
+                  <IoIosSettings size={24} className="size-5" />
                 </Link>
               </Button>
             </div>
