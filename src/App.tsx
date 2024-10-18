@@ -3,6 +3,7 @@ import { lazy, Suspense } from "react";
 import "./App.css";
 import AuthLayout from "./layout/AuthLayout";
 import AppLayout from "./layout/AppLayout";
+import PageLoading from "./components/shared/Loading/PageLoading";
 
 // Lazy imports for code splitting
 const Login = lazy(() => import("./modules/authentication/Login"));
@@ -23,7 +24,7 @@ const MobileNotifications = lazy(() => import("./modules/notifications/MobileNot
 
 function App() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<PageLoading/>}>
       <Routes>
         <Route element={<AuthLayout />}>
           <Route path="login" element={<Login />} />
