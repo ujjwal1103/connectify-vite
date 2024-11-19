@@ -3,6 +3,8 @@ import { Loader } from 'lucide-react'
 import React from 'react'
 
 import { CommentList } from './CommentList'
+import { ReplyType } from '@/hooks/useComments'
+
 
 const Comments = ({
   setReply,
@@ -11,7 +13,7 @@ const Comments = ({
   onLikeDislike,
 }: {
   postId: string
-  setReply: React.Dispatch<React.SetStateAction<any[]>>
+  setReply: React.Dispatch<React.SetStateAction<ReplyType>>
   comments: IComment[]
   isLoading: boolean
   onLikeDislike: (commentId: string, isLiked: boolean) => void

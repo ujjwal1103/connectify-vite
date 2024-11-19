@@ -8,7 +8,14 @@ import {
 } from 'react'
 import { createPortal } from 'react-dom'
 
-import { Info, LucideIcon, Reply, Smile, Trash2 } from 'lucide-react'
+import {
+  Info,
+  LucideIcon,
+  PencilIcon,
+  Reply,
+  Smile,
+  Trash2,
+} from 'lucide-react'
 import { deleteMessageById, reactCurrentMessage } from '@/api'
 import { IMessage } from '@/lib/types'
 import { cn } from '@/lib/utils'
@@ -34,7 +41,12 @@ const MessageMenu = ({
     left: 0,
     origin: 'top left',
   })
-  const { reactMessage, setCurrentMessageReply, removeMessage } = useChatSlice()
+  const {
+    reactMessage,
+    setCurrentMessageReply,
+    removeMessage,
+    setEditMessage,
+  } = useChatSlice()
   const menuRef = useRef<HTMLDivElement>(null)
   const buttonRef = useRef<HTMLButtonElement>(null)
 
@@ -92,12 +104,12 @@ const MessageMenu = ({
       let origin = currentUserMessage ? 'top right' : 'top left'
 
       if (left + menuWidth > window.innerWidth) {
-        left = window.innerWidth - menuWidth - 8 
+        left = window.innerWidth - menuWidth - 8
         origin = currentUserMessage ? 'top right' : 'top right'
       }
 
       if (left < 0) {
-        left = 8 
+        left = 8
         origin = currentUserMessage ? 'top left' : 'top left'
       }
 
@@ -124,6 +136,10 @@ const MessageMenu = ({
       document.removeEventListener('scroll', handleScroll, true)
     }
   }, [moreOptions])
+
+  const onClickEditMessage = () => {
+    setEditMessage(message)
+  }
 
   return (
     <div className="ml-auto">
@@ -158,7 +174,7 @@ const MessageMenu = ({
               }}
             >
               <ul tabIndex={0} className="p-1.5">
-                <li className="flex flex-row flex-nowrap items-center justify-evenly  text-sm">
+                <li className="flex flex-row flex-nowrap items-center justify-evenly text-sm">
                   {reactionEmoji.map((emoji) => (
                     <EmojiButton
                       key={emoji}
@@ -172,6 +188,13 @@ const MessageMenu = ({
                   onClick={() => {}}
                   icon={Info}
                 />
+                {message.messageType === 'TEXT_MESSAGE' && message.isCurrentUserMessage && (
+                  <MenuListItem
+                    label={'Edit'}
+                    onClick={onClickEditMessage}
+                    icon={PencilIcon}
+                  />
+                )}
                 <MenuListItem
                   label={'Reply'}
                   onClick={handleReply}
@@ -224,7 +247,8 @@ export const MenuListItem = ({
 }: MenuListItemProps) => {
   return (
     <li
-      className="flex items-center justify-between gap-2 px-2 py-2 text-sm hover:bg-background rounded cursor-pointer" tabIndex={0}
+      className="flex cursor-pointer items-center justify-between gap-2 rounded px-2 py-2 text-sm hover:bg-background"
+      tabIndex={0}
       onClick={(e) => onClick?.(e, label)}
     >
       <Icon className="size-5" />

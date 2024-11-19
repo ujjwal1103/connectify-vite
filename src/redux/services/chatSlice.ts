@@ -25,6 +25,7 @@ interface IChatSlice {
   selectChats: boolean
   selectedChats: string[]
   currentMessageReply?: IReply | null
+  editMessage: IMessage | null
 }
 
 const initialState: IChatSlice = {
@@ -42,6 +43,7 @@ const initialState: IChatSlice = {
   selectChats: false,
   selectedChats: [],
   currentMessageReply: null,
+  editMessage: null,
 }
 
 const chatSlice = createSlice({
@@ -220,6 +222,17 @@ const chatSlice = createSlice({
         state.currentMessageReply = null
       }
     },
+    setEditMessage: (state, action) => {
+      state.editMessage = action.payload
+    },
+
+    editMessageById: (state, action) => {
+      const message = state.messages.findIndex(
+        (message) => message._id === action.payload.messageId
+      )
+      state.messages[message].text = action.payload.text
+      state.messages[message].isEdited = true
+    },
     removeMessage: (state, action) => {
       state.messages = state.messages.filter(
         (message) => message._id !== action.payload
@@ -383,10 +396,21 @@ const useChatSlice = () => {
     },
     []
   )
+  const setEditMessage = useCallback((payload: IMessage | null) => {
+    dispatch(actions.setEditMessage(payload))
+  }, [])
+  const editMessageById = useCallback(
+    (payload: { text: string; messageId: string }) => {
+      dispatch(actions.editMessageById(payload))
+    },
+    []
+  )
 
   return {
     ...chat,
     setChatToFirst,
+    editMessageById,
+    setEditMessage,
     markAllMessagesAsSeen,
     seenMessage,
     removeMessage,

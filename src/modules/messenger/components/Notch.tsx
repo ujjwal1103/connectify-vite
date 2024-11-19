@@ -4,16 +4,17 @@ import { memo } from 'react'
 function Notch({ currentUserMessage }: any) {
   return (
     <div
-      className={`absolute bottom-0 z-[-1] ${
-        currentUserMessage ? '-right-2' : '-left-2'
+      className={`absolute flex bottom-0 z-[-3] ${
+        currentUserMessage ? '-right-5' : '-left-5'
       }`}
     >
       <BubbleNotch
-        className={`${currentUserMessage ? 'fill-zinc-800' : 'fill-black'}`}
+        className={`${currentUserMessage ? 'fill-red-500 ' : 'fill-chat-bubble-user'}`}
         style={{
           transform: !currentUserMessage ? 'rotateY(180deg)' : 'rotate(360deg)',
         }}
       />
+
     </div>
   )
 }

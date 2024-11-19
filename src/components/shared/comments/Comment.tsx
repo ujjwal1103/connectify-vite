@@ -8,6 +8,7 @@ import { LikeButton } from '../LikeButton'
 import { CommentText } from './CommentText'
 import { CommentList } from './CommentList'
 import { commentExpand } from '@/components/Events/CommentExpand'
+import { ReplyType } from '@/hooks/useComments'
 
 export const Comment = ({
   comment,
@@ -16,29 +17,38 @@ export const Comment = ({
   onLikeDislike,
 }: {
   comment: IComment
-  setReply: any
+  setReply: React.Dispatch<React.SetStateAction<ReplyType>>
   root: boolean
   onLikeDislike: (commentId: string, isLiked: boolean) => void
 }) => {
   const [currentComment, setCurrentComment] = useState(comment)
+  const [childComments, setChildComments] = useState<IComment[]>([])
   const [showHiddenReply, setShowHiddenReply] = useState(false)
 
-  const expand = () => {
-    setShowHiddenReply(true)
+  const expand = (e: any) => {
+    if (e.detail === currentComment._id) {
+      handleGetComments()
+    }
   }
 
   useEffect(() => {
     setCurrentComment(comment)
     commentExpand.addEventListener('expand', expand)
-  }, [comment.childComments.length])
+    if (showHiddenReply) {
+      handleGetComments()
+    }
+    return () => commentExpand.removeEventListener('expand', expand)
+  }, [comment])
 
   const handleGetComments = async () => {
+    console.count('called')
+
     try {
       const res = (await getCommentsByPostId(
         currentComment?.post?._id,
         currentComment?._id
       )) as any
-      setCurrentComment((prev) => ({ ...prev, childComments: res?.comments }))
+      setChildComments(res?.comments)
       setShowHiddenReply(true)
     } catch (error) {
       console.log(error)
@@ -111,7 +121,7 @@ export const Comment = ({
           <>
             {showHiddenReply && (
               <CommentList
-                comments={currentComment?.childComments}
+                comments={childComments}
                 setReply={setReply}
                 root={false}
                 onLikeDislike={onLikeDislike}

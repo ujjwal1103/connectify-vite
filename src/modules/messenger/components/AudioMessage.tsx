@@ -1,7 +1,6 @@
 import { cn } from '@/lib/utils'
 
 import { memo, useState } from 'react'
-import Notch from './Notch'
 import { AudioPlayer } from './AudioPlayer'
 import MetaData from './MetaData'
 
@@ -17,12 +16,14 @@ const AudioMessage = ({
 
   return (
     <div
-      className={cn(
-        'relative flex w-fit max-w-md flex-col rounded-xl bg-black p-2 text-gray-50 shadow-2xl transition-all duration-700',
-        {
-          'bg-zinc-800': currentUserMessage,
-        }
-      )}
+    className={cn(
+      'relative z-10  flex w-fit max-w-md flex-col rounded-xl bg-chat-bubble-user p-2 text-foreground  transition-all duration-700',
+      {
+        'bg-chat-bubble-self text-white ': currentUserMessage,
+        "chat-bubble":showNotch
+      },
+  
+    )}
     >
       <div className="h-24 overflow-hidden break-words">
         <AudioPlayer
@@ -43,13 +44,11 @@ const AudioMessage = ({
         isLoading={isLoading}
         allSeen={allSeen}
         seen={message.seen}
-        className="absolute bottom-3 right-3 bg-black"
+        className="absolute bottom-3 right-3 "
         duration={duration}
         currentTime={currentTime}
         showTimeStamp={true}
       />
-
-      {showNotch && <Notch currentUserMessage={currentUserMessage} />}
 
       <div
         className={cn('absolute -bottom-3 z-20 text-lg', {

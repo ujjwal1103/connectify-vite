@@ -1,15 +1,22 @@
 import { cn } from '@/lib/utils'
 import { useState } from 'react'
-import Notch from './Notch'
 import MetaData from './MetaData'
+import { IMessage } from '@/lib/types'
+
+type TextMessageProps = {
+  currentUserMessage: boolean
+  allSeen: boolean
+  showNotch: boolean
+  message: IMessage
+}
 
 const TextMessage = ({
   currentUserMessage,
   allSeen,
   showNotch,
   message,
-}: any) => {
-  const { text, isLoading } = message
+}: TextMessageProps) => {
+  const { text, isLoading, isEdited } = message
   const [showMore, setShowMore] = useState(false)
   const messageLength = text?.length
   const longMessage = messageLength > 200 && messageLength - 200 > 250
@@ -21,15 +28,17 @@ const TextMessage = ({
   return (
     <div
       className={cn(
-        'relative z-10 flex w-fit max-w-md flex-col rounded-xl bg-black p-2 text-gray-50 shadow-2xl transition-all duration-700',
+        'relative z-10 flex w-fit max-w-md flex-col rounded-xl bg-chat-bubble-user p-2 text-foreground transition-all duration-700',
         {
-          'bg-zinc-800': currentUserMessage,
+          'bg-chat-bubble-self text-white': currentUserMessage,
+          'chat-bubble': showNotch,
         }
       )}
     >
       <div className="overflow-hidden break-words text-sm">
         {showMore ? text : text?.slice(0, 300) + (longMessage ? '...' : '')}
       </div>
+      {isEdited && <span>Edited</span>}
 
       {longMessage && (
         <button
@@ -49,8 +58,6 @@ const TextMessage = ({
         className="self-end"
         reaction={message.reaction}
       />
-
-      {showNotch && <Notch currentUserMessage={currentUserMessage} />}
     </div>
   )
 }

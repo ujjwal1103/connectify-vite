@@ -12,11 +12,12 @@ import { cn } from '@/lib/utils'
 import { SmileIcon, X } from 'lucide-react'
 import { toast } from 'react-toastify'
 import { commentExpand } from '@/components/Events/CommentExpand'
+import { ReplyType } from '@/hooks/useComments'
 
 interface CommentInputProps {
   postId: string
   onComment: (comment: any, reply: boolean) => void
-  setReply: (comment: any) => void
+  setReply: React.Dispatch<React.SetStateAction<ReplyType>>
   reply: {
     commentId: string | null
     repliedTo: string | null
@@ -60,7 +61,7 @@ const CommentInput = ({
           commentId: null,
           repliedTo: null,
         })
-        commentExpand.dispatchEvent(new CustomEvent('expand', { detail: data }))
+        commentExpand.dispatchEvent(new CustomEvent('expand', { detail: reply.commentId }))
       }
     } catch (error) {
       console.log(error)
@@ -75,21 +76,24 @@ const CommentInput = ({
     setCursorPosition(inputRef?.current?.selectionStart ?? 0)
   }
 
-  const onEmojiClick = useCallback((event: any) => {
-    const emoji = event.native
-    const newInputValue =
-      commentText &&
-      commentText.substring(0, cursorPosition) +
-        emoji +
-        commentText.substring(cursorPosition)
+  const onEmojiClick = useCallback(
+    (event: any) => {
+      const emoji = event.native
+      const newInputValue =
+        commentText &&
+        commentText.substring(0, cursorPosition) +
+          emoji +
+          commentText.substring(cursorPosition)
 
-    setCommentText(newInputValue || emoji)
+      setCommentText(newInputValue || emoji)
 
-    const newCursorPosition = cursorPosition + emoji.length
+      const newCursorPosition = cursorPosition + emoji.length
 
-    inputRef.current.setSelectionRange(newCursorPosition, newCursorPosition)
-    inputRef.current.focus()
-  }, [commentText])
+      inputRef.current.setSelectionRange(newCursorPosition, newCursorPosition)
+      inputRef.current.focus()
+    },
+    [commentText]
+  )
 
   return (
     <div className="relative z-10 flex flex-col items-center justify-between">
@@ -101,6 +105,7 @@ const CommentInput = ({
               setReply({
                 isReply: false,
                 commentId: null,
+                repliedTo: null,
               })
             }
           >

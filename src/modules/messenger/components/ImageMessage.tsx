@@ -1,6 +1,5 @@
 import { cn } from '@/lib/utils'
 import { memo } from 'react'
-import Notch from './Notch'
 import MessageImage from './MessageImage'
 import MetaData from './MetaData'
 
@@ -13,12 +12,14 @@ const ImageMessage = ({
 }: any) => {
   return (
     <div
-      className={cn(
-        'relative flex w-fit md:max-w-md max-w-[260px] flex-col rounded-xl bg-black p-2 text-gray-50 shadow-2xl transition-all duration-700',
-        {
-          'bg-zinc-800': currentUserMessage,
-        }
-      )}
+    className={cn(
+      'relative z-10  flex w-fit max-w-md flex-col rounded-xl bg-chat-bubble-user p-2 text-foreground  transition-all duration-700',
+      {
+        'bg-chat-bubble-self text-white ': currentUserMessage,
+        "chat-bubble":showNotch
+      },
+  
+    )}
     >
       <MessageImage src={message.attachments[0]} />
 
@@ -30,8 +31,6 @@ const ImageMessage = ({
         seen={message.seen}
         className="absolute bottom-3 right-3"
       />
-
-      {showNotch && <Notch currentUserMessage={currentUserMessage} />}
 
       <div
         className={cn('absolute -bottom-3 z-20 text-lg', {

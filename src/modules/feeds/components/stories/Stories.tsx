@@ -2,13 +2,20 @@ import Avatar from '@/components/shared/Avatar'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import 'slick-carousel/slick/slick-theme.css'
 import 'slick-carousel/slick/slick.css'
-import { ChevronLeftCircleIcon, ChevronRightCircle, Plus, XIcon } from 'lucide-react'
+import {
+  ChevronLeftCircleIcon,
+  ChevronRightCircle,
+  Plus,
+  X,
+  XIcon,
+} from 'lucide-react'
 import { getAllStories } from '@/api'
 
 import Modal from '@/components/shared/modal/Modal'
 import UserStory from './UserStory'
 import { AnimatePresence } from 'framer-motion'
 import { NewStory } from '@/modules/story/NewStory/NewStory'
+import ConnectifyLogoText from '@/components/icons/ConnectifyLogoText'
 
 const storyImages: any[] = []
 
@@ -18,6 +25,7 @@ const Stories = () => {
   const [openStoryView, setOpenStoryView] = useState(false)
   const scrollContainerRef = useRef<any>(null)
   const [openStories, setOpenStories] = useState([])
+  const [currentIndex, setCurrentIndex] = useState<number>(-1)
 
   const getStories = useCallback(async () => {
     const res = (await getAllStories()) as any
@@ -73,6 +81,7 @@ const Stories = () => {
             key={index + Date.now()}
             onClick={() => {
               if (!story.stories.length) return
+              setCurrentIndex(index)
               const user = story.user
               const allStories = story.stories.map((st: any) => {
                 return {
@@ -122,14 +131,49 @@ const Stories = () => {
             onClose={() => {
               setOpenStoryView(false)
             }}
+            showCloseButton={false}
           >
-            <div className="flex w-screen items-center justify-center">
-              <div className="w-96">
+            <div className="relative flex h-dvh w-screen items-center justify-center bg-black">
+              <div className="absolute left-3 top-3">
+                <ConnectifyLogoText w="200" h="44" />
+              </div>
+              <div className="absolute right-10 top-10">
+                <button
+                  onClick={() => {
+                    setOpenStoryView(false)
+                  }}
+                >
+                  <X size={44} />
+                </button>
+              </div>
+              <div className="flex w-96 items-center justify-center">
                 {openStories.length && (
                   <UserStory
                     stories={openStories}
                     onClose={() => {
                       setOpenStoryView(false)
+                    }}
+                    setNextStory={() => {
+                      const user = stories[currentIndex! + 1]?.user
+                      const allStories = stories[
+                        currentIndex! + 1
+                      ]?.stories.map((st: any) => {
+                        return {
+                          url: st?.content?.url,
+                          duration: 5500,
+                          header: {
+                            heading: user?.username,
+                            subheading: 'Posted 30m ago',
+                            profileImage: user?.avatar?.url,
+                          },
+                        }
+                      })
+                      if (!allStories) {
+                        setOpenStoryView(false)
+                        return
+                      }
+                      setCurrentIndex((prev) => prev + 1)
+                      setOpenStories(allStories)
                     }}
                   />
                 )}

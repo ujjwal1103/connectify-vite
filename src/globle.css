@@ -26,6 +26,9 @@
     --input: 240 5.9% 90%;
     --ring: 240 5.9% 10%;
     --radius: 0.5rem;
+    --chat-bubble-self: 300 100% 14%;
+    --chat-bubble-user:  233 11% 84%;
+    --chat-backgroud: 0 0% 96%;
   }
 
   .dark {
@@ -51,5 +54,8 @@
     --border: 240 3.7% 15.9%;
     --input: 240 3.7% 15.9%;
     --ring: 240 4.9% 83.9%;
+    --chat-bubble-self: 240 10% 4%;
+    --chat-bubble-user: 240 1% 15%;
+    --chat-backgroud: 0 0% 7%;
   }
 }

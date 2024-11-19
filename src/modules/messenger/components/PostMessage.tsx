@@ -1,5 +1,5 @@
 import UsernameLink from '@/components/shared/UsernameLink'
-import { tranformUrl, getReadableTime } from '@/lib/utils'
+import { tranformUrl, getReadableTime, cn } from '@/lib/utils'
 import Avatar from '@/components/shared/Avatar'
 import { Link } from 'react-router-dom'
 import Notch from './Notch'
@@ -33,9 +33,14 @@ const PostMessage = ({
 
   return (
     <div
-      className={`z-10 w-52 max-w-md rounded-xl p-2 transition-all duration-700 ${
-        currentUserMessage ? 'ml-auto self-end bg-secondary' : 'bg-black'
-      } relative text-gray-50`}
+    className={cn(
+      'relative z-10  flex w-fit max-w-md flex-col rounded-xl bg-chat-bubble-user p-2 text-foreground  transition-all duration-700',
+      {
+        'bg-chat-bubble-self text-white ': currentUserMessage,
+        "chat-bubble":showNotch
+      },
+  
+    )}
     >
       <div className="flex items-center gap-3 py-2">
         <Avatar

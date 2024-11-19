@@ -65,7 +65,8 @@ export interface IMessage {
   isUnavailable?: boolean
   sender:IUser
   reaction?: string
-  isCurrentUserMessage?: boolean
+  isCurrentUserMessage?: boolean,
+  isEdited?: boolean
 }
 
 export interface MessagesRootObject {

@@ -142,8 +142,33 @@ input:-webkit-autofill:focus {
 }
 
 
-*:focus-visible {
-  outline: 2px solid yellow;
-  outline-offset: 2px;
+
+.chat-bubble:before {
+  position: absolute;
+  bottom: 0px;
+  height: 0.75rem /* 12px */;
+  width: 0.75rem /* 12px */;
+  background-color: inherit;
+  content: "";
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  mask-position: center;
+}
+.start .chat-bubble {
+  grid-column-start: 2;
+  border-end-start-radius: 0px;
+}
+.start .chat-bubble:before {
+  mask-image: url("./assets/svg/bubble.svg");
+  inset-inline-start: -0.749rem
 }
 
+.end .chat-bubble {
+  grid-column-start: 1;
+  border-bottom-right-radius: 0px;
+  border-bottom-left-radius: 0.75rem;
+}
+.end .chat-bubble:before {
+  mask-image: url("./assets/svg/bubble-end.svg");
+  inset-inline-start: 99.9%;
+}

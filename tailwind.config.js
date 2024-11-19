@@ -20,6 +20,9 @@ module.exports = {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
+        'chat-bubble-self': "hsl(var(--chat-bubble-self))",
+        'chat-bubble-user': "hsl(var(--chat-bubble-user))",
+        'chat-background': "hsl(var(--chat-background))",
         background: {
           DEFAULT: "hsl(var(--background))",
           light: "hsl(var(--background-light))",

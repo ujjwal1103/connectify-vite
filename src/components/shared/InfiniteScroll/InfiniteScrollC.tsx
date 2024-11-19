@@ -5,6 +5,7 @@ interface InfiniteScrollProps {
   children: ReactNode
   className?: string
   id?: string
+  disableScroll?: boolean // New prop to control scroll behavior
 }
 
 const InfiniteScrollC: React.FC<InfiniteScrollProps> = ({
@@ -12,6 +13,7 @@ const InfiniteScrollC: React.FC<InfiniteScrollProps> = ({
   children,
   className,
   id,
+  disableScroll = false, // Default is false (scroll behavior is enabled)
 }) => {
   const scrollContainerRef = useRef<HTMLDivElement>(null)
   const prevScrollHeightRef = useRef(0)
@@ -25,6 +27,8 @@ const InfiniteScrollC: React.FC<InfiniteScrollProps> = ({
   }
 
   useLayoutEffect(() => {
+    if (disableScroll) return // Skip if scrolling is disabled
+
     const scrollContainer = scrollContainerRef.current
 
     if (scrollContainer) {
@@ -33,9 +37,11 @@ const InfiniteScrollC: React.FC<InfiniteScrollProps> = ({
       scrollContainer.scrollTop =
         scrollContainer.scrollHeight - previousScrollHeight + previousScrollTop
     }
-  }, [children, id])
+  }, [children, id, disableScroll])
 
   useEffect(() => {
+    if (disableScroll) return // Skip if scrolling is disabled
+
     const scrollContainer = scrollContainerRef.current
 
     if (scrollContainer) {
@@ -45,15 +51,17 @@ const InfiniteScrollC: React.FC<InfiniteScrollProps> = ({
         scrollContainer.removeEventListener('scroll', handleScroll)
       }
     }
-  }, [id])
+  }, [id, disableScroll])
 
   useEffect(() => {
+    if (disableScroll) return // Skip if scrolling is disabled
+
     const scrollContainer = scrollContainerRef.current
 
     if (scrollContainer) {
       prevScrollHeightRef.current = scrollContainer.scrollHeight
     }
-  }, [children, id])
+  }, [children, id, disableScroll])
 
   return (
     <div ref={scrollContainerRef} className={className}>

@@ -150,6 +150,7 @@ const deleteMessagesByIds = async (selectedMessages: string[]): Promise<any> =>
 // comments apis
 
 const getCommentsByPostId = async (postId: string, pcId?: string) => {
+  if (!postId) return
   let url = `/comments/${postId}`
   if (pcId) {
     url = url + `?parrentCommentId=${pcId}`

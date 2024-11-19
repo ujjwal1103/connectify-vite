@@ -5,6 +5,10 @@ import Avatar from '@/components/shared/Avatar'
 import { IMessage, IUser } from '@/lib/types'
 import UsernameLink from '@/components/shared/UsernameLink'
 import MessageMenu from './MessageMenu'
+import { useChatSlice } from '@/redux/services/chatSlice'
+import Modal from '@/components/shared/modal/Modal'
+import EditMessage from './EditMessage'
+import { AnimatePresence } from 'framer-motion'
 
 interface MessageWrapProps {
   children: React.ReactNode
@@ -29,8 +33,9 @@ const MessageWrap = ({
   sender,
   messageId,
   showProfile,
-  message
+  message,
 }: MessageWrapProps) => {
+  const { setEditMessage, editMessage } = useChatSlice()
   return (
     <div className={cn('relative flex-col', className)}>
       {!currentUserMessage && showProfile && (
@@ -62,9 +67,9 @@ const MessageWrap = ({
         </div>
         <div
           className={cn(
-            'z-5 mx-4 flex -translate-x-8 text-gray-50 transition-transform duration-150',
+            'z-5 start chat mx-4 flex -translate-x-8 text-gray-50 transition-transform duration-150',
             {
-              'ml-auto translate-x-0 self-end': currentUserMessage,
+              'end ml-auto translate-x-0 self-end': currentUserMessage,
               'translate-x-0': isSelectMessages,
             }
           )}
@@ -85,6 +90,19 @@ const MessageWrap = ({
           </div>
         </div>
       </div>
+      <AnimatePresence>
+        {editMessage && (
+          <Modal
+            onClose={() => {
+              setEditMessage(null)
+            }}
+            showCloseButton={false}
+            shouldCloseOutsideClick={false}
+          >
+            <EditMessage message={editMessage} />
+          </Modal>
+        )}
+      </AnimatePresence>
     </div>
   )
 }

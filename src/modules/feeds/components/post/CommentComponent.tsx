@@ -1,102 +1,30 @@
-import { getCommentsByPostId } from '@/api'
 import Comments from '@/components/shared/comments/Comments'
-import { IComment } from '@/interface/interfaces'
+
 import { IPost } from '@/lib/types'
 import { motion } from 'framer-motion'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback } from 'react'
 import CommentInput from './CommentInput'
 import PostActions from './PostActions'
-import { toast } from 'react-toastify'
+import EmplyComments from '@/components/shared/comments/EmplyComments'
+import { useComments } from '@/hooks/useComments'
 
-const CommentComponent = ({ post, postId, setPost }: any) => {
-  const [reply, setReply] = useState<any>({
-    isReply: false,
-    commentId: null,
-    repliedTo: null,
-  })
-
-  useEffect(() => {
-    getComments()
-  }, [])
-
-  const [isLoading, setIsLoading] = useState(true)
-  const [comments, setComments] = useState<IComment[]>([])
-
-  const getComments = useCallback(async () => {
-    const res = (await getCommentsByPostId(postId as string)) as any
-    setComments(res.comments)
-    setIsLoading(false)
-  }, [])
-
-  const addNewComment = useCallback(
-    (comment: IComment, isReply: boolean) => {
-      const insertReply = (
-        comments: IComment[],
-        reply: IComment
-      ): IComment[] => {
-        return comments.map((c: IComment) => {
-          if (c._id === reply.parrentComment) {
-            return {
-              ...c,
-              childComments: [...(c.childComments || []), reply],
-            }
-          } else if (c.childComments) {
-            return {
-              ...c,
-              childComments: insertReply(c.childComments, reply),
-            }
-          }
-          return c
-        })
-      }
-
-      if (isReply) {
-        setComments((prevComments) => insertReply(prevComments, comment))
-      } else {
-        setComments((prevComments) => [comment, ...prevComments])
-      }
-    },
-    [comments]
-  )
-
-  const updateCommentLikesDislikes = (
-    comments: IComment[],
-    commentId: string,
-    isLiked: boolean
-  ): IComment[] => {
-    return comments.map((c) => {
-      if (c._id === commentId) {
-        return {
-          ...c,
-          like: isLiked ? c.like + 1 : Math.max(c.like - 1, 0),
-          isLiked: isLiked,
-        }
-      } else if (c.childComments) {
-        return {
-          ...c,
-          childComments: updateCommentLikesDislikes(
-            c.childComments,
-            commentId,
-            isLiked
-          ),
-        }
-      }
-      return c
-    })
-  }
-
-  const onLikeDislikeComment = useCallback(
-    (commentId: string, isLiked: boolean) => {
-      try {
-        setComments((prevComments) =>
-          updateCommentLikesDislikes(prevComments, commentId, isLiked)
-        )
-      } catch (error) {
-        toast.error('Failed to update like/dislike')
-      }
-    },
-    [comments]
-  )
+const CommentComponent = ({
+  post,
+  postId,
+  setPost,
+}: {
+  post: IPost
+  postId: string
+  setPost: React.Dispatch<React.SetStateAction<IPost | null>>
+}) => {
+  const {
+    comments,
+    isLoading,
+    onLikeDislikeComment,
+    setReply,
+    addNewComment,
+    reply,
+  } = useComments(postId)
 
   const onLikeDislikePost = useCallback(
     (liked: boolean) => {
@@ -132,9 +60,7 @@ const CommentComponent = ({ post, postId, setPost }: any) => {
             onLikeDislike={onLikeDislikeComment}
           />
         ) : (
-          <div className="flex h-full items-center justify-center">
-            No comments found
-          </div>
+          <EmplyComments />
         )}
       </div>
       <motion.div

@@ -4,6 +4,7 @@ import { IComment } from '@/interface/interfaces'
 import { X } from 'lucide-react'
 import { useState, useCallback, useEffect } from 'react'
 import CommentInput from './CommentInput'
+import EmplyComments from '@/components/shared/comments/EmplyComments'
 
 interface CommentPageProps {
   postId: string
@@ -93,7 +94,7 @@ const CommentPage = ({ postId, onClose }: CommentPageProps) => {
   return (
     <div className="relative h-dvh w-screen overflow-hidden bg-background text-foreground md:h-auto md:w-500">
       <div className="flex items-center justify-between border-b border-border p-3">
-        <h1>Comments {postId}</h1>
+        <h1 className="text-xl font-semibold">Comments</h1>
         <button onClick={onClose}>
           <X size={24} />
         </button>
@@ -109,20 +110,15 @@ const CommentPage = ({ postId, onClose }: CommentPageProps) => {
               onLikeDislike={onLikeDislike}
             />
           ) : (
-            <div className="flex h-full items-center flex-col justify-center sm:text-2xl text-lg">
-              <span> It’s quiet here...</span>
-              <span> Share your thoughts!</span>
-            </div>
+            <EmplyComments />
           )}
         </div>
-        <div className="">
-          <CommentInput
-            postId={postId}
-            onComment={addNewComment}
-            setReply={setReply}
-            reply={reply}
-          />
-        </div>
+        <CommentInput
+          postId={postId}
+          onComment={addNewComment}
+          setReply={setReply}
+          reply={reply}
+        />
       </div>
     </div>
   )

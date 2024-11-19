@@ -12,7 +12,7 @@ type LikeButtonProps = {
 }
 
 export const LikeButton = memo(
-  ({ id, isLiked, postUserId, commentId, onLikeClick }: LikeButtonProps) => {
+  ({ id, isLiked, postUserId, commentId, onLikeClick, size }: LikeButtonProps) => {
     const handleLikeClicked = async (isLike: boolean) => {
       onLikeClick?.(isLike, false)
       try {
@@ -29,7 +29,8 @@ export const LikeButton = memo(
     if (isLiked) {
       return (
         <HeartIcon
-          className="cursor-pointer fill-red-600"
+          className="cursor-pointer fill-red-600 stroke-red-600"
+          size={size}
           onClick={() => handleLikeClicked(false)}
         />
       )
@@ -37,6 +38,7 @@ export const LikeButton = memo(
 
     return (
       <HeartIcon
+      size={size}
         className="cursor-pointer hover:text-muted-foreground"
         onClick={() => handleLikeClicked(true)}
       />

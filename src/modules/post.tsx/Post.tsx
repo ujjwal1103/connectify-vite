@@ -140,7 +140,7 @@ const Post = () => {
               />
             )}
           </div>
-          <CommentComponent post={post} postId={postId} setPost={setPost} />
+          <CommentComponent post={post!} postId={postId!} setPost={setPost} />
         </div>
       </div>
     </div>

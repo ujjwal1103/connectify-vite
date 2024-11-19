@@ -41,12 +41,14 @@ const VideoMessage = ({
 
   return (
     <div
-      className={cn(
-        'relative flex w-fit max-w-md flex-col rounded-xl bg-black p-2 text-gray-50 shadow-2xl transition-all duration-700',
-        {
-          'bg-zinc-800': currentUserMessage,
-        }
-      )}
+    className={cn(
+      'relative z-10  flex w-fit max-w-md flex-col rounded-xl bg-chat-bubble-user p-2 text-foreground  transition-all duration-700',
+      {
+        'bg-chat-bubble-self text-white ': currentUserMessage,
+        "chat-bubble":showNotch
+      },
+  
+    )}
     >
       <div className="min-h-48 w-72 overflow-hidden break-words">
         <button
