@@ -41,7 +41,8 @@ export interface IChat {
   isGroup?: boolean
   groupName?: string
   groupAvatar?: IIamge
-  members?: IUser[]
+  members?: {user:string, role: 'admin'| 'member'}[]
+  userDetails?: IUser[]
   groupAdmin?: string
   unseenMessagesCount?: number
 }

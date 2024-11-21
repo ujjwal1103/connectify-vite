@@ -288,7 +288,7 @@ const createGroup = asyncWrap(async (formData: FormData) => {
 })
 
 const updateGroupName = asyncWrap(async (chatId: string, name: string) => {
-  return await makeRequest.patch(`/chat/${chatId}/groupname`, { name })
+  return await makeRequest.patch(`/chat/${chatId}/group`, { name })
 })
 const makePrivate = asyncWrap(async (checked: boolean) => {
   return await makeRequest.put(`/user/privateAccount?isPrivate=${!checked}`)

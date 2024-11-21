@@ -3,9 +3,10 @@ import Avatar from '@/components/shared/Avatar'
 import UsernameLink from '@/components/shared/UsernameLink'
 import { IChat } from '@/lib/types'
 import { useChatSlice } from '@/redux/services/chatSlice'
+import { useClickOutside } from '@react-hookz/web'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Check, PencilLineIcon, X } from 'lucide-react'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 
 const ChatInfo = ({ onClose }: any) => {
   const { selectedChat, setGroupName } = useChatSlice()
@@ -16,13 +17,24 @@ const ChatInfo = ({ onClose }: any) => {
   const [imagePreview, setImagePreview] = useState<string | null | undefined>(
     null
   )
-
+  const groupNameRef = useRef<HTMLDivElement|null>(null)
   const handleChangeNewName = async () => {
     setGroupName({ chatId: _id, newGroupName })
     await updateGroupName(_id, newGroupName!)
     setEditGroupName(false)
   }
 
+  useClickOutside(groupNameRef, ()=>{
+    setEditGroupName(false)
+  })
+
+  const allMembers = members?.map(member=>{
+    return {
+      role: member.role,
+      user: selectedChat?.userDetails!.find(u=>u._id === member.user)
+    }
+  })
+  
   return (
     <div className="z-100 p-2 w-[288px]">
       <div className="flex items-center gap-4">
@@ -43,12 +55,13 @@ const ChatInfo = ({ onClose }: any) => {
             className="z-100 size-24"
           />
         </motion.div>
-        <div>
+        <div ref={groupNameRef}>
           {isGroup ? (
             <div className="flex items-center gap-2">
               <div>
                 {editGroupName ? (
                   <input
+                    autoFocus
                     value={newGroupName}
                     onChange={(e) => setNewGroupName(e.target.value)}
                     className="bg-secondary p-1.5 focus-visible:outline-none"
@@ -81,7 +94,7 @@ const ChatInfo = ({ onClose }: any) => {
         <div className="mt-6 max-h-64 overflow-x-hidden overflow-y-scroll scrollbar-none">
           <p>Group Members</p>
           <div className="h-full space-y-2">
-            {selectedChat?.members?.map((member) => {
+            {allMembers?.map(({user:member, role}) => {
               return (
                 <div className="mt-3 flex h-full items-center justify-between">
                   <div className="flex items-center gap-3">
@@ -92,13 +105,13 @@ const ChatInfo = ({ onClose }: any) => {
                       />
                     </div>
                     <div>
-                      <UsernameLink username={member.username}>
-                        <span>{member.username}</span>
+                      <UsernameLink username={member!.username}>
+                        <span>{member!.username}</span>
                       </UsernameLink>
                     </div>
                   </div>
                   <div>
-                    {selectedChat.groupAdmin === member._id && (
+                    {role === "admin" && (
                       <span className='text-xs rounded bg-secondary p-1'>Admin</span>
                     )}
                   </div>
