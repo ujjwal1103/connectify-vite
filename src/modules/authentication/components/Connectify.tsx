@@ -1,12 +1,11 @@
-import im from '../../../../public/assets/background/bgg.png'
-
+import backgroundImage from '../../../assets/background/bgg.png'
 import { motion } from "framer-motion";
 import ConnectifyLogoText from "@/components/icons/ConnectifyLogoText";
 import ConnectifyIcon from "@/components/icons/Connectify";
 
 const Connectify = () => {
   return (
-    <div className="relative hidden  dark:bg-black dark:text-white lg:flex-1 lg:h-screen   w-full   lg:p-8 p-6 lg:flex justify-center items-center flex-col lg:rounded-br-[200px]">
+    <div className="relative hidden bg-black dark:text-white lg:flex-1 lg:h-screen   w-full   lg:p-8 p-6 lg:flex justify-center items-center flex-col lg:rounded-br-[200px]">
       <h1 className="mb-3 text-bold flex justify-center items-center z-10">
         <ConnectifyLogoText/>
       </h1>
@@ -22,7 +21,7 @@ const Connectify = () => {
         and Share by Offering a Seamless, Intuitive, <br />
         and Personalized Environment.
       </h3>
-      <img src={im} alt="" className="absolute opacity-30 " loading="lazy" />
+      <img src={backgroundImage} alt="" className="absolute opacity-30 "/>
     </div>
   );
 };

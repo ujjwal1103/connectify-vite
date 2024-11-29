@@ -1,12 +1,19 @@
-import { cn } from "@/lib/utils";
-import { motion } from "framer-motion";
+import { cn } from '@/lib/utils'
+import { motion } from 'framer-motion'
+
+interface Tab {
+  name: string
+  icon?: any
+  id: string
+  disabled?: boolean
+}
 
 interface TabControlProps {
-  selectedTab: string;
-  setSelectedTab: (id: string) => void;
-  tabs: { name: string; icon?: any; id: string }[];
-  tabId: string;
-  indicatorClasses?: string;
+  selectedTab: string
+  setSelectedTab: (id: string) => void
+  tabs: Tab[]
+  tabId: string
+  indicatorClasses?: string
 }
 
 export const TabControl = ({
@@ -14,28 +21,28 @@ export const TabControl = ({
   setSelectedTab,
   tabs,
   tabId,
-  indicatorClasses = "",
+  indicatorClasses = '',
 }: TabControlProps) => {
   return (
-    <div className="flex w-full ">
-      {tabs.map((tab: any) => {
+    <div className="flex w-full">
+      {tabs.map((tab: Tab) => {
         return (
           <button
             key={tab.id}
             onClick={() => setSelectedTab(tab.id)}
             className={cn(
-              "flex-1 w-1/2 hover:text-white/60 relative px-3 py-1.5 uppercase flex justify-center gap-2 bg-secondary items-center text-sm font-medium h-[40px]  text-foreground transition focus-visible:outline-2",
-            
+              'relative flex h-[40px] w-1/2 flex-1 disabled:pointer-events-none disabled:opacity-45 items-center justify-center gap-2 bg-secondary px-3 py-1.5 text-sm font-medium uppercase text-foreground transition hover:text-white/60 focus-visible:outline-2'
             )}
             style={{
-              WebkitTapHighlightColor: "transparent",
+              WebkitTapHighlightColor: 'transparent',
             }}
+            disabled={tab.disabled}
           >
             {selectedTab === tab.id && (
               <motion.span
                 layoutId={tabId}
                 className={cn(
-                  "absolute w-full inset-0 mix-blend-exclusion  top-[35px] h-[5px] z-10 bg-foreground",
+                  'absolute inset-0 top-[35px] z-10 h-[5px] w-full bg-foreground mix-blend-exclusion',
                   indicatorClasses
                 )}
                 style={{ borderRadius: 10 }}
@@ -45,8 +52,8 @@ export const TabControl = ({
             {tab.icon}
             {tab.name}
           </button>
-        );
+        )
       })}
     </div>
-  );
-};
+  )
+}

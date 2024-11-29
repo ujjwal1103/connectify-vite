@@ -1,8 +1,8 @@
 import { useEffect } from "react";
 import useAudioRecorder from "@/hooks/useAudioRecorder";
-import { IoTrash } from "react-icons/io5";
+
 import { PiPauseCircle, PiPlay } from "react-icons/pi";
-import { Send } from "lucide-react";
+import { Send, Trash2 } from "lucide-react";
 
 
 const AudioRecorder = ({ handleClose, handleSendRecording }:any)=> {
@@ -26,7 +26,7 @@ const AudioRecorder = ({ handleClose, handleSendRecording }:any)=> {
   return (
     <div className="py-2 px-4  relative flex gap-3 items-center justify-end">
       <button onClick={handleClose}>
-        <IoTrash size={24} />
+        <Trash2 size={24} />
       </button>
 
       <button onClick={handlePause}>

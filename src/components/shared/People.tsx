@@ -25,6 +25,7 @@ const People = memo(({ people }: any) => {
           showRemoveFollowerBtn={false}
           isRequested={people.isRequested}
           isPrivate={people.isPrivate}
+          size={'sm'}
         />
       </div>
     </li>

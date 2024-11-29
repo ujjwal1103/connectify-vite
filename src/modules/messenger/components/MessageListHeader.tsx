@@ -1,47 +1,51 @@
-import Avatar from "@/components/shared/Avatar";
-import { useChatSlice } from "@/redux/services/chatSlice";
-import { useClickOutside } from "@react-hookz/web";
-import { motion, AnimatePresence } from "framer-motion";
-import { Ellipsis } from "lucide-react";
-import { useState, useRef } from "react";
+import Avatar from '@/components/shared/Avatar'
+import { useChatSlice } from '@/redux/services/chatSlice'
+import { useClickOutside } from '@react-hookz/web'
+import { motion, AnimatePresence } from 'framer-motion'
+import {
+  Ellipsis,
+  Info,
+  ListChecks,
+  MessageSquareX,
+  Trash2,
+} from 'lucide-react'
+import { useState, useRef, useEffect } from 'react'
+import { MenuListItem } from './MessageMenu'
 
 const MessageListHeader = ({
   toggleShowInfo,
 }: {
-  toggleShowInfo: () => void;
+  toggleShowInfo: () => void
 }) => {
-  const { selectedChat, setIsSelectMessages } = useChatSlice();
-  const [open, setOpen] = useState(false);
-  const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
+  const { selectedChat, setIsSelectMessages } = useChatSlice()
+  const [open, setOpen] = useState(false)
 
-  const menuRef = useRef<any>(null);
-  const buttonRef = useRef<any>(null);
+  const menuRef = useRef<any>(null)
+  const buttonRef = useRef<any>(null)
 
   useClickOutside(menuRef, (e) => {
     if (buttonRef.current && buttonRef.current.contains(e.target)) {
-      return;
+      return
     }
-    buttonRef?.current?.focus();
-    setOpen(false);
-  });
+    buttonRef?.current?.focus()
+    setOpen(false)
+  })
 
-  const handleButtonClick = () => {
-    if (buttonRef.current) {
-      const rect = buttonRef.current.getBoundingClientRect();
-      console.log(rect);
-      setMenuPosition({ top: rect.bottom, left: rect.left });
-      setOpen(!open);
+  useEffect(() => {
+    return () => {
+      setIsSelectMessages(false)
     }
-  };
+  }, [selectedChat?._id])
+
+  const handleButtonClick = () => setOpen((prev) => !prev)
 
   return (
-    <div className="bg-secondary flex-[0.05] flex py-2 px-4 items-center">
+    <div className="relative z-100 flex flex-[0.05] items-center bg-secondary px-4 py-2">
       <div
         className="flex items-center gap-3 font-semibold"
         onClick={toggleShowInfo}
       >
         <Avatar
-          
           src={
             selectedChat?.isGroup
               ? selectedChat?.groupAvatar?.url
@@ -55,7 +59,7 @@ const MessageListHeader = ({
         </span>
       </div>
 
-      <div className=" ml-auto">
+      <div className="ml-auto">
         <button ref={buttonRef} onClick={handleButtonClick}>
           <Ellipsis />
         </button>
@@ -66,40 +70,30 @@ const MessageListHeader = ({
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0 }}
               layout
-              transition={{ type: "tween" }}
-              className="absolute z-[100] bg-zinc-900 rounded origin-top-right"
-              style={{ top: menuPosition.top, left: menuPosition.left - 140 }}
+              transition={{ type: 'tween' }}
+              className="absolute right-10 z-100 origin-top-right rounded bg-accent w-44"
             >
-              <ul
-                ref={menuRef}
-                tabIndex={0}
-                className=" z-[100]  menu p-2 shadow  "
-              >
-                <li className="text-sm ">
-                  <span>Profile</span>
-                </li>
-                <li className="text-sm ">
-                  <button
-                    onClick={() => {
-                      setIsSelectMessages(true);
-                      setOpen(false);
-                    }}
-                  >
-                    <span>Select Messages</span>
-                  </button>
-                </li>
-                <li className="text-sm ">
-                  <span>Clear Chat</span>
-                </li>
-                <li className="text-sm ">
-                  <span>Delete Chat</span>
-                </li>
+              <ul ref={menuRef} tabIndex={0} className="z-100 p-1 shadow">
+                <MenuListItem label="Chat Info" icon={Info} />
+                <MenuListItem
+                  label="Select Messages"
+                  icon={ListChecks}
+                  onClick={() => {
+                    setIsSelectMessages(true)
+                    setOpen(false)
+                  }}
+                />
+                <MenuListItem label="Clear Chat" icon={MessageSquareX} />
+                <MenuListItem label="Delete Chat" icon={Trash2} />
+
+   
+
               </ul>
             </motion.div>
           )}
         </AnimatePresence>
       </div>
     </div>
-  );
-};
-export default MessageListHeader;
+  )
+}
+export default MessageListHeader
