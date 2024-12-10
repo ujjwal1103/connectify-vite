@@ -148,8 +148,8 @@ const MessageList = () => {
       className="h-dvh flex-1 overflow-x-hidden overflow-y-scroll py-3 scrollbar-thin"
       id={chatId}
     >
-      <div className="flex flex-1 flex-col justify-end gap-px">
-        {page === 1 && <div className="h-[calc(100dvh_-_380px)]" />}
+      <div className="flex flex-1 flex-col gap-px h-full">
+        {page === 1 && <div className="flex-1" />}
         {showProfileCard && <ChatProfileCard friend={selectedChat?.friend} />}
         {loadingMore && (
           <div className="my-2 flex items-center justify-center">
