@@ -1,49 +1,62 @@
 import { updateGroupName } from '@/api'
 import Avatar from '@/components/shared/Avatar'
 import UsernameLink from '@/components/shared/UsernameLink'
-import { IChat } from '@/lib/types'
+import { IChat, IUser } from '@/lib/types'
 import { useChatSlice } from '@/redux/services/chatSlice'
 import { useClickOutside } from '@react-hookz/web'
 import { AnimatePresence, motion } from 'framer-motion'
-import { Check, PencilLineIcon, X } from 'lucide-react'
-import { useRef, useState } from 'react'
+import {
+  Check,
+  MoreHorizontal,
+  PencilLineIcon,
+  X,
+} from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
+import AddGroupMembers from './AddGroupMembers'
+import DropDownMenu from '@/components/shared/dialogs/DropDownMenu/DropDownMenu'
 
-const ChatInfo = ({ onClose }: any) => {
-  const { selectedChat, setGroupName } = useChatSlice()
-  const { isGroup, friend, members, _id, groupAvatar, groupName } =
+const ChatInfo = () => {
+  const { selectedChat, setGroupName, toggleShowChat, closeShowChat } =
+    useChatSlice()
+  const { isGroup, friend, members, _id, groupAvatar, groupName, membersInfo } =
     selectedChat as IChat
   const [editGroupName, setEditGroupName] = useState(false)
   const [newGroupName, setNewGroupName] = useState(groupName)
   const [imagePreview, setImagePreview] = useState<string | null | undefined>(
     null
   )
-  const groupNameRef = useRef<HTMLDivElement|null>(null)
+  const groupNameRef = useRef<HTMLDivElement | null>(null)
+
   const handleChangeNewName = async () => {
     setGroupName({ chatId: _id, newGroupName })
     await updateGroupName(_id, newGroupName!)
     setEditGroupName(false)
   }
 
-  useClickOutside(groupNameRef, ()=>{
+  useEffect(() => {
+    return closeShowChat
+  }, [])
+
+  useClickOutside(groupNameRef, () => {
     setEditGroupName(false)
   })
 
-  const allMembers = members?.map(member=>{
+  const allMembers = members?.map((member) => {
     return {
       role: member.role,
-      user: selectedChat?.userDetails!.find(u=>u._id === member.user)
+      user: membersInfo?.find((u) => u._id === member.user),
     }
   })
-  
+
   return (
-    <div className="z-100 p-2 w-[288px]">
-      <div className="flex items-center gap-4">
-        <span className="cursor-pointer" onClick={onClose}>
+    <div className="z-100 h-full w-[288px] overflow-y-scroll scrollbar-none">
+      <div className="sticky top-0 z-10 flex items-center gap-4 bg-background p-2">
+        <span className="cursor-pointer" onClick={toggleShowChat}>
           <X />
         </span>
         <span className="py-3 text-xl">Chat Info</span>
       </div>
-      <div className="flex flex-col items-center gap-2">
+      <div className="relative z-0 flex flex-col items-center gap-2">
         <motion.div
           layoutId={_id}
           onClick={() =>
@@ -91,32 +104,20 @@ const ChatInfo = ({ onClose }: any) => {
         {isGroup && <span>Group: {members?.length} members</span>}
       </div>
       {isGroup && (
-        <div className="mt-6 max-h-64 overflow-x-hidden overflow-y-scroll scrollbar-none">
-          <p>Group Members</p>
-          <div className="h-full space-y-2">
-            {allMembers?.map(({user:member, role}) => {
-              return (
-                <div className="mt-3 flex h-full items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div>
-                      <Avatar
-                        src={member?.avatar?.url}
-                        className="size-8 h-full"
-                      />
-                    </div>
-                    <div>
-                      <UsernameLink username={member!.username}>
-                        <span>{member!.username}</span>
-                      </UsernameLink>
-                    </div>
-                  </div>
-                  <div>
-                    {role === "admin" && (
-                      <span className='text-xs rounded bg-secondary p-1'>Admin</span>
-                    )}
-                  </div>
-                </div>
-              )
+        <div className="mt-6">
+          <div className="flex justify-between">
+            <p className="p-2 text-base font-[500]">Group Members</p>
+            {selectedChat && members && (
+              <AddGroupMembers
+                chatId={selectedChat?._id}
+                members={members?.map((m) => m.user)}
+              />
+            )}
+          </div>
+          <div className="space-y-2">
+            {allMembers?.map(({ user: member, role }) => {
+              if (!member) return <></>
+              return <MemberItem member={member} role={role} />
             })}
           </div>
         </div>
@@ -142,6 +143,50 @@ const ChatInfo = ({ onClose }: any) => {
           </motion.div>
         )}
       </AnimatePresence>
+    </div>
+  )
+}
+
+type MemberItemProps = {
+  member: IUser
+  role: 'member' | 'admin'
+}
+
+const MemberItem = ({ member, role }: MemberItemProps) => {
+  return (
+    <div className="flex h-full items-center justify-between p-2 hover:bg-secondary">
+      <div className="flex items-center gap-3">
+        <div>
+          <Avatar src={member?.avatar?.url} className="size-8 h-full" />
+        </div>
+        <div>
+          <UsernameLink username={member.username}>
+            <span>{member?.username}</span>
+          </UsernameLink>
+        </div>
+      </div>
+      <div>
+        {role === 'admin' ? (
+          <span className="rounded bg-secondary p-1 text-xs">Admin</span>
+        ) : (
+          <DropDownMenu
+            items={[
+              {
+                title: 'Make Group Admin',
+                onPress: () => {},
+              },
+              {
+                title: 'Remove',
+                onPress: () => {},
+              },
+            ]}
+          >
+            <span>
+              <MoreHorizontal />
+            </span>
+          </DropDownMenu>
+        )}
+      </div>
     </div>
   )
 }

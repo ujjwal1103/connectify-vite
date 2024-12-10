@@ -22,7 +22,7 @@ export function blobToFile(blob: Blob, fileName: string, fileType: string) {
 }
 
 export const tranformUrl = (url = '', width = 100) => {
-  if (!url) return null
+  if (!url) return undefined
   const newUrl = url.replace('upload/', `upload/dpr_auto/w_${width}/`)
   return newUrl
 }

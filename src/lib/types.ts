@@ -44,7 +44,8 @@ export interface IChat {
   members?: {user:string, role: 'admin'| 'member'}[]
   userDetails?: IUser[]
   groupAdmin?: string
-  unseenMessagesCount?: number
+  unseenMessagesCount?: number,
+  membersInfo?: IUser[]
 }
 
 export interface IMessage {

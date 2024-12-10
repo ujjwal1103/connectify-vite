@@ -2,12 +2,14 @@ import { getPostById } from '@/api'
 import Avatar from '@/components/shared/Avatar'
 import { ImageSlider } from '@/components/shared/ImageSlider/ImageSlider'
 import { IPost } from '@/lib/types'
-import { Loader } from 'lucide-react'
+import { Ellipsis, Loader } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import PostActions from '../feeds/components/post/PostActions'
 import Caption from '../feeds/components/post/Caption'
 import CommentComponent from '../feeds/components/post/CommentComponent'
+import { AnimatePresence } from 'framer-motion'
+import PostOptions from '@/components/PostOptions'
 
 const superLikes = [
   {
@@ -26,6 +28,7 @@ const superLikes = [
 
 const Post = () => {
   const { postId } = useParams()
+  const [menu, setMenu] = useState(false)
   const [loadingPost, setLoadingPost] = useState(true)
   const [post, setPost] = useState<IPost | null>(null)
   const [error, setError] = useState<boolean>(false)
@@ -130,6 +133,12 @@ const Post = () => {
                 <span className="font-semibold">{post?.user?.username}</span>
                 <span>{post?.user?.name}</span>
               </div>
+
+              <button className="ml-auto">
+                <Ellipsis className="cursor-pointer" />
+              </button>
+
+
             </div>
 
             {post?.caption && (
@@ -143,6 +152,10 @@ const Post = () => {
           <CommentComponent post={post!} postId={postId!} setPost={setPost} />
         </div>
       </div>
+
+      <AnimatePresence>
+        {menu && <PostOptions post={post!} open={menu} onClose={()=>setMenu(false)}/>}
+        </AnimatePresence>
     </div>
   )
 }

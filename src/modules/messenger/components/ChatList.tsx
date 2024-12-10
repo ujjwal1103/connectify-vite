@@ -48,7 +48,6 @@ const ChatList = () => {
   })
 
   const handleMessage = useCallback((data: IChat) => {
-    console.log(data._id)
     if (data?._id) {
       setChat(data)
     }
@@ -63,7 +62,7 @@ const ChatList = () => {
   return (
     <div
       className={cn(
-        'flex h-dvh flex-1 flex-col border-r border-border bg-card scrollbar-none md:flex-[0.4]',
+        'flex h-dvh flex-1 flex-col border-r border-border bg-card scrollbar-none md:flex-[0.35]',
         { 'hidden md:flex': chatId }
       )}
     >

@@ -9,7 +9,7 @@ const Suggetions = () => {
   const { suggetions, loading } = useGetSuggestedUsers() as any;
 
   return (
-    <div className="hidden md:block divide-y-[0.5px]  divide-zinc-800 divide-y-reverse divide-solid text-foreground">
+    <div className="hidden md:block divide-y-[0.5px]  divide-secondary divide-y-reverse divide-solid text-foreground">
       {suggetions?.length > 0 && (
         <div className="py-2 text-xl flex justify-between dark:text-gray-100">
           <span>Suggested for you</span>

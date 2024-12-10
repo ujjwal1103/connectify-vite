@@ -21,12 +21,13 @@ import {
 } from 'lucide-react'
 import { useChatSlice } from '@/redux/services/chatSlice'
 import Avatar from '@/components/shared/Avatar'
-import { MenuListItem } from './MessageMenu'
-import { cn, formatDate } from '@/lib/utils'
+import { cn, formatDate, tranformUrl } from '@/lib/utils'
 import { deleteConversation } from '@/api'
 import { IChat } from '@/lib/types'
 import { useSocket } from '@/context/SocketContext'
 import useSocketEvents from '@/hooks/useSocketEvent'
+import DropDownMenuItem from '@/components/shared/dialogs/DropDownMenu/DropDownMenuItem'
+import DropDownMenu from '@/components/shared/dialogs/DropDownMenu/DropDownMenu'
 
 const formatMessage = (message: string, messageType: string) => {
   if (messageType === 'IMAGE') {
@@ -125,6 +126,7 @@ const Chat = ({ chat }: ChatProps) => {
   useLayoutEffect(() => {
     if (moreOptions && buttonRef.current) {
       const buttonRect = buttonRef.current.getBoundingClientRect()
+      console.log(buttonRect)
 
       const menuHeight = 216
       const isSmall = window.innerWidth <= 768
@@ -181,7 +183,7 @@ const Chat = ({ chat }: ChatProps) => {
   }
 
   useSocketEvents(socket, eventHandlers)
-  
+
   return (
     <motion.div
       animate={{ opacity: 1, y: 0 }}
@@ -214,41 +216,33 @@ const Chat = ({ chat }: ChatProps) => {
         <motion.span className="text-xss">
           {formatDate(chat?.lastMessage?.createdAt!)}
         </motion.span>
-
-        <button
-          ref={buttonRef}
-          tabIndex={0}
-          role="button"
-          className="translate-x-7 self-end transition-transform duration-300 group-hover:inline-block group-hover:-translate-x-0"
-          onClick={handleMoreOptions}
-        >
-          <Ellipsis />
-        </button>
-
-        {createPortal(
-          <AnimatePresence>
-            {moreOptions && (
-              <motion.div
-                ref={menuRef}
-                className="absolute z-50 rounded bg-secondary shadow-xl"
-                initial={{ opacity: 0, scale: 0.3 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.3 }}
-                transition={{ duration: 0.3 }}
-                style={{
-                  top: menuPosition.top,
-                  left: menuPosition.left,
-                  bottom: menuPosition.bottom,
-                  right: menuPosition.right,
-                  transformOrigin: menuPosition.origin,
-                }}
-              >
-                <ChatMenu handleDeleteChat={handleDeleteChat} />
-              </motion.div>
-            )}
-          </AnimatePresence>,
-          document.body
-        )}
+        <DropDownMenu items={[
+           {
+            title:"Archive Chat",
+            icon: ArchiveIcon
+           },
+           {
+            title:"Mute",
+            icon: BellOff
+           },
+           {
+            title:"Clear Chat",
+            icon: MessageSquareX
+           },
+           {
+            title:"Block",
+            icon: MessageSquareX
+           },
+           {
+            title:"Delete Chat",
+            icon: Trash2,
+            onPress:handleDeleteChat
+           }
+        ]} className="translate-x-7 self-end transition-transform duration-300 group-hover:inline-block group-hover:-translate-x-0">
+          <span className="">
+            <Ellipsis />
+          </span>
+        </DropDownMenu>
       </div>
     </motion.div>
   )
@@ -261,19 +255,19 @@ interface ChatMenuProps {
 const ChatMenu = ({ handleDeleteChat }: ChatMenuProps) => {
   return (
     <ul className="w-44 p-1.5 text-foreground">
-      <MenuListItem
+      <DropDownMenuItem
         label="Archive Chat"
         onClick={() => {}}
         icon={ArchiveIcon}
       />
-      <MenuListItem label="Mute" onClick={() => {}} icon={BellOff} />
-      <MenuListItem
+      <DropDownMenuItem label="Mute" onClick={() => {}} icon={BellOff} />
+      <DropDownMenuItem
         label="Clear Chat"
         onClick={() => {}}
         icon={MessageSquareX}
       />
-      <MenuListItem label="Block" onClick={() => {}} icon={ShieldBan} />
-      <MenuListItem
+      <DropDownMenuItem label="Block" onClick={() => {}} icon={ShieldBan} />
+      <DropDownMenuItem
         label="Delete Chat"
         onClick={handleDeleteChat}
         icon={Trash2}
@@ -316,9 +310,10 @@ const AvatarAndCheckbox = ({
         )}
       >
         <Avatar
-          src={
-            chat.isGroup ? chat?.groupAvatar?.url : chat?.friend?.avatar?.url
-          }
+          src={tranformUrl(
+            chat.isGroup ? chat?.groupAvatar?.url : chat?.friend?.avatar?.url,
+            50
+          )}
           name={chat.isGroup ? chat?.groupName : chat?.friend?.name}
           className="inline-block size-8 rounded-full bg-background object-cover duration-500 hover:scale-90"
         />

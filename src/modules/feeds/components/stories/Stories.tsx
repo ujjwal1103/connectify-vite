@@ -5,23 +5,19 @@ import 'slick-carousel/slick/slick.css'
 import {
   ChevronLeftCircleIcon,
   ChevronRightCircle,
-  Plus,
   X,
-  XIcon,
 } from 'lucide-react'
 import { getAllStories } from '@/api'
 
 import Modal from '@/components/shared/modal/Modal'
 import UserStory from './UserStory'
 import { AnimatePresence } from 'framer-motion'
-import { NewStory } from '@/modules/story/NewStory/NewStory'
 import ConnectifyLogoText from '@/components/icons/ConnectifyLogoText'
 
 const storyImages: any[] = []
 
 const Stories = () => {
   const [stories, setStories] = useState<any[]>(storyImages)
-  const [storyModel, setStoryModel] = useState(false)
   const [openStoryView, setOpenStoryView] = useState(false)
   const scrollContainerRef = useRef<any>(null)
   const [openStories, setOpenStories] = useState([])
@@ -54,28 +50,12 @@ const Stories = () => {
     }
   }
 
-  const handleAddStory = () => {
-    setStoryModel(true)
-  }
-
   return (
     <div className="relative z-0 flex min-h-16 w-full items-center overflow-hidden md:max-w-[625px]">
       <div
         className="flex max-h-20 overflow-x-scroll scrollbar-none"
         ref={scrollContainerRef}
       >
-        <div className="mr-2 flex basis-4 items-center justify-center first:ml-2">
-          <div className="flex items-center justify-center rounded-full bg-secondary">
-            <div className="flex items-center justify-center rounded-full p-[2px]">
-              <button
-                className="flex h-12 w-12 items-center justify-center rounded-full object-cover"
-                onClick={handleAddStory}
-              >
-                <Plus />
-              </button>
-            </div>
-          </div>
-        </div>
         {stories.map((story, index) => (
           <div
             key={index + Date.now()}
@@ -182,30 +162,9 @@ const Stories = () => {
           </Modal>
         )}
       </AnimatePresence>
-      <AnimatePresence>
-        {storyModel && (
-          <Modal
-            showCloseButton={false}
-            onClose={() => setStoryModel(false)}
-            shouldCloseOutsideClick={false}
-          >
-            <StoryModal />
-          </Modal>
-        )}
-      </AnimatePresence>
     </div>
   )
 }
 
 export default Stories
 
-const StoryModal = ({ onClose }: any) => {
-  return (
-    <div className="relative h-96 w-screen bg-black md:w-96">
-      <button className="absolute right-3 top-3" onClick={onClose}>
-        <XIcon />
-      </button>
-      <NewStory />
-    </div>
-  )
-}

@@ -40,10 +40,10 @@ const MoreMenu = () => {
               transition={{ duration: 0.2 }}
               className="overflow-hidden rounded-md border border-border bg-background text-primary shadow-xl"
             >
-              <div className="space-y-4 p-4">
+              <div className="space-y-4 p-2">
                 <div className="flex w-full items-center justify-between gap-2">
                   <button
-                    className="cursor-pointer"
+                    className="cursor-pointer hover:bg-secondary size-9 rounded-full flex justify-center items-center"
                     onClick={() => setThemeMenu(false)}
                   >
                     <ChevronLeft size={20} />
@@ -53,14 +53,14 @@ const MoreMenu = () => {
                       Switch theme
                     </span>
                   </div>
-                  <div className="mx-2">
+                  <div className="mx-4 flex justify-center items-center">
                     {theme === 'dark' ? <Moon size={18} /> : <Sun size={18} />}
                   </div>
                 </div>
 
                 <div
                   className={cn(
-                    'flex w-full cursor-pointer items-center justify-between gap-2 rounded'
+                    'flex w-full cursor-pointer items-center justify-between gap-2 rounded px-2'
                   )}
                   onClick={() => {
                     if (theme === 'dark') {
@@ -73,7 +73,7 @@ const MoreMenu = () => {
                   <div className="">
                     <span className="text-base font-semibold">Dark Mode</span>
                   </div>
-                  <div className="mx-2">
+                  <div className="">
                     <Switch
                       checked={theme === 'dark'}
                       onChange={(e: ChangeEvent<HTMLInputElement>) => {

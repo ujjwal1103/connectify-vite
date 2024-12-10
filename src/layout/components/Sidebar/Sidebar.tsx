@@ -25,6 +25,9 @@ import Route from './Route'
 import { useSocket } from '@/context/SocketContext'
 import { LIKE_POST, NEW_MESSAGE, NEW_REQUEST } from '@/constants/Events'
 import useSocketEvents from '@/hooks/useSocketEvent'
+import { useChatSlice } from '@/redux/services/chatSlice'
+import { XIcon } from 'lucide-react'
+import { NewStory } from '@/modules/story/NewStory/NewStory'
 
 const Sidebar = () => {
   const [counts, setCounts] = useState({
@@ -38,8 +41,11 @@ const Sidebar = () => {
     searchSheet,
     moreOptions,
     openPostModal,
+    newStory,
     resetModalState,
   } = useModalStateSlice()
+
+  const {showChatInfo} = useChatSlice()
 
   const sidebarRef = useRef<any>()
   const location = useLocation()
@@ -125,7 +131,8 @@ const Sidebar = () => {
         ref={sidebarRef}
         id="sidebar"
         className={cn(
-          'z-30 hidden h-dvh max-w-[300px] flex-col bg-background p-2 font-semibold text-foreground sm:flex lg:flex-[0.1]'
+          'z-[120] hidden h-dvh  flex-col bg-background p-2 font-semibold text-foreground sm:flex lg:flex-[0.1]',
+          showChatInfo && 'hidden'
         )}
       >
         <SidebarHeader />
@@ -183,8 +190,32 @@ const Sidebar = () => {
           </Menu>
         )}
       </AnimatePresence>
+      <AnimatePresence>
+        {newStory && (
+          <Modal
+            showCloseButton={false}
+            onClose={(e: any) =>
+              handleModalClose('newStory', 'New Story', e?.target)
+            }
+            shouldCloseOutsideClick={false}
+          >
+            <StoryModal />
+          </Modal>
+        )}
+      </AnimatePresence>
     </>
   )
 }
 
 export default memo(Sidebar)
+
+const StoryModal = ({ onClose }: any) => {
+  return (
+    <div className="relative h-96 w-screen bg-black md:w-96">
+      <button className="absolute right-3 top-3" onClick={onClose}>
+        <XIcon />
+      </button>
+      <NewStory />
+    </div>
+  )
+}

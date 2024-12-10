@@ -64,7 +64,7 @@ const Feeds = () => {
       <section className="mt-10 flex flex-1 flex-col gap-2 py-1 md:mt-0 md:flex-[0.8] md:gap-3 md:p-3 lg:flex-[0.6]">
         <Stories />
 
-        <div className="flex w-full flex-col">
+        <div className="flex flex-col w-full">
           <div className="flex flex-col">
             <InfiniteScroll
               className="flex flex-col"

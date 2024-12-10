@@ -328,7 +328,12 @@ const getAllStories = async () => {
   return await makeRequest.get('/stories')
 }
 
+const addGroupMember = async ({chatId, newMembers}:{chatId:string, newMembers: string[]}) => {
+  return await makeRequest.patch(`/chat/${chatId}/newMembers`, {newMembers})
+}
+
 export {
+  addGroupMember,
   createStory,
   getAllStories,
   deleteMessageById,

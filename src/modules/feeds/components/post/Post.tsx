@@ -11,7 +11,8 @@ const Post = ({ post }: { post: IPost }) => {
       className="relative mb-2 flex overflow-hidden border-b border-border bg-transparent text-secondary-foreground drop-shadow-md md:rounded-md md:border-none md:bg-card"
     >
       <div className="flex-1 flex-col justify-between">
-        <PostHeader
+        <PostHeader 
+          post={post}
           postId={post._id}
           userId={post.user._id}
           name={post.user.name}

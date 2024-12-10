@@ -7,7 +7,6 @@ import { useRef, useState } from 'react'
 import { useClickOutside } from '@react-hookz/web'
 import { useChatSlice } from '@/redux/services/chatSlice'
 import Modal from '@/components/shared/modal/Modal'
-
 import AddNewUser from './NewChat'
 
 const ChatListHeader = () => {

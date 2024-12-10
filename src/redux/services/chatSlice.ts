@@ -1,8 +1,8 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../store'
-import { IChat, IMessage } from '@/lib/types'
+import { IChat, IMessage, IUser } from '@/lib/types'
 
 interface IReply {
   messageId: string
@@ -25,7 +25,8 @@ interface IChatSlice {
   selectChats: boolean
   selectedChats: string[]
   currentMessageReply?: IReply | null
-  editMessage: IMessage | null
+  editMessage: IMessage | null,
+  showChatInfo: boolean
 }
 
 const initialState: IChatSlice = {
@@ -44,6 +45,7 @@ const initialState: IChatSlice = {
   selectedChats: [],
   currentMessageReply: null,
   editMessage: null,
+  showChatInfo: false
 }
 
 const chatSlice = createSlice({
@@ -225,7 +227,6 @@ const chatSlice = createSlice({
     setEditMessage: (state, action) => {
       state.editMessage = action.payload
     },
-
     editMessageById: (state, action) => {
       const message = state.messages.findIndex(
         (message) => message._id === action.payload.messageId
@@ -238,6 +239,58 @@ const chatSlice = createSlice({
         (message) => message._id !== action.payload
       )
     },
+    toggleChatInfo: (state)=> {
+      state.showChatInfo = !state.showChatInfo
+    },
+    closeShowChat: (state)=> {
+      state.showChatInfo = false
+    },
+    addNewMembers: (state, action) => {
+      const newMembers = action.payload;
+      const members = newMembers.map((m:IUser)=>({user:m._id, role:'member'}))
+      if (state.selectedChat) {
+        state.selectedChat = {
+          ...state.selectedChat,
+          membersInfo: [
+            ...(state.selectedChat.membersInfo || []), 
+            ...newMembers,
+          ],
+          members: [
+            ...(state.selectedChat.members || []), 
+            ...members,
+          ]
+        };
+      }
+    },
+    removeMembers: (state, action:PayloadAction<IUser[]>) => {
+      const membersToRemove = action.payload; // Array of members to remove
+      if (state.selectedChat) {
+        state.selectedChat = {
+          ...state.selectedChat,
+          membersInfo: state.selectedChat.membersInfo?.filter(
+            (member) => !membersToRemove.some((m: IUser) => m._id === member._id)
+          ) || [],
+          members: state.selectedChat.members?.filter(
+            (member) => !membersToRemove.some((m: IUser) => m._id === member.user)
+          ) || [],
+        };
+      }
+    },
+    removeMember: (state, action) => {
+      const memberToRemove = action.payload; // The member object or ID to remove
+      if (state.selectedChat) {
+        state.selectedChat = {
+          ...state.selectedChat,
+          membersInfo: state.selectedChat.membersInfo?.filter(
+            (member) => member._id !== memberToRemove._id
+          ) || [],
+          members: state.selectedChat.members?.filter(
+            (member) => member.user !== memberToRemove._id
+          ) || [],
+        };
+      }
+    },
+    
     reset: () => initialState,
   },
 })
@@ -405,10 +458,43 @@ const useChatSlice = () => {
     },
     []
   )
+  const toggleShowChat = useCallback(
+    () => {
+      dispatch(actions.toggleChatInfo())
+    },
+    []
+  )
+  const closeShowChat = useCallback(
+    () => {
+      dispatch(actions.closeShowChat())
+    },
+    []
+  )
+  const addNewMembers = useCallback(
+    (members: IUser[]) => {
+      dispatch(actions.addNewMembers(members))
+    },
+    []
+  )
+  const removeMembers = useCallback(
+    (members: IUser[]) => {
+      dispatch(actions.removeMembers(members))
+    },
+    []
+  )
+  const removeMember = useCallback(
+    (member: IUser) => {
+      dispatch(actions.removeMember(member))
+    },
+    []
+  )
 
   return {
     ...chat,
     setChatToFirst,
+    removeMembers,
+    removeMember,
+    addNewMembers,
     editMessageById,
     setEditMessage,
     markAllMessagesAsSeen,
@@ -434,6 +520,8 @@ const useChatSlice = () => {
     setSelectedChats,
     resetSelectedChats,
     addMessageFromSocket,
+    toggleShowChat,
+    closeShowChat
   }
 }
 

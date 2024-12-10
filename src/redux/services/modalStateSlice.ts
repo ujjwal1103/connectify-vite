@@ -9,6 +9,7 @@ interface ModalStateSlice {
   notiSheet: boolean
   openPostModal: boolean
   mobileDrawer: boolean
+  newStory: boolean
 }
 
 const initialState: ModalStateSlice = {
@@ -17,6 +18,7 @@ const initialState: ModalStateSlice = {
   notiSheet: false,
   openPostModal: false,
   mobileDrawer: false,
+  newStory: false
 }
 
 const modalStateSlice = createSlice({
@@ -39,6 +41,7 @@ export type ModalStateNames =
   | 'notiSheet'
   | 'openPostModal'
   | 'mobileDrawer'
+  | 'newStory'
 
 export const useModalStateSlice = () => {
   const state = useSelector((state: RootState) => state.modalStates)

@@ -66,7 +66,7 @@ const CommentComponent = ({
       <motion.div
         initial="initial"
         animate="animate"
-        className="flex w-full flex-col bg-zinc-950 px-3 py-2"
+        className="flex w-full flex-col px-3 py-2"
       >
         <div className="mb-3">
           <PostActions

@@ -4,13 +4,11 @@ import {
   useLayoutEffect,
   useEffect,
   memo,
-  MouseEvent,
 } from 'react'
 import { createPortal } from 'react-dom'
 
 import {
   Info,
-  LucideIcon,
   PencilIcon,
   Reply,
   Smile,
@@ -21,6 +19,7 @@ import { IMessage } from '@/lib/types'
 import { cn } from '@/lib/utils'
 import { useChatSlice } from '@/redux/services/chatSlice'
 import { AnimatePresence, motion } from 'framer-motion'
+import DropDownMenuItem from '@/components/shared/dialogs/DropDownMenu/DropDownMenuItem'
 
 interface MessageMenuOptions {
   currentUserMessage: boolean
@@ -183,24 +182,24 @@ const MessageMenu = ({
                     />
                   ))}
                 </li>
-                <MenuListItem
+                <DropDownMenuItem
                   label={'Message Info'}
                   onClick={() => {}}
                   icon={Info}
                 />
                 {message.messageType === 'TEXT_MESSAGE' && message.isCurrentUserMessage && (
-                  <MenuListItem
+                  <DropDownMenuItem
                     label={'Edit'}
                     onClick={onClickEditMessage}
                     icon={PencilIcon}
                   />
                 )}
-                <MenuListItem
+                <DropDownMenuItem
                   label={'Reply'}
                   onClick={handleReply}
                   icon={Reply}
                 />
-                <MenuListItem
+                <DropDownMenuItem
                   label={'Delete'}
                   onClick={handleDelete}
                   icon={Trash2}
@@ -234,25 +233,3 @@ export const EmojiButton = ({
   )
 }
 
-interface MenuListItemProps {
-  label: string
-  onClick?: (e: MouseEvent<HTMLLIElement>, label?: string) => void
-  icon: LucideIcon
-}
-
-export const MenuListItem = ({
-  label,
-  onClick,
-  icon: Icon,
-}: MenuListItemProps) => {
-  return (
-    <li
-      className="flex cursor-pointer items-center justify-between gap-2 rounded px-2 py-2 text-sm hover:bg-background"
-      tabIndex={0}
-      onClick={(e) => onClick?.(e, label)}
-    >
-      <Icon className="size-5" />
-      <span>{label}</span>
-    </li>
-  )
-}

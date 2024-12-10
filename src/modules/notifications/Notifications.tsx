@@ -13,6 +13,7 @@ import { Notification } from './Notification'
 import { LIKE_POST, NEW_COMMENT, NEW_REQUEST } from '@/constants/Events'
 import useSocketEvents from '@/hooks/useSocketEvent'
 import { useSocket } from '@/context/SocketContext'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 
 const dateOptions = {
   sameDay: '[Today]',
@@ -23,71 +24,63 @@ const dateOptions = {
 }
 
 const Notifications = () => {
-  const [loading, setLoading] = useState(false)
-  const [notifications, setNotifications] = useState<GroupNotification[]>([])
-  const [request, setRequest] = useState<any[]>([])
   const [showFollowRequests, setShowFollowRequest] = useState<boolean>(false)
   const { socket } = useSocket()
 
-  const getAllNotifications = useCallback(async () => {
-    setLoading(true)
-    const res = await getAllNotification()
-    if (res.isSuccess) {
-      setNotifications(res.data)
-    }
-    setLoading(false)
-  }, [])
+  const queryClient = useQueryClient()
 
-  useEffect(() => {
-    getAllNotifications()
-  }, [getAllNotifications])
+  const {data, isLoading} = useQuery({
+    queryKey:['NOTIFICATIONS'],
+    queryFn: getAllNotification,
+    _optimisticResults:'optimistic',
+  })
 
-  const getAllFollowRequestForUser = useCallback(async () => {
-    const res = (await getAllFollowRequest()) as any
-    setRequest(res?.followRequest || [])
-  }, [])
+  const {data:fData} = useQuery({
+    queryKey:['FOLLOW_REQUESTS'],
+    queryFn: getAllFollowRequest,
+    _optimisticResults:'optimistic',
+  })
+  
+  const notifications = data?.data ?? []
+  const followRequests = fData?.followRequest ?? []
 
-  useEffect(() => {
-    getAllFollowRequestForUser()
-  }, [getAllFollowRequestForUser])
+  const invalidateQueries = ()=>{
+    queryClient.invalidateQueries({queryKey:['NOTIFICATIONS']})
+    queryClient.invalidateQueries({queryKey:['FOLLOW_REQUESTS']})
+  }
 
   const handleAccept = async (requestId: string, accept: boolean) => {
     if (accept) {
       await makeRequest.patch(`/accept/${requestId}`)
-      getAllFollowRequestForUser()
-      getAllNotifications()
     } else {
       await makeRequest.patch(`/accept/${requestId}?reject=true`)
-      getAllFollowRequestForUser()
-      getAllNotifications()
     }
+    invalidateQueries()
   }
 
   const deleteNotification = async (id: string, groupId: string) => {
-    const newNotications = notifications
-      .map((g: GroupNotification) => {
-        if (g._id === groupId) {
-          console.log(g.notifications, {
-            ...g,
-            notifications: g.notifications.filter((n: any) => n._id !== id),
-          })
-          return {
-            ...g,
-            notifications: g.notifications.filter((n: any) => n._id !== id),
-          }
-        } else {
-          return g
-        }
-      })
-      .filter((n) => n.notifications.length > 0)
-
-    setNotifications(newNotications)
-
+    // const newNotications = notifications
+    //   .map((g: GroupNotification) => {
+    //     if (g._id === groupId) {
+    //       console.log(g.notifications, {
+    //         ...g,
+    //         notifications: g.notifications.filter((n: any) => n._id !== id),
+    //       })
+    //       return {
+    //         ...g,
+    //         notifications: g.notifications.filter((n: any) => n._id !== id),
+    //       }
+    //     } else {
+    //       return g
+    //     }
+    //   })
+    //   .filter((n) => n.notifications.length > 0)
     await deleteNotificationById(id)
+    invalidateQueries()
   }
 
   const handleRequest = () => {
-    getAllNotifications()
+    invalidateQueries()
   }
 
   const eventHandlers = {
@@ -107,22 +100,22 @@ const Notifications = () => {
               Notifications
             </h1>
           </div>
-          {!!request.length && (
+          {!!followRequests.length && (
             <div className="w-full px-2">
               <button
                 onClick={() => setShowFollowRequest(true)}
                 className="dark:text-white"
               >
-                Follow Requests ({request.length})
+                Follow Requests ({followRequests.length})
               </button>
             </div>
           )}
           <ul className="flex h-full w-full flex-col gap-2 text-white">
-            {notifications.length <= 0 && loading && (
+            {notifications.length <= 0 && isLoading && (
               <div>Loading notifications</div>
             )}
-            {notifications.length <= 0 && !loading && (
-              <div>No Notification</div>
+            {notifications.length <= 0 && !isLoading && (
+              <div className='p-2 text-center text-2xl'>No Notification</div>
             )}
             {notifications?.map((date) => {
               return (
@@ -154,7 +147,7 @@ const Notifications = () => {
       )}
       {showFollowRequests && (
         <FollowRequests
-          requests={request}
+          requests={followRequests}
           onClose={() => setShowFollowRequest(false)}
           handleAccept={handleAccept}
         />

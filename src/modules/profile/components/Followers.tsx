@@ -19,7 +19,6 @@ const Followers = ({ userId }: { userId: string }) => {
   } = useFollow(getFollowers, userId, query, 'followers')
 
   if (error) return <div>Something Went Wrong</div>
-  if (isLoading) return <div>Loading...</div>
 
   return (
     <div className="h-full w-full" id="scrollableDiv">
@@ -46,6 +45,7 @@ const Followers = ({ userId }: { userId: string }) => {
           )}
         </div>
       </div>
+      {isLoading && <div>Loading...</div>}
       <InfiniteScroll
         dataLength={followers?.length}
         next={handleLoadMore}

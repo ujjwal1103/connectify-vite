@@ -1,14 +1,6 @@
 import UsernameLink from '@/components/shared/UsernameLink'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-
-import { Link } from 'react-router-dom'
 import Avatar from '@/components/shared/Avatar'
-import { IUser } from '@/lib/types'
+import { IPost, IUser } from '@/lib/types'
 import { getCurrentUserId } from '@/lib/localStorage'
 import { AnimatePresence } from 'framer-motion'
 import { Ellipsis, Loader } from 'lucide-react'
@@ -20,6 +12,7 @@ import { useFeedSlice } from '@/redux/services/feedSlice'
 import Modal from '@/components/shared/modal/Modal'
 import { useAuth } from '@/context/AuthContext'
 import { cn } from '@/lib/utils'
+import PostOptions from '@/components/PostOptions'
 
 type PostHeaderProps = {
   postId: string
@@ -28,6 +21,7 @@ type PostHeaderProps = {
   name: string
   username: string
   location?: string
+  post: IPost
 }
 
 const PostHeader = ({
@@ -37,6 +31,7 @@ const PostHeader = ({
   name,
   username,
   location,
+  post,
 }: PostHeaderProps) => {
   return (
     <div className="text-secondary-foregroun flex w-full items-center justify-between gap-6 p-2">
@@ -53,7 +48,8 @@ const PostHeader = ({
           <span>{location}</span>
         </div>
       </div>
-      <PostHeaderMenu postId={postId} userId={userId} />
+
+      <PostHeaderMenu post={post} postId={postId} userId={userId} />
     </div>
   )
 }
@@ -63,12 +59,12 @@ export default memo(PostHeader)
 interface PostHeaderMenuProps {
   userId: string
   postId: string
+  post: IPost
 }
 
-const PostHeaderMenu = ({ postId, userId }: PostHeaderMenuProps) => {
+const PostHeaderMenu = ({ postId, post }: PostHeaderMenuProps) => {
   const [isModalOpen, setModalOpen] = useState(false)
   const [menu, setMenu] = useState(false)
-  const selfPost = userId === getCurrentUserId()
   const [deletingPost, setDeletingPost] = useState(false)
   const { deletePost } = usePostSlice()
   const { updateUser, user } = useAuth()
@@ -77,11 +73,6 @@ const PostHeaderMenu = ({ postId, userId }: PostHeaderMenuProps) => {
   const handleClose = () => setModalOpen(false)
   const handleConfirm = () => {
     handleDeletePost()
-  }
-
-  const handleOpen = () => {
-    setMenu(false)
-    setModalOpen(true)
   }
 
   const handleDeletePost = async () => {
@@ -102,29 +93,14 @@ const PostHeaderMenu = ({ postId, userId }: PostHeaderMenuProps) => {
   }
   return (
     <div className="text-secondary-foreground">
-      <DropdownMenu open={menu} onOpenChange={() => setMenu(!menu)}>
-        <DropdownMenuTrigger>
-          <Ellipsis className="cursor-pointer" />
-        </DropdownMenuTrigger>
-        <DropdownMenuContent
-          className="rounded-md border-none bg-background-secondary"
-          align="end"
-        >
-          <DropdownMenuItem asChild>
-            <Link to={`p/${postId}`} className="hover:text-primary">
-              Open Post
-            </Link>
-          </DropdownMenuItem>
-          {selfPost && (
-            <DropdownMenuItem asChild>
-              <button onClick={handleOpen} className="text-destructive">
-                Delete
-              </button>
-            </DropdownMenuItem>
-          )}
-        </DropdownMenuContent>
-      </DropdownMenu>
-
+      <button onClick={() => setMenu(!menu)}>
+        <Ellipsis className="cursor-pointer" />
+      </button>
+      <AnimatePresence>
+        {menu && (
+          <PostOptions post={post} open={menu} onClose={() => setMenu(false)} />
+        )}
+      </AnimatePresence>
       <AnimatePresence>
         {isModalOpen && (
           <Modal

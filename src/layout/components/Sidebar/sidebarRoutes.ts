@@ -1,3 +1,4 @@
+import NewStoryIcon from '@/components/icons/NewStoryIcon'
 import { ModalStateNames } from '@/redux/services/modalStateSlice'
 import {
   Compass,
@@ -49,6 +50,7 @@ export const sidebarRoutes: SidebarRoute[] = [
     modalName: 'openPostModal',
   },
   { route: '/profile', label: 'Profile', Icon: User2 },
+  { route: '/newstory', label: 'New Story', Icon: NewStoryIcon, modalName: 'newStory',modal: true },
   {
     route: '/more',
     label: 'More',
