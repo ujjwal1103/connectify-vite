@@ -3,10 +3,10 @@ import { motion } from "framer-motion";
 import { cn } from "@/lib/utils"; 
 
 interface ConfirmModalProps {
-  onClose: () => void;
-  onConfirm: () => void;
-  title: string;
-  message: string;
+  onClose?: () => void;
+  onConfirm?: () => void;
+  title?: string;
+  message?: string;
   children?: ReactNode;
 }
 
@@ -23,7 +23,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       tabIndex={0}
-      className="fixed inset-0 flex items-center justify-center z-50 bg-secondary/50 "
+      className="fixed inset-0 w-screen h-screen flex items-center justify-center z-100 bg-secondary/50 bg-blue-400"
     >
       <motion.div
         initial={{ y: "var(--y-from)", scale: "var(--scale-from)" }}

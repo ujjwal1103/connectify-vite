@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 type UsernameLinkProps = {
   children: ReactNode;
-  username: String;
+  username?: String;
   onClick?: VoidFunction;
   className?: string;
 };

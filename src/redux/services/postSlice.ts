@@ -1,8 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useProfileSlice } from "./profileSlice";
-import { IPost, IUser } from "@/lib/types";
+import { IPost } from "@/lib/types";
 import { RootState } from "../store";
 import { IBookmark } from "@/interface/interfaces";
 
@@ -151,13 +150,12 @@ export const usePostSlice = () => {
   const postState = useSelector((state: RootState) => state.post);
   const dispatch = useDispatch();
   const actions = postSlice.actions;
-  const { setUser, user } = useProfileSlice();
 
   const addPost = useCallback(
     (post: IPost) => {
       dispatch(actions.addPost(post));
-      const u = { ...user, posts: user!.posts + 1 };
-      setUser(u as IUser);
+      // const u = { ...user, posts: user!.posts + 1 };
+      // setUser(u as IUser);
     },
     [dispatch]
   );

@@ -1,74 +1,215 @@
-import { CommentIcon } from "@/components/icons";
-import Avatar from "@/components/shared/Avatar";
-import { LikeButton } from "@/components/shared/LikeButton";
-import { Ellipsis, Play, Send } from "lucide-react";
 
-const src =
-  "https://images.pexels.com/photos/12882773/pexels-photo-12882773.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1";
 
 const Reels = () => {
-  return (
-    <div className="flex items-center justify-center py-10 h-dvh">
-      <div className="my-3 h-full overflow-y-scroll bg-background  scrollbar-none rounded-xl w-1/3 snap-mandatory snap-both">
-        {Array(12)
-          .fill(1)
-          .map((_, it) => (
-            <div key={it} className="h-full snap-start relative">
-              <div className="h-full ">
-                <img src={src} alt="" className="h-full w-full object-cover" />
-              </div>
-              <div className=" absolute top-0 flex items-center justify-center w-full h-full">
-                <div>
-                  <span>
-                    <Play size={50} />
-                    {/* <Pause size={50} /> */}
-                  </span>
-                </div>
-              </div>
-              <div className="absolute bottom-0 w-full p-3  flex">
-                <div className="self-end">
-                  <div className="flex items-center gap-3">
-                    <div>
-                      <Avatar
-                        src="https://images.pexels.com/photos/806835/pexels-photo-806835.jpeg?auto=compress&cs=tinysrgb&w=600"
-                        className="w-10 shadow-md"
-                      />
-                    </div>
-                    <div>
-                      <span className="">Ujjwal Lade</span>
-                    </div>
-                    <div>
-                      <button className="px-2 border rounded">follow</button>
-                    </div>
-                  </div>
-                  <div>
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                    Fuga, suscipit?
-                  </div>
-                </div>
-                <div className="items-center h-full p-3 gap-2 flex flex-col justify-end ">
-                  <div className="flex flex-col items-center cursor-pointer">
-                    <Ellipsis />
-                  </div>
-                  <div className="flex flex-col items-center text-xl">
-                    <LikeButton id={''} isLiked={true} postUserId={""} size={0} />
-                    <span className="text-sm">218k</span>
-                  </div>
-                  <div className="flex flex-col items-center">
-                    <CommentIcon />
-                    <span>10k</span>
-                  </div>
-                  <div className="flex flex-col items-center">
-                    <Send />
-                    <span>1.3k</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
-      </div>
-    </div>
-  );
-};
+  // const [currentStoryIndex, setCurrentStoryIndex] = useState({
+  //   userIndex: 0,
+  //   storyIndex: 0,
+  // })
+  // const [timer, setTimer] = useState(30) // initial timer for each story
+  // const [isTimerActive, setIsTimerActive] = useState(true) // to track if the timer is active
 
-export default Reels;
+  // const users = [
+  //   {
+  //     _id: '66cdaa9862f93e9892a29238',
+  //     user: {
+  //       _id: '663e258f698a22532ae6aa4c',
+  //       username: 'deepika_padukone',
+  //       avatar: {
+  //         url: 'http://res.cloudinary.com/dtzyaxndt/image/upload/v1723615080/663e258f698a22532ae6aa4c/profilePictures/446198949_1954752134978800_6522533721911033648_n_p0murd.jpg',
+  //       },
+  //     },
+  //     stories: [
+  //       {
+  //         _id: '6714f2ddbb27762384996b7e',
+  //         content: {
+  //           url: 'https://res.cloudinary.com/dtzyaxndt/image/upload/v1729426158/663e258f698a22532ae6aa4c/stories/663e258f698a22532ae6aa4c_fmw3ex.png',
+  //         },
+  //         timer: 10,
+  //       },
+  //     ],
+  //   },
+  //   {
+  //     _id: '6714f480bb27762384996ba5',
+  //     user: {
+  //       _id: '663c5a5fd4d2496be9c558c5',
+  //       username: 'shubman_gill',
+  //       avatar: {
+  //         url: 'http://res.cloudinary.com/dtzyaxndt/image/upload/v1723979476/663c5a5fd4d2496be9c558c5/profilePictures/352812.10_rfrkdh.webp',
+  //       },
+  //     },
+  //     stories: [
+  //       {
+  //         _id: '6714f480bb27762384996ba1',
+  //         content: {
+  //           url: 'https://res.cloudinary.com/dtzyaxndt/image/upload/v1729426577/663c5a5fd4d2496be9c558c5/stories/663c5a5fd4d2496be9c558c5_bgu5sl.png',
+  //         },
+  //         timer: 10,
+  //       },
+  //       {
+  //         _id: '67150139bb27762384996bc0',
+  //         content: {
+  //           url: 'https://res.cloudinary.com/dtzyaxndt/image/upload/v1729429834/663c5a5fd4d2496be9c558c5/stories/663c5a5fd4d2496be9c558c5_lzgsxx.png',
+  //         },
+  //         timer: 10,
+  //       },
+  //     ],
+  //   },
+  // ]
+
+  // useEffect(() => {
+  //   let interval
+
+  //   if (isTimerActive) {
+  //     const currentStoryTimer =
+  //       users[currentStoryIndex.userIndex]?.stories[
+  //         currentStoryIndex.storyIndex
+  //       ]?.timer || 10 // default to 10 seconds
+
+  //     setTimer(currentStoryTimer)
+
+  //     interval = setInterval(() => {
+  //       setTimer((prevTimer) => {
+  //         if (prevTimer <= 1) {
+  //           handleRightClick()
+  //           return currentStoryTimer
+  //         }
+  //         return prevTimer - 1
+  //       })
+  //     }, 1000)
+  //   }
+
+  //   return () => clearInterval(interval) // Clear the interval on unmount
+  // }, [currentStoryIndex, isTimerActive])
+
+  // const handleUserClick = (index) => {
+  //   setCurrentStoryIndex({
+  //     userIndex: index,
+  //     storyIndex: 0, // Reset to first story when user is clicked
+  //   })
+  //   setIsTimerActive(true) // Restart the timer when a new user is selected
+  // }
+
+  // const handleLeftClick = () => {
+  //   if (currentStoryIndex.storyIndex === 0) {
+  //     if (currentStoryIndex.userIndex > 0) {
+  //       setCurrentStoryIndex((prev) => ({
+  //         userIndex: prev.userIndex - 1,
+  //         storyIndex: users[prev.userIndex - 1]?.stories.length - 1,
+  //       }))
+  //     }
+  //   } else {
+  //     setCurrentStoryIndex((prev) => ({
+  //       ...prev,
+  //       storyIndex: prev.storyIndex - 1,
+  //     }))
+  //   }
+  //   setIsTimerActive(true) // Restart the timer when clicking left
+  // }
+
+  // const handleRightClick = () => {
+  //   const currentUserStories = users[currentStoryIndex.userIndex]?.stories || []
+
+  //   if (currentStoryIndex.storyIndex === currentUserStories.length - 1) {
+  //     if (currentStoryIndex.userIndex < users.length - 1) {
+  //       setCurrentStoryIndex((prev) => ({
+  //         userIndex: prev.userIndex + 1,
+  //         storyIndex: 0,
+  //       }))
+  //     } else {
+  //       // End of all stories
+  //       setIsTimerActive(false) // Stop the timer when the last story is reached
+  //     }
+  //   } else {
+  //     setCurrentStoryIndex((prev) => ({
+  //       ...prev,
+  //       storyIndex: prev.storyIndex + 1,
+  //     }))
+  //   }
+  // }
+
+  // const calculateProgressWidth = (storyTimer, timer) => {
+  //   return `${((storyTimer - timer) / storyTimer) * 100}%`
+  // }
+
+  return (
+    <div className="flex h-dvh flex-col items-center justify-center overflow-scroll">
+      {/* <div className="flex gap-3">
+        {users.map((user, index) => (
+          <div key={user._id} onClick={() => handleUserClick(index)}>
+            <Avatar src={user.user.avatar.url} className="h-14 w-14" />
+          </div>
+        ))}
+      </div>
+
+      <div className="relative h-96 w-52">
+        <img
+          src={
+            users[currentStoryIndex.userIndex]?.stories[
+              currentStoryIndex.storyIndex
+            ]?.content.url
+          }
+          className="h-96 w-52"
+          alt="story"
+        />
+
+        <div className="w-full bg-red-900">
+          {/* Instagram-like Progress Loaders */}
+          {/* <div className="mb-2 flex space-x-1 p-2">
+            {users[currentStoryIndex.userIndex]?.stories.map((story, index) => (
+             <div className='w-full bg-gray-800'>
+               <div
+                key={story._id}
+                className="relative h-1 w-full bg-gray-300"
+                style={{
+                  transition: 'width 1s linear',
+                  width:
+                    index === currentStoryIndex.storyIndex
+                      ? calculateProgressWidth(story.timer, timer)
+                      : '100%',
+                  background:
+                    index === currentStoryIndex.storyIndex
+                      ? `linear-gradient(to right, #fff ${calculateProgressWidth(
+                          story.timer,
+                          timer
+                        )}, transparent ${calculateProgressWidth(
+                          story.timer,
+                          timer
+                        )})`
+                      : '#fff',
+                }}
+              />
+             </div>
+            ))}
+          </div>
+
+          {/* Left and Right click areas */}
+          {/* <div className="absolute top-0 flex h-full w-full">
+            <div
+              className="h-full w-1/2 bg-transparent"
+              onClick={handleLeftClick}
+            ></div>
+            <div
+              className="h-full w-1/2 bg-transparent"
+              onClick={handleRightClick}
+            ></div>
+          </div> */}
+
+          {/* Timer Display */}
+          {/* {isTimerActive && (
+            <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-center text-white">
+              <p>{timer}s</p>
+            </div>
+          )} */}
+        {/* </div> 
+      // </div> 
+
+      // {!isTimerActive && (
+      //   <div className="mt-4 text-center text-white">
+      //     <p>All stories have been viewed!</p>
+      //   </div>
+      // )} */}
+    </div>
+  )
+}
+
+export default Reels
