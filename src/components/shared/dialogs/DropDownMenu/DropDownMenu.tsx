@@ -77,23 +77,25 @@ const DropDownMenu = ({
         })
         return
       }
-
       const buttonRect = buttonRef.current.getBoundingClientRect()
       const distanceFromRight = calculateDistance(buttonRect.right) ?? 0
+      const availableSpaceRight = window.innerWidth - buttonRect.right;
       const menuWidth = 150
+      const hasSpaceOnRight = availableSpaceRight >= menuWidth;
       const menuItemHeight = 36
       const menuHeight = menuItemHeight * items.length + 12
       let top = buttonRect.bottom + window.scrollY
       let left = 'auto'
       let bottom = 'auto'
-      let right = isLargeScreen
-        ? distanceFromRight - menuWidth - buttonRect.width
-        : distanceFromRight + buttonRect.width
-      let transformOrigin = isLargeScreen ? 'top left' : 'top right'
+      let right = !hasSpaceOnRight ? distanceFromRight :  (isLargeScreen
+          ? distanceFromRight - menuWidth - buttonRect.width
+      : distanceFromRight + buttonRect.width)
+
+      let transformOrigin = (isLargeScreen && hasSpaceOnRight) ? 'top left' : 'top right'
 
       if (window.innerHeight - buttonRect.bottom < menuHeight) {
         top = buttonRect.top + window.scrollY - menuHeight
-        transformOrigin = isLargeScreen ? 'bottom left' : 'bottom right'
+        transformOrigin = (isLargeScreen && hasSpaceOnRight) ? 'bottom left' : 'bottom right'
       }
       setMenuPosition({ top, left, bottom, right, transformOrigin })
     }

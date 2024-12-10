@@ -81,7 +81,7 @@ const AddGroupMembers = ({ chatId, members }: { chatId: string; members: string[
         onClick={() => {
           setOpenList(true);
         }}
-        className="mr-2 flex size-8 items-center justify-center rounded hover:bg-zinc-800 disabled:pointer-events-none disabled:opacity-25"
+        className="mr-2 flex size-8 items-center justify-center rounded hover:bg-secondary/40 disabled:pointer-events-none disabled:opacity-25"
         disabled={members.length >= 10}
       >
         <PlusIcon />

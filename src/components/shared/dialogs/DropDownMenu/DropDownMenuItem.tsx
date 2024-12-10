@@ -14,7 +14,7 @@ const DropDownMenuItem = ({
   }: MenuListItemProps) => {
     return (
       <li
-        className="flex cursor-pointer items-center justify-between gap-2 rounded px-2 py-2 text-sm hover:bg-background"
+        className="flex cursor-pointer items-center justify-between gap-2 rounded px-2 py-2 text-sm hover:bg-background/40"
         tabIndex={0}
         onClick={(e) => onClick?.(e, label)}
       >

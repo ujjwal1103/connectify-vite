@@ -154,7 +154,7 @@ type MemberItemProps = {
 
 const MemberItem = ({ member, role }: MemberItemProps) => {
   return (
-    <div className="flex h-full items-center justify-between p-2 hover:bg-secondary">
+    <div className="flex h-full items-center justify-between p-2 hover:bg-secondary/40">
       <div className="flex items-center gap-3">
         <div>
           <Avatar src={member?.avatar?.url} className="size-8 h-full" />
