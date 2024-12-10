@@ -1,7 +1,6 @@
 import UsernameLink from '@/components/shared/UsernameLink'
 import Avatar from '@/components/shared/Avatar'
 import { IPost, IUser } from '@/lib/types'
-import { getCurrentUserId } from '@/lib/localStorage'
 import { AnimatePresence } from 'framer-motion'
 import { Ellipsis, Loader } from 'lucide-react'
 import { memo, useState } from 'react'

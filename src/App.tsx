@@ -4,7 +4,6 @@ import "./App.css";
 import AuthLayout from "./layout/AuthLayout";
 import AppLayout from "./layout/AppLayout";
 import PageLoading from "./components/shared/Loading/PageLoading";
-import PostOptions from "./components/PostOptions";
 
 // Lazy imports for code splitting
 const Login = lazy(() => import("./modules/authentication/Login"));

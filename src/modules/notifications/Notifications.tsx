@@ -5,10 +5,10 @@ import {
 } from '@/api'
 
 import { makeRequest } from '@/config/api.config'
-import { useCallback, useEffect, useState } from 'react'
+import {useState } from 'react'
 import moment from 'moment'
 import FollowRequests from './FollowRequests'
-import { GroupNotification, INotification } from './types'
+import { INotification } from './types'
 import { Notification } from './Notification'
 import { LIKE_POST, NEW_COMMENT, NEW_REQUEST } from '@/constants/Events'
 import useSocketEvents from '@/hooks/useSocketEvent'
@@ -58,7 +58,7 @@ const Notifications = () => {
     invalidateQueries()
   }
 
-  const deleteNotification = async (id: string, groupId: string) => {
+  const deleteNotification = async (id: string, _groupId: string) => {
     // const newNotications = notifications
     //   .map((g: GroupNotification) => {
     //     if (g._id === groupId) {

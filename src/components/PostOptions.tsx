@@ -1,9 +1,7 @@
 import { IPost } from '@/lib/types'
-import { AnimatePresence, motion } from 'framer-motion'
+import { motion } from 'framer-motion'
 import {
-  Code2,
   ExternalLink,
-  Flag,
   Link,
   Pencil,
   Share2,

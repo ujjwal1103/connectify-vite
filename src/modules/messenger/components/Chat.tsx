@@ -1,10 +1,8 @@
 import { useNavigate, useParams } from 'react-router-dom'
-import { motion, AnimatePresence } from 'framer-motion'
-import { createPortal } from 'react-dom'
+import { motion } from 'framer-motion'
 import {
   useCallback,
   useEffect,
-  useLayoutEffect,
   useRef,
   useState,
 } from 'react'
@@ -15,7 +13,6 @@ import {
   Ellipsis,
   ImageIcon,
   MessageSquareX,
-  ShieldBan,
   Trash2,
   VideoIcon,
 } from 'lucide-react'
@@ -26,7 +23,6 @@ import { deleteConversation } from '@/api'
 import { IChat } from '@/lib/types'
 import { useSocket } from '@/context/SocketContext'
 import useSocketEvents from '@/hooks/useSocketEvent'
-import DropDownMenuItem from '@/components/shared/dialogs/DropDownMenu/DropDownMenuItem'
 import DropDownMenu from '@/components/shared/dialogs/DropDownMenu/DropDownMenu'
 
 const formatMessage = (message: string, messageType: string) => {
@@ -76,13 +72,6 @@ const Chat = ({ chat }: ChatProps) => {
   } = useChatSlice()
   const { socket } = useSocket()
   const [moreOptions, setMoreOptions] = useState(false)
-  const [menuPosition, setMenuPosition] = useState<any>({
-    top: 0,
-    left: 0,
-    bottom: 'auto',
-    right: 'auto',
-    origin: 'top left',
-  })
   const menuRef = useRef<HTMLDivElement>(null)
   const buttonRef = useRef<HTMLButtonElement>(null)
   const navigate = useNavigate()
@@ -111,10 +100,6 @@ const Chat = ({ chat }: ChatProps) => {
     setMoreOptions(false)
   }
 
-  const handleMoreOptions = () => {
-    setMoreOptions(true)
-  }
-
   const handleDeleteChat = useCallback(async () => {
     const chatId = chat?._id
     setMoreOptions(false)
@@ -123,33 +108,6 @@ const Chat = ({ chat }: ChatProps) => {
     await deleteConversation(chatId)
   }, [])
 
-  useLayoutEffect(() => {
-    if (moreOptions && buttonRef.current) {
-      const buttonRect = buttonRef.current.getBoundingClientRect()
-      console.log(buttonRect)
-
-      const menuHeight = 216
-      const isSmall = window.innerWidth <= 768
-      let top = buttonRect.bottom + window.scrollY + 8
-      let left = isSmall ? 'auto' : buttonRect.left + 24
-      let bottom = 'auto'
-      let right = isSmall ? 10 : 'auto'
-      let origin = isSmall ? 'top right' : 'top left'
-
-      console.log(buttonRect.top + window.screenY - menuHeight)
-
-      if (window.innerHeight - buttonRect.bottom < menuHeight) {
-        top = buttonRect.top + window.scrollY - menuHeight - 8
-        origin = isSmall ? 'bottom right' : 'bottom left'
-      }
-
-      if (top < 0) {
-        top = 8
-        bottom = 'auto'
-      }
-      setMenuPosition({ top, left, bottom, right, origin })
-    }
-  }, [moreOptions])
 
   useEffect(() => {
     if (moreOptions) {
@@ -248,33 +206,7 @@ const Chat = ({ chat }: ChatProps) => {
   )
 }
 export default Chat
-interface ChatMenuProps {
-  handleDeleteChat: () => void
-}
 
-const ChatMenu = ({ handleDeleteChat }: ChatMenuProps) => {
-  return (
-    <ul className="w-44 p-1.5 text-foreground">
-      <DropDownMenuItem
-        label="Archive Chat"
-        onClick={() => {}}
-        icon={ArchiveIcon}
-      />
-      <DropDownMenuItem label="Mute" onClick={() => {}} icon={BellOff} />
-      <DropDownMenuItem
-        label="Clear Chat"
-        onClick={() => {}}
-        icon={MessageSquareX}
-      />
-      <DropDownMenuItem label="Block" onClick={() => {}} icon={ShieldBan} />
-      <DropDownMenuItem
-        label="Delete Chat"
-        onClick={handleDeleteChat}
-        icon={Trash2}
-      />
-    </ul>
-  )
-}
 
 const AvatarAndCheckbox = ({
   selectChats,
