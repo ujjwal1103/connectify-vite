@@ -146,7 +146,7 @@ export const Menu = ({
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: 400 }}
       transition={{ duration: 0.2 }}
-      className="z-50 fixed h-fit focus-visible:outline-0 "
+      className="z-[121] fixed h-fit focus-visible:outline-0 "
       tabIndex={-1}
       style={{
         top: menuPosition?.top,

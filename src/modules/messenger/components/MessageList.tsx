@@ -3,7 +3,7 @@ import InfiniteScrollC from '@/components/shared/InfiniteScroll/InfiniteScrollC'
 import { useChatSlice } from '@/redux/services/chatSlice'
 import { Loader } from 'lucide-react'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import Message from './Message'
 import { getCurrentUserId, getCurrentUsername } from '@/lib/localStorage'
 import { IMessage } from '@/lib/types'
@@ -14,6 +14,7 @@ import { SEEN_MESSAGES } from '@/constants/Events'
 import useSocketEvents from '@/hooks/useSocketEvent'
 import ChatProfileCard from './ChatProfileCard'
 import DotLoading from '@/components/shared/Loading/DotLoading'
+import { AnimatePresence } from 'framer-motion'
 
 const MessageList = () => {
   const {
@@ -25,7 +26,9 @@ const MessageList = () => {
     setIsLoadingMessage,
     selectedChat,
     setCurrentMessageReply,
-    markAllMessagesAsSeen
+    markAllMessagesAsSeen,
+    isAddingContent,
+    setIsAddingContent
   } = useChatSlice()
   const [loadingMore, setLoadingMore] = useState(false)
   const { chatId } = useParams()
@@ -33,6 +36,8 @@ const MessageList = () => {
   const [hasNext, setHasNext] = useState(true)
   const hasNextRef = useRef(hasNext)
   const { socket } = useSocket()
+  const navigate = useNavigate()
+  
   const fetchMessages = useCallback(async () => {
     if (!hasNextRef.current) return
 
@@ -46,11 +51,17 @@ const MessageList = () => {
 
       const res = await getAllMessages(chatId!, page)
       if (res) {
+        if(res.messages?.length && res.messages?.[0]?.chat !== chatId) {
+          navigate('/inbox',{replace: true})
+          return;
+        }
         setMessages([...res.messages.reverse(), ...messages])
         setHasNext(res.pagination.hasNext)
         hasNextRef.current = res.pagination.hasNext
       }
     } catch (error) {
+      
+      navigate('/inbox',{replace: true})
       toast.error('Something went wrong')
     } finally {
       setIsLoadingMessage(false)
@@ -139,51 +150,55 @@ const MessageList = () => {
     )
   }
 
-  const showProfileCard =
-    !hasNextRef.current && !selectedChat?.isGroup && selectedChat?.friend
+  const showProfileCard = !hasNextRef.current
 
   return (
     <InfiniteScrollC
       loadMore={loadMoreItems}
       className="h-dvh flex-1 overflow-x-hidden overflow-y-scroll py-3 scrollbar-thin"
       id={chatId}
+      isAddingContent={isAddingContent}
+      setIsAddingContent={setIsAddingContent}
     >
-      <div className="flex flex-1 flex-col gap-px h-full">
-        {page === 1 && <div className="flex-1" />}
-        {showProfileCard && <ChatProfileCard friend={selectedChat?.friend} />}
-        {loadingMore && (
-          <div className="my-2 flex items-center justify-center">
-            <span className="rounded-md bg-background px-3 py-2">
-              <DotLoading />
-            </span>
-          </div>
-        )}
-        {messages?.map((message: IMessage, index) => (
-          <>
-            {shouldDisplayDateSeparator(index) && (
-              <div className="mb-2 text-center text-sm text-gray-500">
-                <span className="rounded-md bg-zinc-900 px-2">
-                  {formatDate(message.createdAt, true)}
-                </span>
-              </div>
-            )}
-            <Message
-              seen={false}
-              key={message._id}
-              currentUserMessage={message.isCurrentUserMessage!}
-              message={message}
-              isMessageSelected={selectedMessages?.some(
-                (m) => m === message._id
+      <AnimatePresence>
+        <div className="flex h-full flex-1 flex-col gap-px">
+          {page === 1 && <div className="flex-1" />}
+          {showProfileCard && <ChatProfileCard chat={selectedChat} />}
+          {loadingMore && (
+            <div className="my-2 flex items-center justify-center">
+              <span className="rounded-md bg-background px-3 py-2">
+                <DotLoading />
+              </span>
+            </div>
+          )}
+
+          {messages?.map((message: IMessage, index) => (
+            <>
+              {shouldDisplayDateSeparator(index) && (
+                <div className="mb-2 text-center text-sm text-gray-500">
+                  <span className="rounded-md bg-zinc-900 px-2">
+                    {formatDate(message.createdAt, true)}
+                  </span>
+                </div>
               )}
-              isLastMessagae={!messages[index + 1]}
-              isNextMessageUsMine={messages[index + 1]?.from === message.from}
-              isPreviousMessageIsUrs={
-                messages[index - 1]?.from === message.from
-              }
-            />
-          </>
-        ))}
-      </div>
+              <Message
+                seen={false}
+                key={message._id || message.tempId}
+                currentUserMessage={message.isCurrentUserMessage!}
+                message={message}
+                isMessageSelected={selectedMessages?.some(
+                  (m) => m === message._id
+                )}
+                isLastMessagae={!messages[index + 1]}
+                isNextMessageUsMine={messages[index + 1]?.from === message.from}
+                isPreviousMessageIsUrs={
+                  messages[index - 1]?.from === message.from
+                }
+              />
+            </>
+          ))}
+        </div>
+      </AnimatePresence>
     </InfiniteScrollC>
   )
 }

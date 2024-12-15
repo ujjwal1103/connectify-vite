@@ -33,6 +33,8 @@ export interface IPost {
   location?: string
 }
 
+export type IMember = IUser & { role: 'member' | 'admin' }
+
 export interface IChat {
   _id: string
   friend: IUser
@@ -41,17 +43,34 @@ export interface IChat {
   isGroup?: boolean
   groupName?: string
   groupAvatar?: IIamge
-  members?: {user:string, role: 'admin'| 'member'}[]
+  members?: IMember[]
   userDetails?: IUser[]
-  groupAdmin?: string
-  unseenMessagesCount?: number,
+  createdBy?: string
+  unseenMessagesCount?: number
   membersInfo?: IUser[]
 }
 
+export type MessageType =
+  | 'TEXT_MESSAGE'
+  | 'IMAGE'
+  | 'VIDEO'
+  | 'AUDIO'
+  | 'SYSTEM'
+  | 'VOICE_MESSAGE'
+  | 'POST_MESSAGE'
+export type SystemMessageType =
+  | 'GROUP_CREATED'
+  | 'MEMBER_REMOVED'
+  | 'MEMBER_EXIT'
+  | 'MEMBERS_ADDED'
+  | 'AVATAR_REMOVED'
+  | 'AVATAR_CHANGED'
+  | 'GENERAL_MESSAGE'
+  | 'GROUP_NAME_CHANGED'
 export interface IMessage {
   _id: string
   text: string
-  messageType: string
+  messageType: MessageType
   attachments: any[]
   to: string
   from: string
@@ -65,10 +84,11 @@ export interface IMessage {
   post?: IPost
   images?: IIamge[]
   isUnavailable?: boolean
-  sender:IUser
+  sender: IUser
   reaction?: string
-  isCurrentUserMessage?: boolean,
+  isCurrentUserMessage?: boolean
   isEdited?: boolean
+  systemMessageType: SystemMessageType | null
 }
 
 export interface MessagesRootObject {

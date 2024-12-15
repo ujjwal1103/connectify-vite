@@ -11,27 +11,36 @@ const CreateGroup = ({ selectedUsers, onClose, onGroupCreated }: any) => {
   const [avatar, setAvatar] = useState<string | null>(null)
   const [file, setFile] = useState<File | null>(null)
   const [groupName, setGroupName] = useState('')
+  const [status, setStatus] = useState('idel')
   const [error, setError] = useState<string | null>(null)
-  const { setChat } = useChatSlice()
+  const { setChat, setMessages, setMessagePage } = useChatSlice()
   const navigate = useNavigate()
 
   const handleCreateNewGroup = async () => {
-    const users = selectedUsers.map((u: any) => u.userId)
-    const formData = new FormData()
-    formData.set('users', JSON.stringify(users))
-    formData.set('groupName', groupName)
-    if (avatar) {
-      formData.set('avatar', file!)
-    }
-    const res = (await createGroup(formData)) as any
-    if (res.isExisting) {
-      setError(
-        `Group name ${res.chat.groupName} with this members already exits. Please add different Members.`
-      )
-    } else if (res.isSuccess) {
-      setChat(res.chat)
-      navigate(`/inbox/${res.chat._id}`)
-      onGroupCreated()
+    try {
+      const users = selectedUsers.map((u: any) => u.userId)
+      setStatus('loading')
+      const formData = new FormData()
+      formData.set('users', JSON.stringify(users))
+      formData.set('groupName', groupName)
+      if (avatar) {
+        formData.set('avatar', file!)
+      }
+      const res = (await createGroup(formData)) as any
+      if (res.isExisting) {
+        setError(
+          `Group name ${res.chat.groupName} with this members already exits. Please add different Members.`
+        )
+      } else if (res.isSuccess) {
+        setMessages([])
+        setChat(res.chat)
+        setMessagePage(1)
+        navigate(`/inbox/${res.chat._id}`)
+        onGroupCreated()
+      }
+      setStatus('success')
+    } catch (error) {
+      setStatus('error')
     }
   }
 
@@ -103,16 +112,18 @@ const CreateGroup = ({ selectedUsers, onClose, onGroupCreated }: any) => {
             )}
           </div>
           {error && (
-            <div className='px-2'>
-              <p className='p-2 border rounded border-red-800 text-red-800 bg-red-200' >{error}</p>
+            <div className="px-2">
+              <p className="rounded border border-red-800 bg-red-200 p-2 text-red-800">
+                {error}
+              </p>
             </div>
-          )} 
+          )}
           <div className="px-2 py-4">
             <button
               className="w-full rounded-md bg-blue-500 p-2 text-white"
               onClick={handleCreateNewGroup}
             >
-              Create New Group
+              {status === 'loading' ? 'Loading' : 'Create New Group'}
             </button>
           </div>
         </div>

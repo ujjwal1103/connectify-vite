@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from 'react-router-dom'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import {
   useCallback,
@@ -13,6 +13,7 @@ import {
   Ellipsis,
   ImageIcon,
   MessageSquareX,
+  ShieldBan,
   Trash2,
   VideoIcon,
 } from 'lucide-react'
@@ -24,6 +25,7 @@ import { IChat } from '@/lib/types'
 import { useSocket } from '@/context/SocketContext'
 import useSocketEvents from '@/hooks/useSocketEvent'
 import DropDownMenu from '@/components/shared/dialogs/DropDownMenu/DropDownMenu'
+import { toast } from 'react-toastify'
 
 const formatMessage = (message: string, messageType: string) => {
   if (messageType === 'IMAGE') {
@@ -75,12 +77,13 @@ const Chat = ({ chat }: ChatProps) => {
   const menuRef = useRef<HTMLDivElement>(null)
   const buttonRef = useRef<HTMLButtonElement>(null)
   const navigate = useNavigate()
+  const location = useLocation()
 
   const selectThisChat = () => {
     if (selectedChat?._id !== chat._id || !chatId) {
       setMessagePage(1)
       setMessages([])
-      navigate(`/inbox/${chat._id}`, { replace: true })
+      navigate(`/inbox/${chat._id}`, {replace: location.pathname !== '/inbox'})
       setSelectedChat(chat)
     }
   }
@@ -174,7 +177,13 @@ const Chat = ({ chat }: ChatProps) => {
         <motion.span className="text-xss">
           {formatDate(chat?.lastMessage?.createdAt!)}
         </motion.span>
-        <DropDownMenu items={[
+        <DropDownMenu 
+        onPressItem={ (title: string)=>{
+          if(title === 'Delete Chat'){
+            handleDeleteChat()
+          }
+        }}
+        items={[
            {
             title:"Archive Chat",
             icon: ArchiveIcon
@@ -189,14 +198,13 @@ const Chat = ({ chat }: ChatProps) => {
            },
            {
             title:"Block",
-            icon: MessageSquareX
+            icon: ShieldBan
            },
            {
             title:"Delete Chat",
             icon: Trash2,
-            onPress:handleDeleteChat
            }
-        ]} className="translate-x-7 self-end transition-transform duration-300 group-hover:inline-block group-hover:-translate-x-0">
+        ]} className="translate-x-7 self-end transition-transform duration-300 group-hover:inline-block group-hover:-translate-x-0 focus-visible:translate-x-0 focus-visible:outline-none hover:bg-background/50 focus-visible:bg-background/50 rounded">
           <span className="">
             <Ellipsis />
           </span>
@@ -242,10 +250,7 @@ const AvatarAndCheckbox = ({
         )}
       >
         <Avatar
-          src={tranformUrl(
-            chat.isGroup ? chat?.groupAvatar?.url : chat?.friend?.avatar?.url,
-            50
-          )}
+          src={chat.isGroup ? chat?.groupAvatar?.url : chat?.friend?.avatar?.url}
           name={chat.isGroup ? chat?.groupName : chat?.friend?.name}
           className="inline-block size-8 rounded-full bg-background object-cover duration-500 hover:scale-90"
         />

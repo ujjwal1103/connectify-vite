@@ -5,8 +5,9 @@
 @layer base {
   :root {
     font-size: 16px;
-    --background: 0 0% 98%;
-    --background-secondary: 0 0% 95%;
+    --background: 0 0% 96%;
+    --background-secondary: 240 4.9% 83.9%;
+
     --foreground: 240 10% 3.9%;
     --card: 0 0% 98%;
     --card-foreground: 235 32% 92;
@@ -29,12 +30,16 @@
     --chat-bubble-self: 300 100% 14%;
     --chat-bubble-user:  233 11% 84%;
     --chat-backgroud: 0 0% 96%;
+    --message-background:220 14.3% 95.9%;
   }
+ 
 
   .dark {
     font-size: 16px;
-    --background: 240 10% 4%;
-    --background-secondary: 0 0 9%;
+    --background: 240 10% 3.9%;
+    --background-secondary:0 0% 14.9%;
+    --background-ternary: 240 5.3% 26.1%;
+    --secondary:  0 0% 14%;
     --foreground: 0 0% 98%;
     --foreground-secondary: 0 0% 64%;
     --card: 240 10% 4%;
@@ -43,7 +48,7 @@
     --popover-foreground: 0 0% 98%;
     --primary: 0 0% 98%;
     --primary-foreground: 240 5.9% 10%;
-    --secondary: 240 1% 15%;
+   
     --secondary-foreground: 0 0% 98%;
     --muted: 240 3.7% 15.9%;
     --muted-foreground: 240 5% 64.9%;
@@ -56,6 +61,7 @@
     --ring: 240 4.9% 83.9%;
     --chat-bubble-self: 240 10% 4%;
     --chat-bubble-user: 240 1% 15%;
-    --chat-backgroud: 0 0% 7%;
+    /* --chat-backgroud: 240 5.3% 26.1%; */
+    --message-background:214.3 31.8% 91.4%;
   }
 }

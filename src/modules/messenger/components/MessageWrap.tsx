@@ -1,5 +1,5 @@
-import { cn, tranformUrl } from '@/lib/utils'
-import { memo } from 'react'
+import { cn } from '@/lib/utils'
+import { memo, useCallback, useEffect, useState } from 'react'
 import CheckBox from './CheckBox'
 import Avatar from '@/components/shared/Avatar'
 import { IMessage, IUser } from '@/lib/types'
@@ -8,7 +8,8 @@ import MessageMenu from './MessageMenu'
 import { useChatSlice } from '@/redux/services/chatSlice'
 import Modal from '@/components/shared/modal/Modal'
 import EditMessage from './EditMessage'
-import { AnimatePresence } from 'framer-motion'
+import { AnimatePresence, motion, useAnimate } from 'framer-motion'
+import { deleteMessageById } from '@/api'
 
 interface MessageWrapProps {
   children: React.ReactNode
@@ -35,17 +36,53 @@ const MessageWrap = ({
   showProfile,
   message,
 }: MessageWrapProps) => {
-  const { setEditMessage, editMessage } = useChatSlice()
+  const { setEditMessage, editMessage, removeMessage } = useChatSlice()
+  const [scope, animate] = useAnimate()
+  const [animationCompleted, setAnimationCompleted] = useState(0)
+
+  const onDelete = useCallback(async () => {
+    await animate(
+      scope.current,
+      {
+        height: 0,
+        scale: 0,
+      },
+      {
+        duration: 0.3,
+        onComplete: ()=>{
+          setAnimationCompleted(animationCompleted+1)
+        }
+      }
+    )
+  }, [message._id])
+
+  useEffect(() => {
+    if (animationCompleted === 1) {
+      try {
+        removeMessage(messageId);
+        deleteMessageById(message._id);
+      } catch (error) {
+        console.error('Failed to delete message:', error);
+      }
+    }
+  }, [animationCompleted, messageId, removeMessage]);
+  
+
   return (
-    <div className={cn('relative flex-col', className)}>
+    <motion.div
+      id={message._id || message.tempId}
+      ref={scope}
+      className={cn(
+        'relative origin-[left] flex-col',
+        className,
+        message.isCurrentUserMessage && 'origin-right'
+      )}
+    >
       {!currentUserMessage && showProfile && (
-        <div className="mb-1 ml-3 mt-3 flex gap-3">
+        <div className="ml-3 flex gap-3">
           <UsernameLink username={sender?.username} className="flex gap-3">
             <div className="size-5">
-              <Avatar
-                src={tranformUrl(sender?.avatar?.url, 100)!}
-                className="size-5"
-              />
+              <Avatar src={sender?.avatar?.url} className="size-5" />
             </div>
             <span className="text-xs">{sender?.username}</span>
           </UsernameLink>
@@ -67,7 +104,7 @@ const MessageWrap = ({
         </div>
         <div
           className={cn(
-            'z-5 start chat mx-4 flex -translate-x-8 text-gray-50 transition-transform duration-150',
+            'z-5 start chat mx-4 flex -translate-x-8 p-0 text-gray-50 transition-transform duration-150',
             {
               'end ml-auto translate-x-0 self-end': currentUserMessage,
               'translate-x-0': isSelectMessages,
@@ -84,6 +121,7 @@ const MessageWrap = ({
                 currentUserMessage={currentUserMessage}
                 messageId={messageId}
                 message={message}
+                onDelete={onDelete}
               />
             </div>
             <div className="relative">{children}</div>
@@ -103,8 +141,11 @@ const MessageWrap = ({
           </Modal>
         )}
       </AnimatePresence>
-    </div>
+    </motion.div>
   )
 }
-
-export default memo(MessageWrap)
+export default memo(
+  MessageWrap,
+  (prev, next) =>
+    prev.message._id === next.message._id 
+);

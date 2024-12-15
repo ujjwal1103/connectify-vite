@@ -28,14 +28,14 @@ const TextMessage = ({
   return (
     <div
       className={cn(
-        'relative z-10 flex w-fit max-w-md flex-col rounded-xl bg-chat-bubble-user p-2 text-foreground transition-all duration-700',
+        'relative z-10 flex w-fit max-w-md flex-col  rounded-xl bg-message-background p-2 text-foreground transition-all duration-700',
         {
           'bg-chat-bubble-self text-white': currentUserMessage,
           'chat-bubble': showNotch,
         }
       )}
     >
-      <div className="overflow-hidden break-words text-sm">
+      <div className={cn("overflow-hidden break-words text-sm text-black",currentUserMessage && 'text-white')}>
         {showMore ? text : text?.slice(0, 300) + (longMessage ? '...' : '')}
       </div>
       {isEdited && <span>Edited</span>}

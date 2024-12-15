@@ -45,8 +45,6 @@ const Sidebar = () => {
     resetModalState,
   } = useModalStateSlice()
 
-  const {showChatInfo} = useChatSlice()
-
   const sidebarRef = useRef<any>()
   const location = useLocation()
 
@@ -102,6 +100,8 @@ const Sidebar = () => {
     }
   }
 
+  const isInboxOpen = location.pathname.includes('/inbox')
+
   const renderRouteItem = useCallback(
     (route: SidebarRoute) => {
       const isDisabled = route.modal
@@ -119,11 +119,14 @@ const Sidebar = () => {
           handleModalClick={handleModalClick}
           isDisabled={isDisabled}
           count={count}
+          isHidden={isInboxOpen}
         />
       )
     },
-    [counts.messenger, counts.notification]
+    [counts.messenger, counts.notification,isInboxOpen]
   )
+
+  
 
   return (
     <>
@@ -131,12 +134,12 @@ const Sidebar = () => {
         ref={sidebarRef}
         id="sidebar"
         className={cn(
-          'z-[120] hidden h-dvh  flex-col bg-background p-2 font-semibold text-foreground sm:flex lg:flex-[0.1]',
-          showChatInfo && 'hidden'
+          'hidden z-[120]  h-dvh flex-col bg-background border-r-[0.2px] border-zinc-800 p-2 font-semibold text-foreground sm:flex',
+          isInboxOpen && 'sm:flex hidden transition-all duration-300'
         )}
       >
-        <SidebarHeader />
-        <ul className="flex flex-[1] flex-col gap-2 py-3">
+        <SidebarHeader hide={isInboxOpen}/>
+        <ul className={cn("flex flex-[1] flex-col gap-2 py-3")}>
           {sidebarRoutes.map(renderRouteItem)}
         </ul>
       </aside>

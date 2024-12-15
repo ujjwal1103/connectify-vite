@@ -62,7 +62,7 @@ const Feeds = () => {
       id="scrollableDiv"
     >
       <section className="mt-10 flex flex-1 flex-col gap-2 py-1 md:mt-0 md:flex-[0.8] md:gap-3 md:p-3 lg:flex-[0.6]">
-        <Stories />
+        {/* <Stories /> */}
 
         <div className="flex flex-col w-full">
           <div className="flex flex-col">
@@ -81,7 +81,7 @@ const Feeds = () => {
           </div>
         </div>
       </section>
-      <section className="hidden flex-[0.4] lg:block">
+      <section className="hidden flex-[0.4] lg:block sticky top-0">
         <RightSideContainer />
       </section>
 

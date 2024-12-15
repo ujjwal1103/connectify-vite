@@ -1,9 +1,11 @@
 import Avatar from '@/components/shared/Avatar';
 import DropDownMenuItem from '@/components/shared/dialogs/DropDownMenu/DropDownMenuItem';
+import { tranformUrl } from '@/lib/utils';
 import { useChatSlice } from '@/redux/services/chatSlice';
 import { useClickOutside } from '@react-hookz/web';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
+  ChevronLeft,
   Ellipsis,
   Info,
   ListChecks,
@@ -11,6 +13,7 @@ import {
   Trash2,
 } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const MessageListHeader = () => {
   const { selectedChat, setIsSelectMessages, toggleShowChat} = useChatSlice()
@@ -18,6 +21,7 @@ const MessageListHeader = () => {
 
   const menuRef = useRef<any>(null)
   const buttonRef = useRef<any>(null)
+  const navigate = useNavigate()
 
   useClickOutside(menuRef, (e) => {
     if (buttonRef.current && buttonRef.current.contains(e.target)) {
@@ -35,17 +39,24 @@ const MessageListHeader = () => {
 
   const handleButtonClick = () => setOpen((prev) => !prev)
 
+  const handleGoBack = () => {
+    navigate(-1);
+  }
+
   return (
-    <div className="relative z-100 flex flex-[0.05] items-center bg-secondary px-4 py-2">
+    <div className="relative z-100 flex flex-[0.05] items-center bg-background px-4 py-2">
+      <button className='pr-2' onClick={handleGoBack}>
+        <ChevronLeft size={24}/>
+      </button>
       <div
         className="flex items-center gap-3 font-semibold"
         onClick={toggleShowChat}
       >
         <Avatar
           src={
-            selectedChat?.isGroup
+            tranformUrl(selectedChat?.isGroup
               ? selectedChat?.groupAvatar?.url
-              : selectedChat?.friend?.avatar?.url
+              : selectedChat?.friend?.avatar?.url)
           }
         />
         <span>

@@ -1,9 +1,13 @@
 import NewStoryIcon from '@/components/icons/NewStoryIcon'
+import Reels from '@/components/icons/Reels'
+import ReelsFill from '@/components/icons/ReelsFill'
 import { ModalStateNames } from '@/redux/services/modalStateSlice'
 import {
+  CircleFadingPlus,
   Compass,
   Heart,
   Home,
+  LucideIcon,
   Menu as MenuIcon,
   Search as SearchIcon,
   Send,
@@ -32,7 +36,7 @@ export const sidebarRoutes: SidebarRoute[] = [
     modalName: 'searchSheet',
   },
   { route: '/explore', label: 'Explore', Icon: Compass },
-  { route: '/reels', label: 'Reels', Icon: SquarePlay },
+  { route: '/reels', label: 'Reels', Icon: ReelsFill as LucideIcon},
   { route: '/inbox', label: 'Messages', Icon: Send, badge: true },
   {
     route: '/notifications',
@@ -50,7 +54,7 @@ export const sidebarRoutes: SidebarRoute[] = [
     modalName: 'openPostModal',
   },
   { route: '/profile', label: 'Profile', Icon: User2 },
-  { route: '/newstory', label: 'New Story', Icon: NewStoryIcon, modalName: 'newStory',modal: true },
+  { route: '/newstory', label: 'New Story', Icon: CircleFadingPlus, modalName: 'newStory',modal: true },
   {
     route: '/more',
     label: 'More',

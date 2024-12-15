@@ -226,7 +226,9 @@ const PostMenu = ({
 
   return (
     <>
-      <div ref={buttonRef} className="absolute right-2 top-2 hidden md:block">
+      <div ref={buttonRef} style={{
+        backgroundImage: 'radial-gradient(farthest-side at 60% 55%, transparent, transparent, black)'
+      }} className="absolute bg-gradient-to-bl from-zinc-950 rounded-bl-lg to-transparent right-0 top-0 hidden md:block p-2 ">
         <MoreHorizontal
           className="size-3 cursor-pointer md:size-6"
           onClick={handleMenuToggle}

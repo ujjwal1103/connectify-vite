@@ -14,7 +14,7 @@ import {
   Smile,
   Trash2,
 } from 'lucide-react'
-import { deleteMessageById, reactCurrentMessage } from '@/api'
+import { reactCurrentMessage } from '@/api'
 import { IMessage } from '@/lib/types'
 import { cn } from '@/lib/utils'
 import { useChatSlice } from '@/redux/services/chatSlice'
@@ -25,6 +25,7 @@ interface MessageMenuOptions {
   currentUserMessage: boolean
   messageId: string
   message: IMessage
+  onDelete: ()=>void
 }
 
 const reactionEmoji = ['👍', '🙂', '😊', '😇', '😘']
@@ -33,6 +34,7 @@ const MessageMenu = ({
   currentUserMessage,
   messageId,
   message,
+  onDelete
 }: MessageMenuOptions) => {
   const [moreOptions, setMoreOptions] = useState(false)
   const [menuPosition, setMenuPosition] = useState<any>({
@@ -69,8 +71,7 @@ const MessageMenu = ({
   }
 
   const handleDelete = async () => {
-    await deleteMessageById(messageId)
-    removeMessage(messageId)
+    onDelete()
     setMoreOptions(false)
   }
 
@@ -161,7 +162,7 @@ const MessageMenu = ({
           {moreOptions && (
             <motion.div
               ref={menuRef}
-              className="fixed z-100 bg-secondary"
+              className="fixed z-100 bg-[#1b1b1b] border border-[#1f1f1f]"
               initial={{ opacity: 0, scale: 0.3 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.3 }}
@@ -182,11 +183,11 @@ const MessageMenu = ({
                     />
                   ))}
                 </li>
-                <DropDownMenuItem
+             {message.isCurrentUserMessage &&   <DropDownMenuItem
                   label={'Message Info'}
                   onClick={() => {}}
                   icon={Info}
-                />
+                />}
                 {message.messageType === 'TEXT_MESSAGE' && message.isCurrentUserMessage && (
                   <DropDownMenuItem
                     label={'Edit'}
@@ -225,7 +226,7 @@ export const EmojiButton = ({
 }) => {
   return (
     <button
-      className="rounded px-2 py-2 text-sm hover:bg-background"
+      className="rounded px-2 py-2 text-sm hover:bg-background/50"
       onClick={() => onClick(emoji)}
     >
       {emoji}

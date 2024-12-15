@@ -9,7 +9,7 @@ import { v4 as uuid } from 'uuid'
 const useSendMessage = () => {
   const [sending, setSending] = useState(false)
   const [error, setError] = useState(false)
-  const { addMessage } = useChatSlice()
+  const { addMessage,setIsAddingContent  } = useChatSlice()
 
   const send = useCallback(
     async (
@@ -34,7 +34,7 @@ const useSendMessage = () => {
         isCurrentUserMessage: true,
         reply: message.reply,
       })
-
+      setIsAddingContent(true)
       try {
         setSending(true)
         setError(false)

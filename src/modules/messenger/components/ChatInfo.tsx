@@ -1,26 +1,31 @@
-import { updateGroupName } from '@/api'
+import { removeGroupMember, updateGroup } from '@/api'
 import Avatar from '@/components/shared/Avatar'
 import UsernameLink from '@/components/shared/UsernameLink'
-import { IChat, IUser } from '@/lib/types'
+import { IChat, IMember, IUser } from '@/lib/types'
 import { useChatSlice } from '@/redux/services/chatSlice'
 import { useClickOutside } from '@react-hookz/web'
 import { AnimatePresence, motion } from 'framer-motion'
 import {
   Check,
+  Loader,
   MoreHorizontal,
+  PencilIcon,
   PencilLineIcon,
   X,
 } from 'lucide-react'
-import { useEffect, useRef, useState } from 'react'
+import { ChangeEvent, useEffect, useRef, useState } from 'react'
 import AddGroupMembers from './AddGroupMembers'
 import DropDownMenu from '@/components/shared/dialogs/DropDownMenu/DropDownMenu'
+import { getCurrentUserId } from '@/lib/localStorage'
 
 const ChatInfo = () => {
-  const { selectedChat, setGroupName, toggleShowChat, closeShowChat } =
+  const { selectedChat, updateGroupInfo, toggleShowChat, closeShowChat } =
     useChatSlice()
-  const { isGroup, friend, members, _id, groupAvatar, groupName, membersInfo } =
+
+  const { isGroup, friend, members, _id, groupAvatar, groupName } =
     selectedChat as IChat
   const [editGroupName, setEditGroupName] = useState(false)
+  const [status, setStatus] = useState('idel')
   const [newGroupName, setNewGroupName] = useState(groupName)
   const [imagePreview, setImagePreview] = useState<string | null | undefined>(
     null
@@ -28,8 +33,14 @@ const ChatInfo = () => {
   const groupNameRef = useRef<HTMLDivElement | null>(null)
 
   const handleChangeNewName = async () => {
-    setGroupName({ chatId: _id, newGroupName })
-    await updateGroupName(_id, newGroupName!)
+    if (!newGroupName) return
+    updateGroupInfo({ chatId: _id, newGroupName })
+
+    const formData = new FormData()
+
+    formData.append('name', newGroupName)
+
+    await updateGroup(_id, formData)
     setEditGroupName(false)
   }
 
@@ -41,12 +52,29 @@ const ChatInfo = () => {
     setEditGroupName(false)
   })
 
-  const allMembers = members?.map((member) => {
-    return {
-      role: member.role,
-      user: membersInfo?.find((u) => u._id === member.user),
-    }
-  })
+  const handleNewAvatar = async (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+
+    if (!file) return
+
+    const formData = new FormData()
+
+    formData.append('avatar', file)
+
+    setStatus('loading')
+    try {
+      const res = await updateGroup(_id, formData)
+      console.log(res)
+      if (res.isSuccess) {
+        setStatus('Success')
+        updateGroupInfo({ chatId: _id, groupAvatar: res.chat.groupAvatar })
+      }
+    } catch (error) {}
+  }
+
+  const isMeAdmin = members
+    ?.filter((m) => m.role === 'admin')
+    .some((m) => m._id === getCurrentUserId())
 
   return (
     <div className="z-100 h-full w-[288px] overflow-y-scroll scrollbar-none">
@@ -62,17 +90,38 @@ const ChatInfo = () => {
           onClick={() =>
             setImagePreview(isGroup ? groupAvatar?.url : friend?.avatar?.url)
           }
+          className="relative"
         >
           <Avatar
             src={isGroup ? groupAvatar?.url : friend?.avatar?.url}
             className="z-100 size-24"
           />
+          {status === 'loading' && (
+            <div className="absolute inset-0 z-[111] flex items-center justify-center rounded-full bg-black/60">
+              <Loader className="animate-spin" />
+            </div>
+          )}
+       {isMeAdmin &&  <label
+            htmlFor="new Avatar"
+            onClick={(e) => {
+              e.stopPropagation()
+            }}
+            className="absolute bottom-0 right-0 z-[110] cursor-pointer rounded-full border border-border bg-background p-1"
+          >
+            <PencilIcon size={16} />
+            <input
+              type="file"
+              id="new Avatar"
+              hidden
+              onChange={handleNewAvatar}
+            />
+          </label>}
         </motion.div>
         <div ref={groupNameRef}>
           {isGroup ? (
             <div className="flex items-center gap-2">
               <div>
-                {editGroupName ? (
+                {editGroupName && isMeAdmin ? (
                   <input
                     autoFocus
                     value={newGroupName}
@@ -83,6 +132,7 @@ const ChatInfo = () => {
                   <span>{groupName}</span>
                 )}
               </div>
+             {isMeAdmin && <div>
               {!editGroupName ? (
                 <button onClick={() => setEditGroupName(true)}>
                   <PencilLineIcon size={15} />
@@ -96,6 +146,7 @@ const ChatInfo = () => {
                   <Check size={15} />
                 </button>
               )}
+              </div>}
             </div>
           ) : (
             <div>{friend.username}</div>
@@ -107,17 +158,24 @@ const ChatInfo = () => {
         <div className="mt-6">
           <div className="flex justify-between">
             <p className="p-2 text-base font-[500]">Group Members</p>
-            {selectedChat && members && (
+            {selectedChat && members && isMeAdmin && (
               <AddGroupMembers
-                chatId={selectedChat?._id}
-                members={members?.map((m) => m.user)}
+                chatId={_id}
+                members={members.map((m) => m._id)}
               />
             )}
           </div>
           <div className="space-y-2">
-            {allMembers?.map(({ user: member, role }) => {
+            {members?.map((member: IMember) => {
               if (!member) return <></>
-              return <MemberItem member={member} role={role} />
+              return (
+                <MemberItem
+                  key={member._id}
+                  member={member}
+                  chatId={_id}
+                  isMeAdmin={isMeAdmin}
+                />
+              )
             })}
           </div>
         </div>
@@ -148,13 +206,29 @@ const ChatInfo = () => {
 }
 
 type MemberItemProps = {
-  member: IUser
-  role: 'member' | 'admin'
+  member: IUser & { role: 'member' | 'admin' }
+  chatId: string
+  isMeAdmin: boolean | undefined
 }
 
-const MemberItem = ({ member, role }: MemberItemProps) => {
+const MemberItem = ({ member, chatId, isMeAdmin }: MemberItemProps) => {
+  const { removeMember } = useChatSlice()
+  const handleRemoveMember = async () => {
+    try {
+      removeMember(member)
+      await removeGroupMember({ chatId, memberId: member._id })
+    } catch (error) {
+      console.log('error', error)
+    }
+  }
   return (
-    <div className="flex h-full items-center justify-between p-2 hover:bg-secondary/40">
+    <motion.div
+      animate={{ opacity: 1, y: 0 }}
+      layout
+      transition={{ duration: 0.2 }}
+      exit={{ opacity: 0, y: -200 }}
+      className="flex h-full items-center justify-between p-2 hover:bg-secondary/40"
+    >
       <div className="flex items-center gap-3">
         <div>
           <Avatar src={member?.avatar?.url} className="size-8 h-full" />
@@ -165,29 +239,35 @@ const MemberItem = ({ member, role }: MemberItemProps) => {
           </UsernameLink>
         </div>
       </div>
-      <div>
-        {role === 'admin' ? (
-          <span className="rounded bg-secondary p-1 text-xs">Admin</span>
-        ) : (
-          <DropDownMenu
-            items={[
-              {
-                title: 'Make Group Admin',
-                onPress: () => {},
-              },
-              {
-                title: 'Remove',
-                onPress: () => {},
-              },
-            ]}
-          >
-            <span>
-              <MoreHorizontal />
-            </span>
-          </DropDownMenu>
-        )}
-      </div>
-    </div>
+      {isMeAdmin && (
+        <div>
+          {member.role === 'admin' ? (
+            <span className="rounded bg-secondary p-1 text-xs">Admin</span>
+          ) : (
+            <DropDownMenu
+              onPressItem={(title) => {
+                if (title === 'Remove') {
+                  handleRemoveMember()
+                }
+              }}
+              items={[
+                {
+                  title: 'Make Group Admin',
+                  onPress: () => {},
+                },
+                {
+                  title: 'Remove',
+                },
+              ]}
+            >
+              <span>
+                <MoreHorizontal />
+              </span>
+            </DropDownMenu>
+          )}
+        </div>
+      )}
+    </motion.div>
   )
 }
 

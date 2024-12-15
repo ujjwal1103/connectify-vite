@@ -1,96 +1,110 @@
-import { addGroupMember } from '@/api';
-import Avatar from '@/components/shared/Avatar';
-import Modal from '@/components/shared/modal/Modal';
-import UsernameLink from '@/components/shared/UsernameLink';
-import { makeRequest } from '@/config/api.config';
-import { IUser } from '@/lib/types';
-import { cn } from '@/lib/utils';
-import { useChatSlice } from '@/redux/services/chatSlice';
+import { addGroupMembers } from '@/api'
+import Avatar from '@/components/shared/Avatar'
+import Modal from '@/components/shared/modal/Modal'
+import UsernameLink from '@/components/shared/UsernameLink'
+import { makeRequest } from '@/config/api.config'
+import { IMember, IUser } from '@/lib/types'
+import { cn } from '@/lib/utils'
+import { useChatSlice } from '@/redux/services/chatSlice'
 
-import { AnimatePresence } from 'framer-motion';
-import { PlusIcon, X } from 'lucide-react';
-import { useState, useCallback, useEffect } from 'react';
-import { BiLoader } from 'react-icons/bi';
-import { IoClose } from 'react-icons/io5';
-import { toast } from 'react-toastify'; // Assuming you're using react-toastify for toast messages
+import { AnimatePresence } from 'framer-motion'
+import { PlusIcon, X } from 'lucide-react'
+import { useState, useCallback, useEffect, ReactNode } from 'react'
+import { BiLoader } from 'react-icons/bi'
+import { IoClose } from 'react-icons/io5'
+import { toast } from 'react-toastify' // Assuming you're using react-toastify for toast messages
 
-const AddGroupMembers = ({ chatId, members }: { chatId: string; members: string[] }) => {
-  const [openList, setOpenList] = useState(false);
-  const [searchTerm, setSearchTerm] = useState<string>('');
-  const [users, setUsers] = useState<IUser[]>([]);
-  const [selectedUsers, setSelectedUsers] = useState<IUser[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const { addNewMembers } = useChatSlice();
+const AddGroupMembers = ({
+  chatId,
+  members,
+  children,
+}: {
+  chatId: string
+  members: string[]
+  children?: ReactNode
+}) => {
+  const [openList, setOpenList] = useState(false)
+  const [searchTerm, setSearchTerm] = useState<string>('')
+  const [users, setUsers] = useState<IUser[]>([])
+  const [selectedUsers, setSelectedUsers] = useState<IUser[]>([])
+  const [isLoading, setIsLoading] = useState(false)
+  const { addNewMembers } = useChatSlice()
 
-  const MEMBER_LIMIT = 10;
+  const MEMBER_LIMIT = 10
 
   const getAllUsers = useCallback(async (showLoader = true) => {
-    showLoader && setIsLoading(true);
+    showLoader && setIsLoading(true)
     try {
-      const res = await makeRequest.get(`/newchat/users`);
-      setUsers(res.data);
+      const res = await makeRequest.get(`/newchat/users`)
+      setUsers(res.data)
     } catch (error) {
-      console.log(error);
+      console.log(error)
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  }, []);
+  }, [])
 
   useEffect(() => {
-    getAllUsers();
-  }, [getAllUsers]);
+    getAllUsers()
+  }, [getAllUsers])
 
   const addMembers = () => {
-    const totalMembers = members.length + selectedUsers.length;
-    const remainingSlots = MEMBER_LIMIT - members.length;
+    const totalMembers = members.length + selectedUsers.length
+    const remainingSlots = MEMBER_LIMIT - members.length
 
     if (totalMembers > MEMBER_LIMIT) {
-      toast.error(`Only ${remainingSlots} more members can be added.`);
-      return;
+      toast.error(`Only ${remainingSlots} more members can be added.`)
+      return
     }
 
     try {
-      addNewMembers(selectedUsers);
-      const res = addGroupMember({
+      addNewMembers(selectedUsers as IMember[])
+      const res = addGroupMembers({
         chatId,
         newMembers: selectedUsers.map((u) => u._id),
-      });
-      console.log(res);
-      setSelectedUsers([]);
-      setOpenList(false);
-      toast.success('Members added successfully!');
+      })
+      console.log(res)
+      setSelectedUsers([])
+      setOpenList(false)
+      toast.success('Members added successfully!')
     } catch (error) {
-      console.log(error);
-      toast.error('Failed to add members.');
+      console.log(error)
+      toast.error('Failed to add members.')
     }
-  };
+  }
 
   const handleSelectChat = (user: IUser) => {
     setSelectedUsers((prev) => {
-      const userExists = prev.some((u) => u._id === user._id);
+      const userExists = prev.some((u) => u._id === user._id)
       if (userExists) {
-        return prev.filter((u) => u._id !== user._id);
+        return prev.filter((u) => u._id !== user._id)
       }
-      return [...prev, user];
-    });
-  };
+      return [...prev, user]
+    })
+  }
 
   return (
     <>
       <button
         onClick={() => {
-          setOpenList(true);
+          setOpenList(true)
         }}
-        className="mr-2 flex size-8 items-center justify-center rounded hover:bg-secondary/40 disabled:pointer-events-none disabled:opacity-25"
         disabled={members.length >= 10}
+        className='disabled:pointer-events-none disabled:opacity-25'
       >
-        <PlusIcon />
+        {children ? (
+          children
+        ) : (
+          <div className="mr-2 flex size-8 items-center justify-center rounded hover:bg-secondary/40 ">
+            <PlusIcon />
+          </div>
+        )}
       </button>
       <AnimatePresence>
         {openList && (
           <Modal showCloseButton={false}>
-            <div className="relative z-10 h-144 bg-background text-foreground scrollbar-none flex flex-col">
-              <div className="h-full overflow-y-scroll scrollbar-none flex-1">
+            <div className="relative z-10 flex h-144 flex-col bg-background text-foreground scrollbar-none">
+              <div className="h-full flex-1 overflow-y-scroll scrollbar-none">
                 <div className="h-full w-screen overflow-y-scroll shadow-lg scrollbar-none md:w-96">
                   <div className="sticky top-0 z-10 bg-background">
                     <div className="mb-2 flex items-center justify-between rounded-sm p-2 font-medium text-foreground shadow-lg">
@@ -106,7 +120,7 @@ const AddGroupMembers = ({ chatId, members }: { chatId: string; members: string[
                           className="text-forground w-full rounded bg-secondary px-3 py-2 text-sm placeholder:text-foreground focus:outline-none"
                           placeholder="Search..."
                           onChange={(e) => {
-                            setSearchTerm(e.target.value);
+                            setSearchTerm(e.target.value)
                           }}
                           value={searchTerm}
                         />
@@ -114,7 +128,7 @@ const AddGroupMembers = ({ chatId, members }: { chatId: string; members: string[
                           <span
                             className="mr-2 cursor-pointer rounded-full bg-foreground text-secondary"
                             onClick={() => {
-                              setSearchTerm('');
+                              setSearchTerm('')
                             }}
                           >
                             <X size={16} />
@@ -139,7 +153,7 @@ const AddGroupMembers = ({ chatId, members }: { chatId: string; members: string[
                         <span
                           key={user._id}
                           className={cn(
-                            'flex items-center gap-2 rounded-md bg-secondary px-2',
+                            'flex items-center gap-2 rounded-md bg-secondary px-2'
                           )}
                         >
                           <span>{user?.username}</span>
@@ -147,23 +161,30 @@ const AddGroupMembers = ({ chatId, members }: { chatId: string; members: string[
                             className="cursor-pointer"
                             onClick={() => {
                               setSelectedUsers((prev) =>
-                                prev.filter((u) => u._id !== user._id),
-                              );
+                                prev.filter((u) => u._id !== user._id)
+                              )
                             }}
                           >
                             <X size={12} />
                           </span>
                         </span>
-                      );
+                      )
                     })}
                   </div>
                   <div className="relative">
                     {users?.map((user) => {
-                      const isSelected = members.includes(user._id);
+                      const isSelected = members.includes(user._id)
                       const isChecked = selectedUsers.some(
-                        (u) => u._id === user?._id,
+                        (u) => u._id === user?._id
                       )
-                      return <MemberItem user={user} isSelected={isSelected} isChecked={isChecked} handleSelectChat={handleSelectChat}/>
+                      return (
+                        <MemberItem
+                          user={user}
+                          isSelected={isSelected}
+                          isChecked={isChecked}
+                          handleSelectChat={handleSelectChat}
+                        />
+                      )
                     })}
                   </div>
                 </div>
@@ -183,41 +204,51 @@ const AddGroupMembers = ({ chatId, members }: { chatId: string; members: string[
         )}
       </AnimatePresence>
     </>
-  );
-};
+  )
+}
 
 type MemberItemProps = {
-    user:IUser, isSelected: boolean, handleSelectChat: (user:IUser)=>void, isChecked: boolean
+  user: IUser
+  isSelected: boolean
+  handleSelectChat: (user: IUser) => void
+  isChecked: boolean
 }
 
-const MemberItem = ({user, isSelected, handleSelectChat, isChecked}:MemberItemProps) => {
-    return  <div
-    key={user._id}
-    className={cn(
-      'group flex items-center gap-3 p-2 px-4 transition-all hover:bg-secondary',
-      isSelected && 'opacity-20 pointer-events-none',
-    )}
-  >
-    <div>
-      <input
-        type="checkbox"
-        onChange={() => handleSelectChat(user)}
-        checked={isChecked}
-      />
+const MemberItem = ({
+  user,
+  isSelected,
+  handleSelectChat,
+  isChecked,
+}: MemberItemProps) => {
+  return (
+    <div
+      key={user._id}
+      className={cn(
+        'group flex items-center gap-3 p-2 px-4 transition-all hover:bg-secondary',
+        isSelected && 'pointer-events-none opacity-20'
+      )}
+    >
+      <div>
+        <input
+          type="checkbox"
+          onChange={() => handleSelectChat(user)}
+          checked={isChecked}
+        />
+      </div>
+      <div className="flex items-center gap-3">
+        <Avatar
+          src={user?.avatar?.url}
+          className="inline-block h-8 w-8 rounded-full object-cover duration-500 hover:scale-90"
+        />
+        <UsernameLink
+          username={user?.username}
+          className="text-sm text-foreground"
+        >
+          <span>{user?.username}</span>
+        </UsernameLink>
+      </div>
     </div>
-    <div className="flex items-center gap-3">
-      <Avatar
-        src={user?.avatar?.url}
-        className="inline-block h-8 w-8 rounded-full object-cover duration-500 hover:scale-90"
-      />
-      <UsernameLink
-        username={user?.username}
-        className="text-sm text-foreground"
-      >
-        <span>{user?.username}</span>
-      </UsernameLink>
-    </div>
-  </div>
+  )
 }
 
-export default AddGroupMembers;
+export default AddGroupMembers

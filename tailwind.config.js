@@ -78,6 +78,9 @@ module.exports = {
           DEFAULT: "hsl(var(--success))",
           foreground: "hsl(var(--success-foreground))",
         },
+        message: {
+          background: "hsl(var(--message-background))",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",

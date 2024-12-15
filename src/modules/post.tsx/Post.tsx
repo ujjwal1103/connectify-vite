@@ -67,7 +67,7 @@ const Post = () => {
   }
 
   return (
-    <div className="flex h-full w-full flex-1 flex-col bg-background md:flex-row">
+    <div className="flex h-full w-full flex-1 flex-col md:flex-row">
       <div className="w-screen flex-1 md:w-1/2">
         <div className="md:pl-5 md:pt-5">
           <div className="flex items-center gap-3 p-2 md:hidden md:p-0">

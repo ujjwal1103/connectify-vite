@@ -9,6 +9,7 @@ import AudioMessage from './AudioMessage'
 import PostMessage from './PostMessage'
 import MessageWrap from './MessageWrap'
 import { IMessage } from '@/lib/types'
+import { getCurrentName, getCurrentUserId } from '@/lib/localStorage'
 
 interface MessageProps {
   currentUserMessage: boolean
@@ -31,7 +32,7 @@ const Message = ({
 }: MessageProps) => {
   const { messageType, _id } = message
 
-  const { isSelectMessages, setSelectedMessage } = useChatSlice()
+  const { isSelectMessages, setSelectedMessage, selectedChat } = useChatSlice()
 
   const handleSelectMessage = useCallback(() => {
     if (isSelectMessages) {
@@ -66,11 +67,25 @@ const Message = ({
     }
   }
 
+  const renderSystemMessage = () => {
+    return message.text.replace(getCurrentName(), 'You')
+  }
+
   const className = clsx(
     'w-full transition-colors duration-300 flex mb-1',
     isSelectMessages && 'hover:bg-zinc-950',
     isMessageSelected && 'bg-zinc-950 bg-opacity-60'
   )
+
+  if (message.messageType === 'SYSTEM') {
+    return (
+      <div className="flex items-center justify-center">
+        <div className="my-1 w-fit rounded-md bg-background/50 p-2 px-4 text-center">
+          {renderSystemMessage()}
+        </div>
+      </div>
+    )
+  }
 
   return (
     <MessageWrap

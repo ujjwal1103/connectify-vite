@@ -42,7 +42,7 @@ const MetaData = ({
             {reaction}
           </button>
         )}
-        <span className={cn({
+        <span className={cn('text-black',{
          
           'text-white':currentUserMessage
         })}>{getReadableTime(createdAt)}

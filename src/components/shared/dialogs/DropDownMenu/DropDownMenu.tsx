@@ -29,21 +29,32 @@ const calculateDistance = (right: number) => {
   }
 }
 
+const initialPosition = {
+  top: 0,
+  left: 0,
+  bottom: 'auto',
+  right: 'auto',
+  transformOrigin: 'top left',
+}
+
 const DropDownMenu = ({
   children,
   items,
   className,
-}: PropsWithChildren<{ items: DropDownMenuItem[]; className?: string }>) => {
+  onPressItem,
+}: PropsWithChildren<{ items: DropDownMenuItem[]; className?: string,onPressItem?: (title: string)=>void }>) => {
+  const [selectedItem, setSelectedItem] = useState(-1);
   const [moreOptions, setMoreOptions] = useState(false)
-  const [menuPosition, setMenuPosition] = useState<any>({
-    top: 0,
-    left: 0,
-    bottom: 'auto',
-    right: 'auto',
-    transformOrigin: 'top left',
-  })
+  const [menuPosition, setMenuPosition] = useState<any>(initialPosition)
   const menuRef = useRef<HTMLDivElement>(null)
   const buttonRef = useRef<HTMLButtonElement>(null)
+
+  const close = () => {
+    setMoreOptions(false);
+    setSelectedItem(-1);
+    setMenuPosition(initialPosition);
+    window.removeEventListener('keydown', handleKeyDown)
+  };
 
   const handleClickOutside = (event: MouseEvent) => {
     if (
@@ -51,18 +62,46 @@ const DropDownMenu = ({
       !menuRef.current.contains(event.target as Node) &&
       buttonRef.current &&
       !buttonRef.current.contains(event.target as Node)
-    ) {
-      setMoreOptions(false)
-    }
+    ) close()
   }
 
-  const handleScroll = () => {
-    setMoreOptions(false)
-  }
-
+ 
   const handleMoreOptions = () => {
     setMoreOptions(true)
   }
+
+  const handleKeyDown = (event: KeyboardEvent) => {
+    if (event.key === 'Escape') {
+      close();
+    }
+    if (event.key === 'ArrowUp') {
+      setSelectedItem((prev) => (prev === 0 ? items.length -1 : prev - 1));
+    }
+    if (event.key === 'ArrowDown') {
+      setSelectedItem((prev) =>
+        prev === items.length - 1 ? 0 : prev + 1
+      );
+    }
+    if (event.key === 'Enter' && selectedItem >= 0) {
+     try {
+      console.log('enter key press', selectedItem >= 0)
+      onPressItem?.(items[selectedItem].title);
+      close();
+      console.log('close key')
+     } catch (error) {
+      console.log('error',error)
+     }
+    }
+  };
+
+  useEffect(() => {
+    if (moreOptions) {
+      window.addEventListener('keydown', handleKeyDown);
+    } else {
+      window.removeEventListener('keydown', handleKeyDown);
+    }
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [moreOptions, selectedItem]);
 
   const setLayout = useCallback(() => {
     if (moreOptions && buttonRef.current) {
@@ -107,21 +146,20 @@ const DropDownMenu = ({
 
   useEffect(() => {
     if (moreOptions) {
-      document.addEventListener('mousedown', handleClickOutside)
-      document.addEventListener('scroll', handleScroll, true)
-      window.addEventListener('resize', handleScroll)
-    } else {
-      document.removeEventListener('mousedown', handleClickOutside)
-      document.removeEventListener('scroll', handleScroll, true)
-      window.addEventListener('resize', handleScroll)
+      document.addEventListener('mousedown', handleClickOutside);
+      window.addEventListener('resize', close);
     }
-
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
-      document.removeEventListener('scroll', handleScroll, true)
-      window.removeEventListener('resize', handleScroll)
+      document.removeEventListener('mousedown', handleClickOutside);
+      window.removeEventListener('resize', close);
+    };
+  }, [moreOptions]);
+
+  useEffect(() => {
+    if (moreOptions && menuRef.current) {
+      menuRef.current.focus();
     }
-  }, [moreOptions])
+  }, [moreOptions]);
 
   const variants = {
     closed: {
@@ -140,7 +178,7 @@ const DropDownMenu = ({
     <>
       <button
         ref={buttonRef}
-        tabIndex={0}
+        tabIndex={1}
         role="button"
         className={cn(className)}
         onClick={handleMoreOptions}
@@ -149,7 +187,7 @@ const DropDownMenu = ({
       </button>
 
       {createPortal(
-        <AnimatePresence>
+        <AnimatePresence mode='wait'>
           {moreOptions && (
             <>
               <motion.div
@@ -160,7 +198,8 @@ const DropDownMenu = ({
               ></motion.div>
               <motion.div
                 ref={menuRef}
-                className={`absolute z-[999] w-full rounded bg-secondary shadow-xl ${cssVars}`}
+                tabIndex={0}
+                className={`absolute z-[999] w-full rounded bg-secondary shadow-xl focus-visible:outline-none ${cssVars}`}
                 variants={variants}
                 initial={'closed'}
                 animate={'open'}
@@ -169,13 +208,17 @@ const DropDownMenu = ({
                 style={menuPosition}
               >
                 <ul className="w-full p-1.5 text-foreground md:w-44">
-                  {items.map(({ title, icon, onPress }, index) => {
+                  {items.map(({ title, icon }, index) => {
                     return (
                       <DropDownMenuItem
                         key={title + index}
                         label={title}
-                        onClick={() => onPress?.(title)}
+                        onClick={() => {
+                          onPressItem?.(title)
+                          close()
+                        }}
                         icon={icon}
+                        selected={selectedItem === index} 
                       />
                     )
                   })}

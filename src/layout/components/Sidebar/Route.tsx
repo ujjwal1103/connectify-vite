@@ -12,6 +12,7 @@ interface Props extends SidebarRoute {
     modal?: boolean
   ) => void
   count?: number | null
+  isHidden: boolean
 }
 
 const Route = ({
@@ -24,6 +25,7 @@ const Route = ({
   handleModalClick,
   badge = false,
   count,
+  isHidden
 }: Props) => {
   return (
     <li key={route} className="relative last:mt-auto" id={label.toLowerCase()}>
@@ -33,8 +35,9 @@ const Route = ({
           cn(
             'inline-block items-center rounded p-2 transition-all duration-200 ease-linear hover:bg-secondary/60 lg:flex lg:gap-2',
             {
-              'bg-secondary shadow-lg': isActive,
+              'bg-secondary': isActive,
               'shadow-inner ring ring-background': isDisabled,
+              'lg:inline-block lg:gap-0 transition-all duration-300': isHidden
             }
           )
         }
@@ -43,7 +46,7 @@ const Route = ({
         <div className="mx-2">
           <Icon />
         </div>
-        <div className={cn('hidden lg:inline-block')}>
+        <div className={cn('hidden lg:inline-block', isHidden && 'lg:hidden transition-all duration-300')}>
           <span className="text-lg">{label}</span>
         </div>
       </NavLink>

@@ -20,7 +20,7 @@ const Suggetion = ({ user }: any) => {
   };
 
   return (
-    <div className="py-2">
+    <div className="py-1">
       <div className="flex items-center justify-between rounded-lg">
         <UsernameLink
           username={username}
@@ -33,7 +33,7 @@ const Suggetion = ({ user }: any) => {
           />
           <div className="flex flex-col">
             <span className="text-sm font-medium text-primary">{name}</span>
-            <span className="text-sm font-medium text-foreground-secondary ">
+            <span className="text-xs text-secondary-foreground/50 font-medium ">
               {username}
             </span>
           </div>

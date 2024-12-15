@@ -1,4 +1,4 @@
-import { IMessage, IUser } from '@/lib/types'
+import { IChat, IMessage, IUser } from '@/lib/types'
 import { makeRequest } from '../config/api.config'
 import {
   GetFollowRequetsRoot,
@@ -287,8 +287,8 @@ const createGroup = asyncWrap(async (formData: FormData) => {
   return await makeRequest.post('/chat/group', formData)
 })
 
-const updateGroupName = asyncWrap(async (chatId: string, name: string) => {
-  return await makeRequest.patch(`/chat/${chatId}/group`, { name })
+const updateGroup = asyncWrap(async (chatId: string, formData: FormData):Promise<{isSuccess:boolean, chat:IChat}> => {
+  return await makeRequest.patchForm(`/chat/${chatId}/group`, formData)
 })
 const makePrivate = asyncWrap(async (checked: boolean) => {
   return await makeRequest.put(`/user/privateAccount?isPrivate=${!checked}`)
@@ -328,12 +328,17 @@ const getAllStories = async () => {
   return await makeRequest.get('/stories')
 }
 
-const addGroupMember = async ({chatId, newMembers}:{chatId:string, newMembers: string[]}) => {
+const addGroupMembers = async ({chatId, newMembers}:{chatId:string, newMembers: string[]}) => {
   return await makeRequest.patch(`/chat/${chatId}/newMembers`, {newMembers})
 }
 
+const removeGroupMember = async ({chatId, memberId}:{chatId:string, memberId: string}) => {
+  return await makeRequest.patch(`/chat/${chatId}/removeMember`, {memberId})
+}
+
 export {
-  addGroupMember,
+  addGroupMembers,
+  removeGroupMember,
   createStory,
   getAllStories,
   deleteMessageById,
@@ -342,7 +347,7 @@ export {
   getSentRequest,
   makePrivate,
   createGroup,
-  updateGroupName,
+  updateGroup,
   createNewChat,
   deleteNotificationById,
   updateUserDetails,
