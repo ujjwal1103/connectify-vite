@@ -27,6 +27,7 @@ const ChatProfileCard = ({ chat }: ChatProfileCardProps) => {
   const isMeAdmin = members
   ?.filter((m) => m.role === 'admin')
   .some((m) => m._id === getCurrentUserId())
+  
   return (
     <div className="mb-2 flex w-full flex-col items-center justify-center gap-2">
       <div className="flex md:w-96 w-80 items-center justify-center rounded bg-background p-3 py-5">
