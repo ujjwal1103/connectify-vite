@@ -26,7 +26,7 @@ export const ImageSlider = ({ images, width, aspect }: any) => {
               <ImageComponent
                 src={image.url}
                 width={width}
-                className="h-full w-full object-cover"
+                className="h-full w-full object-contain"
               />
             ) : (
               <video

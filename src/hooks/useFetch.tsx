@@ -55,7 +55,7 @@ const useFetchFeeds = <T,>(
   params?: Record<string, any>,
   deps?: any[]
 ) => {
-  const { isLoading, setPage, feeds, setFeeds, page, setError,setIsLoading, ...rest } =
+  const { isLoading, setPage, feeds, setFeeds, page, setError, ...rest } =
     useFeedSlice();
 
   const fetchItems = useCallback(async () => {

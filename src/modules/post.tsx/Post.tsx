@@ -10,6 +10,7 @@ import Caption from '../feeds/components/post/Caption'
 import CommentComponent from '../feeds/components/post/CommentComponent'
 import { AnimatePresence } from 'framer-motion'
 import PostOptions from '@/components/PostOptions'
+import PostNotFound from '@/components/shared/Error/PostError'
 
 const superLikes = [
   {
@@ -31,7 +32,7 @@ const Post = () => {
   const [menu, setMenu] = useState(false)
   const [loadingPost, setLoadingPost] = useState(true)
   const [post, setPost] = useState<IPost | null>(null)
-  const [error, setError] = useState<boolean>(false)
+  const [error, setError] = useState<any>(null)
 
   const fetchPost = async () => {
     try {
@@ -40,7 +41,7 @@ const Post = () => {
         setPost(res?.post)
       }
     } catch (error) {
-      setError(true)
+      setError(error)
     } finally {
       setLoadingPost(false)
     }
@@ -61,14 +62,14 @@ const Post = () => {
   if (error) {
     return (
       <div className="flex min-h-full flex-1 items-center justify-center">
-        <Loader className="animate-spin" />
+        <PostNotFound />
       </div>
     )
   }
 
   return (
     <div className="flex h-full w-full flex-1 flex-col md:flex-row">
-      <div className="w-screen flex-1 md:w-1/2">
+      <div className="w-screen md:w-144">
         <div className="md:pl-5 md:pt-5">
           <div className="flex items-center gap-3 p-2 md:hidden md:p-0">
             <Avatar src={post?.user?.avatar?.url} className="h-12 w-12" />
@@ -79,7 +80,7 @@ const Post = () => {
           </div>
           <ImageSlider images={post?.images} aspect={true} readOnly={true} />
         </div>
-        <div className="h-full py-3 md:px-4">
+        <div className="h-full flex-1 py-3 md:px-4">
           <div className="mb-3 block md:hidden">
             <PostActions
               post={post!}
@@ -124,7 +125,7 @@ const Post = () => {
           </div>
         </div>
       </div>
-      <div className="flex h-dvh w-screen flex-1 flex-col md:w-1/2">
+      <div className="flex h-dvh w-screen flex-1 flex-col md:w-96">
         <div className="flex h-dvh flex-1 flex-col justify-between">
           <div className="hidden flex-col justify-center gap-3 px-5 py-3 md:flex">
             <div className="flex items-center gap-3">
@@ -137,8 +138,6 @@ const Post = () => {
               <button className="ml-auto">
                 <Ellipsis className="cursor-pointer" />
               </button>
-
-
             </div>
 
             {post?.caption && (
@@ -154,8 +153,14 @@ const Post = () => {
       </div>
 
       <AnimatePresence>
-        {menu && <PostOptions post={post!} open={menu} onClose={()=>setMenu(false)}/>}
-        </AnimatePresence>
+        {menu && (
+          <PostOptions
+            post={post!}
+            open={menu}
+            onClose={() => setMenu(false)}
+          />
+        )}
+      </AnimatePresence>
     </div>
   )
 }

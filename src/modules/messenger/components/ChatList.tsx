@@ -13,9 +13,12 @@ import { NEW_CHAT } from '@/constants/Events'
 import useSocketEvents from '@/hooks/useSocketEvent'
 import { useSocket } from '@/context/SocketContext'
 import { IChat } from '@/lib/types'
+import { Button } from '@/components/ui/button'
+import useModalStore from '@/zustand/newChatStore'
 
 const ChatList = () => {
   const [searchTerm, setSearchTerm] = useState('')
+  const openModal = useModalStore(state=>state.openModal);
   const [isSearching, setIsSearching] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
   const debouceSearch = useDebounce(searchTerm, 400)
@@ -67,6 +70,7 @@ const ChatList = () => {
       )}
     >
       <ChatListHeader />
+
       <div className="flex flex-[0.05] items-center">
         {!selectChats && (
           <div className="mx-3 my-2 flex h-[40px] w-full items-center rounded-[8px] bg-secondary">
@@ -129,6 +133,14 @@ const ChatList = () => {
         ref={containerRef}
         className={cn('overflow-y-scroll scrollbar-none md:flex-[0.85]')}
       >
+        {chats.length === 0 && (
+          <div className='flex flex-col justify-center items-center h-full'>
+            <div className='text-xl font-semibold'> No chats yet. </div>
+            <div className='text-foreground/50'>Send a message to start!</div>
+
+            <Button onClick={openModal} variant='outline' className='mt-3'>New Chat</Button>
+          </div>
+        )}
         {isLoading && !isSearching ? (
           <div className="flex h-full flex-col items-center justify-center gap-2">
             <Loader className="animate-spin" />

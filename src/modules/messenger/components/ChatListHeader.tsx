@@ -8,10 +8,12 @@ import { useClickOutside } from '@react-hookz/web'
 import { useChatSlice } from '@/redux/services/chatSlice'
 import Modal from '@/components/shared/modal/Modal'
 import AddNewUser from './NewChat'
+import useModalStore from '@/zustand/newChatStore'
 
 const ChatListHeader = () => {
   const [open, setOpen] = useState(false)
   const [openNewChat, setOpenNewChat] = useState(false)
+  const {isModalOpen, closeModal, openModal } = useModalStore();
   const user = getCurrentUser()
   const { selectChats, setSelectChats } = useChatSlice()
   const menuRef = useRef<HTMLDivElement>(null)
@@ -46,9 +48,7 @@ const ChatListHeader = () => {
           <div className="tooltip tooltip-bottom" data-tip="New Chat">
             <button
               className="mr-2"
-              onClick={() => {
-                setOpenNewChat(!openNewChat)
-              }}
+              onClick={openModal}
             >
               <Edit />
             </button>
@@ -112,14 +112,12 @@ const ChatListHeader = () => {
       </div>
 
       <AnimatePresence>
-        {openNewChat && (
+        {isModalOpen && (
           <Modal
             overlayClasses={'bg-opacity-80'}
             showCloseButton={false}
             shouldCloseOutsideClick={false}
-            onClose={() => {
-              setOpenNewChat(false)
-            }}
+            onClose={closeModal}
           >
             <AddNewUser />
           </Modal>

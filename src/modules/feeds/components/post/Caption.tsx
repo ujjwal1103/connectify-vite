@@ -1,57 +1,58 @@
-import UsernameLink from "@/components/shared/UsernameLink";
-import { IUser } from "@/lib/types";
-import { cn } from "@/lib/utils";
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import parse from "html-react-parser";
+import UsernameLink from '@/components/shared/UsernameLink'
+import { IUser } from '@/lib/types'
+import { cn } from '@/lib/utils'
+import { useState } from 'react'
+import { Link } from 'react-router-dom'
+import parse from 'html-react-parser'
 
 const getCaption = (caption: string) => {
-  const jsx = caption?.split(" ").map((word, index) => {
-    if (word.startsWith("#") || word.startsWith("@")) {
+  const jsx = caption?.split(' ').map((word, index) => {
+    console.log(word)
+    if (word.trim().startsWith('#') || word.startsWith('@')) {
       return (
         <Link
-          to={`/${word.replace("#", "")}`}
+          to={`/${word.replace('#', '')}`}
           key={index}
-          className="text-blue-700"
+          className="text-wrap text-blue-700"
         >
-          {word}{" "}
+          {word}{' '}
         </Link>
-      );
+      )
     } else {
-      return <span key={index}>{word} </span>;
+      return <span className='text-wrap' key={index}>{word}</span>
     }
-  });
+  })
 
-  return <>{jsx}</>;
-};
+  return <>{jsx}</>
+}
 
 const options = {
   replace({ type, data }: any) {
-    if (type === "text") {
-      return getCaption(data);
+    if (type === 'text') {
+      return getCaption(data)
     }
   },
-};
+}
 
 const Caption = ({
   caption,
   user,
   showUser = true,
 }: {
-  caption: string;
-  user?: IUser;
-  showUser: boolean;
+  caption: string
+  user?: IUser
+  showUser: boolean
 }) => {
-  const [showMore, setShowMore] = useState(false);
-  const shouldShowMoreButton = caption && caption.length > 100;
+  const [showMore, setShowMore] = useState(false)
+  const shouldShowMoreButton = caption && caption.length > 100
   return (
     <>
       <div
         className={cn(
-          "break-words text-ellipsis  w-full text-sm overflow-hidden",
+          'w-full overflow-hidden text-ellipsis break-words text-sm',
           {
-            "max-h-24": !!caption,
-            "max-h-fit": showMore,
+            'max-h-24': !!caption,
+            'max-h-fit': showMore,
           }
         )}
       >
@@ -60,18 +61,18 @@ const Caption = ({
             <span>{user!.username}</span>
           </UsernameLink>
         )}
-        {parse(caption, options)}
+        <span className="block w-144">{parse(caption, options)}</span>
       </div>
       {!showMore && caption && shouldShowMoreButton && (
         <button
           onClick={() => setShowMore(true)}
-          className="self-start text-sm text-blue-600"
+          className="self-start px-3 text-sm text-blue-600"
         >
           more
         </button>
       )}
     </>
-  );
-};
+  )
+}
 
-export default Caption;
+export default Caption

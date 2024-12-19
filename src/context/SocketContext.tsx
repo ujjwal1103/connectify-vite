@@ -70,11 +70,11 @@ export const SocketProvider = ({ children }: PropsWithChildren) => {
     <SocketContext.Provider value={{ socket, users, isUserOnline, setUsers }}>
       {children}
 
-      {isConnected && (
+      {/* {isConnected && import.meta.env.DEV && (
         <span className="fixed bottom-0 z-[10000929] bg-green-500 px-2 text-primary">
           Socket Connected
         </span>
-      )}
+      )} */}
     </SocketContext.Provider>
   )
 }

@@ -1,9 +1,12 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useLayoutEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import ImageCropper from '@/components/crop/ImageCropper'
 import CaptionComponent from './CaptionComponent'
 import ImagePicker from './ImagePicker'
 import Modal from '@/components/shared/modal/Modal'
+import usePostStore from '@/zustand/newPostStore.tsx'
+import { convertToImageData, pickImage, urlToFile } from './helper'
+import { readFileAsDataURL } from '@/lib/utils'
 
 type Step = 'Crop' | 'Caption' | 'Pick'
 
@@ -25,11 +28,38 @@ function extractCroppedImageUrls(data: any) {
 }
 
 const CreatePost = ({ onClose }: any) => {
+  const { initialImage, setInitialImage } = usePostStore()
   const [cropedImagesUrls, setCropedImagesUrls] = useState<any>([])
   const [selectedImage, setSelectedImage] = useState<any>({})
   const [step, setStep] = useState<Step>('Pick')
   const [imageData, setImageData] = useState<any>({})
   const [aspectRatio, setAspectRatio] = useState<any>(1 / 1)
+
+  useEffect(() => {
+    if (initialImage) {
+      const handleSetInitalImage = async () => {
+        const file = await urlToFile(initialImage, 'image.jpg', 'image/jpg')
+        if (file) {
+          const imageD = await convertToImageData(file)
+          if (!imageD) return
+          setImageData({
+            [imageD?.name]: imageD?.image,
+          })
+          setSelectedImage(imageD?.image)
+
+          setTimeout(() => {
+            setStep('Crop')
+          }, 1000)
+        }
+      }
+
+      handleSetInitalImage()
+    }
+
+    return () => {
+      setInitialImage(null)
+    }
+  }, [])
 
   useEffect(() => {
     setCropedImagesUrls(extractCroppedImageUrls(imageData))

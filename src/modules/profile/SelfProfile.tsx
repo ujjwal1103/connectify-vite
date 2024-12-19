@@ -56,7 +56,7 @@ const SelfProfile = () => {
               <div className="hidden md:inline">
                 <span>{user?.username}</span>
               </div>
-              <Button variant={'secondary'} asChild>
+              <Button asChild>
                 <Link
                   to="/edit"
                   className="h-5 px-2 text-sm md:h-9 md:px-4 md:text-sm"
@@ -64,7 +64,7 @@ const SelfProfile = () => {
                   Edit Profile
                 </Link>
               </Button>
-              <Button variant={'secondary'} asChild>
+              <Button asChild>
                 <Link
                   to="/archives"
                   className="h-5 px-2 text-sm md:h-9 md:px-4 md:text-sm"
@@ -72,7 +72,7 @@ const SelfProfile = () => {
                   View Archive
                 </Link>
               </Button>
-              <Button variant={'secondary'} asChild>
+              <Button asChild>
                 <Link
                   to="/edit?tab=settings"
                   className="h-5 px-2 text-sm md:h-9 md:px-4 md:text-sm"
@@ -92,7 +92,7 @@ const SelfProfile = () => {
               <span>{user?.name}</span>
             </div>
             <div>
-              <pre className="text-txs md:text-sm">{user?.bio}</pre>
+            <pre className="text-txs md:text-sm font-sans">{user?.bio}</pre>
             </div>
           </div>
         </div>

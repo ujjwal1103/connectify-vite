@@ -1,12 +1,16 @@
 import { getSelfPosts, getUserPosts } from '@/api'
 import { ProfilePost } from '@/components/posts/ProfilePost'
 import { usePostSlice } from '@/redux/services/postSlice'
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { EmptyPost } from './EmptyPost'
 import SuggetionsSlider from '@/components/shared/suggetionsSliders/SuggetionsSlider'
 import { Loader } from 'lucide-react'
 import { LoadingPosts } from './LoadingPosts'
+import PostSliderModal from '@/components/shared/imageSwiper'
+import Modal from '@/components/shared/modal/Modal'
+import { IPost } from '@/lib/types'
+import { useLocation } from 'react-router-dom'
 
 interface PostsProps {
   isSelfPosts?: boolean
@@ -29,6 +33,10 @@ const fetchOtherPosts = (page: number, userId: string) =>
 const Posts = ({ isSelfPosts = true, userId }: PostsProps) => {
   const { page, setPage, setPosts, posts, hasNext, loadingPost, reset } =
     usePostSlice()
+
+  const [selectedIndex, setSelectedIndex] = useState(0)
+  const [openSlider, setOpenSlider] = useState(false)
+  const location = useLocation()
 
   const fetchItems = useCallback(async () => {
     try {
@@ -56,6 +64,18 @@ const Posts = ({ isSelfPosts = true, userId }: PostsProps) => {
     setPage(page + 1)
   }
 
+  const handleOpenSlider = (index: number) => {
+    setOpenSlider(true)
+    setSelectedIndex(index)
+    window.history.replaceState(null, '', `p/${posts[selectedIndex]._id}`)
+  }
+
+  const handleClose = () => {
+    setOpenSlider(false)
+    setSelectedIndex(0)
+    window.history.replaceState(null, '', location.pathname)
+  }
+
   if (loadingPost) {
     return <LoadingPosts />
   }
@@ -75,11 +95,23 @@ const Posts = ({ isSelfPosts = true, userId }: PostsProps) => {
         scrollableTarget={'scrollableDiv'}
       >
         <div className="grid grid-cols-3 place-content-center gap-[1px]">
-          {posts?.map((feed: any) => (
-            <ProfilePost key={feed._id} post={feed} isSelfPosts={isSelfPosts} />
+          {posts?.map((feed: IPost, index: number) => (
+            <ProfilePost
+              index={index}
+              onClickPost={handleOpenSlider}
+              key={feed._id}
+              post={feed}
+              isSelfPosts={isSelfPosts}
+            />
           ))}
         </div>
       </InfiniteScroll>
+
+      {openSlider && (
+        <Modal onClose={handleClose} showCloseButton={false}>
+          <PostSliderModal posts={posts} index={selectedIndex} />
+        </Modal>
+      )}
     </div>
   )
 }

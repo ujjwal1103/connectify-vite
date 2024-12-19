@@ -2,6 +2,7 @@ import { IPost } from '@/lib/types'
 import { createSlice } from '@reduxjs/toolkit'
 import { useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { RootState } from '../store'
 
 interface FeedSlice {
   feed: IPost | null
@@ -71,7 +72,7 @@ export const { setFeeds, setError, reset, setFeed } = feedSlice.actions
 
 export const useFeedSlice = () => {
   const dispatch = useDispatch()
-  const feed = useSelector((state: any) => state.feed)
+  const feed = useSelector((state: RootState) => state.feed)
   const actions = feedSlice.actions
 
   const setFeeds = useCallback(

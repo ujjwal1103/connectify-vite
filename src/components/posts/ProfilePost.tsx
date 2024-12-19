@@ -24,18 +24,22 @@ import { useFeedSlice } from '@/redux/services/feedSlice'
 interface ProfilePostProps {
   post: IPost
   isSelfPosts?: boolean
+  onClickPost?: (index: number) => void
+  index: number
 }
 
 export const ProfilePost = ({
   post,
   isSelfPosts = false,
+  onClickPost,
+  index,
 }: ProfilePostProps) => {
   const [currentPost, setCurrentPost] = useState(post)
   const [editPost, setEditPost] = useState(false)
   const [deletingPost, setDeletingPost] = useState(false)
   const { deletePost } = usePostSlice()
   const { deleteFeed } = useFeedSlice()
-  
+
   const { updateUser, user } = useAuth()
   useEffect(() => {
     setCurrentPost(post)
@@ -68,7 +72,13 @@ export const ProfilePost = ({
 
   return (
     <motion.div className="bg-black-600 relative flex items-center">
-      <ImageSlider images={currentPost?.images} aspect={true} />
+      <div
+        onClick={() => {
+          onClickPost?.(index)
+        }}
+      >
+        <ImageSlider images={currentPost?.images}  aspect={true} />
+      </div>
 
       <PostMenu
         setModalOpen={setModalOpen}
@@ -226,9 +236,14 @@ const PostMenu = ({
 
   return (
     <>
-      <div ref={buttonRef} style={{
-        backgroundImage: 'radial-gradient(farthest-side at 60% 55%, transparent, transparent, black)'
-      }} className="absolute bg-gradient-to-bl from-zinc-950 rounded-bl-lg to-transparent right-0 top-0 hidden md:block p-2 ">
+      <div
+        ref={buttonRef}
+        style={{
+          backgroundImage:
+            'radial-gradient(farthest-side at 60% 55%, transparent, transparent, black)',
+        }}
+        className="absolute right-0 top-0 hidden rounded-bl-lg bg-gradient-to-bl from-zinc-950 to-transparent p-2 md:block"
+      >
         <MoreHorizontal
           className="size-3 cursor-pointer md:size-6"
           onClick={handleMenuToggle}

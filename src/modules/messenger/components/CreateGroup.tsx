@@ -52,7 +52,7 @@ const CreateGroup = ({ selectedUsers, onClose, onGroupCreated }: any) => {
   }
 
   return (
-    <div className="h-96 w-96 bg-background py-3 shadow-lg">
+    <div className="w-screen h-dvh bg-background py-3 shadow-lg md:size-96">
       <div>
         <div>
           <div className="mb-2 flex items-center justify-between rounded-sm p-2 text-gray-50 shadow-lg">

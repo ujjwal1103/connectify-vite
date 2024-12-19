@@ -17,7 +17,7 @@ type FollowButtonProps = {
   showRemoveFollowerBtn: boolean
   isRequested?: boolean
   isPrivate?: boolean
-  size?: 'default' | 'sm' | 'lg' | 'icon' | null | undefined
+  size?: 'default' | 'sm' | 'lg' | 'icon' | 'follow' | null | undefined 
 }
 
 const FollowButton = ({
@@ -102,12 +102,12 @@ const FollowButton = ({
 
   if (follow) {
     return (
-      <Button variant="following" onClick={handleUnfollow} size={size}>
+      <Button variant="following" onClick={handleUnfollow} size={size === 'follow' ? 'default': null}>
         Following
       </Button>
     )
   }
-
+  
   return (
     <Button onClick={handleFollowRequest} size={size} variant={'follow'}>
       Follow

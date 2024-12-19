@@ -23,6 +23,7 @@ export const useComments = (postId: string) => {
     getComments()
   }, [])
 
+
   const getComments = useCallback(async () => {
     try {
       const res = (await getCommentsByPostId(postId as string)) as any

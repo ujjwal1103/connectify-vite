@@ -1,4 +1,4 @@
-import React, { PropsWithChildren, useEffect, useRef } from 'react'
+import React, { useEffect, useRef } from 'react'
 import ReactDOM from 'react-dom'
 import FocusTrap from './FocusTrap'
 import { useClickOutside } from '@react-hookz/web'
@@ -11,6 +11,7 @@ type ModalProps = {
   showCloseButton?: boolean
   animate?: boolean
   overlayClasses?: string
+  children: React.ReactElement
 }
 const Modal = ({
   onClose,
@@ -19,7 +20,7 @@ const Modal = ({
   showCloseButton = true,
   animate = true,
   overlayClasses,
-}: PropsWithChildren<ModalProps>) => {
+}: ModalProps) => {
   const elRef = useRef<any>(null)
   const modalRef = useRef<any>(null)
 
@@ -60,8 +61,8 @@ const Modal = ({
     }
   })
 
-  const childrenWithProps = React.Children.map(children, (child: any) => {
-    return React.cloneElement(child, { onClose: onClose })
+  const childrenWithProps = React.cloneElement(children, {
+    onClose,
   })
 
   return ReactDOM.createPortal(

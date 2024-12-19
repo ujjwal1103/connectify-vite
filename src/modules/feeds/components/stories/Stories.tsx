@@ -1,7 +1,5 @@
 import Avatar from '@/components/shared/Avatar'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import 'slick-carousel/slick/slick-theme.css'
-import 'slick-carousel/slick/slick.css'
 import {
   ChevronLeftCircleIcon,
   ChevronRightCircle,

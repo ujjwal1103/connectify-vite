@@ -69,9 +69,10 @@ const OtherUserProfile = () => {
         <div className="flex justify-center gap-6  px-2 py-3 md:mx-auto mdjustify-evenly md:px-10 md:py-5 lg:w-[80%]">
           <div className="flex size-[90px] flex-col items-center justify-center rounded-full border-zinc-800 p-[4px] md:size-[162px] md:flex-row md:border-2">
             <Avatar
+
               src={user?.avatar?.url}
               name={user?.name}
-              className="size-[90px] md:size-[150px]"
+              className="size-[90px] md:size-[150px] select-none pointer-events-none"
             />
           </div>
           <div className="space-y-2 text-sm md:space-y-3 md:text-sm">
@@ -86,7 +87,7 @@ const OtherUserProfile = () => {
                 isRequested={user?.isRequested}
                 isPrivate={user?.isPrivate}
                 callBack={handleRefech}
-                size={'default'}
+                size={'follow'}
               />
               {user?.isFollow && (
                 <Button className="h-6 bg-gradient-to-l from-blue-900 to-violet-900 px-2 py-0.5 text-sm text-white hover:bg-zinc-900 md:h-8">
@@ -105,7 +106,7 @@ const OtherUserProfile = () => {
               <span>{user?.name}</span>
             </div>
             <div className="hidden md:block">
-              <pre className="text-sm">{user?.bio}</pre>
+              <pre className="text-sm font-sans">{user?.bio}</pre>
             </div>
           </div>
         </div>
