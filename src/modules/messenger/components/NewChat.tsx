@@ -14,12 +14,14 @@ import { useNavigate } from 'react-router-dom'
 import CreateGroup from './CreateGroup'
 import Avatar from '@/components/shared/Avatar'
 import { useDebounce } from '@/hooks/useDebounce'
-import { duration } from 'moment'
+import { useQueryClient } from '@tanstack/react-query'
+import { CHATS_KEY } from '@/constants/queryKeys'
 
 const AddNewUser = ({ onClose }: any) => {
   const [searchTerm, setSearchTerm] = useState<string>('')
   const [createGroup, setCreateGroup] = useState(false)
   const [users, setUsers] = useState<IUser[]>([])
+  const queryClient = useQueryClient()
   const [selectedUsers, setSelectedUsers] = useState<
     { username: string; userId: string }[]
   >([])
@@ -52,6 +54,7 @@ const AddNewUser = ({ onClose }: any) => {
       setLoading(true)
       const response = (await createNewChat(selectedUsers[0].userId)) as any
       if (response.isSuccess) {
+        queryClient.invalidateQueries({ queryKey: [CHATS_KEY] })
         setChat(response.chat)
         navigate(`/inbox/${response.chat._id}`)
         onClose()
@@ -205,6 +208,7 @@ const AddNewUser = ({ onClose }: any) => {
           <AnimatePresence>
             {Boolean(selectedUsers.length) && (
               <motion.div
+                layoutId="newGroup"
                 animate={{ opacity: 1, y: 0 }}
                 initial={{ opacity: 0, y: 100 }}
                 exit={{ opacity: 0, y: 100 }}
@@ -245,6 +249,7 @@ const AddNewUser = ({ onClose }: any) => {
             }}
             overlayClasses={'bg-opacity-90'}
             showCloseButton={false}
+            animate={false}
           >
             <CreateGroup
               selectedUsers={selectedUsers}

@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { useCallback } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { shallowEqual, useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../store'
 import { IChat, IMember, IMessage, IUser } from '@/lib/types'
 
@@ -25,7 +25,7 @@ interface IChatSlice {
   selectChats: boolean
   selectedChats: string[]
   currentMessageReply?: IReply | null
-  editMessage: IMessage | null,
+  editMessage: IMessage | null
   showChatInfo: boolean
   isAddingContent: boolean
 }
@@ -47,7 +47,7 @@ const initialState: IChatSlice = {
   currentMessageReply: null,
   editMessage: null,
   showChatInfo: false,
-  isAddingContent: false
+  isAddingContent: false,
 }
 
 const chatSlice = createSlice({
@@ -179,11 +179,11 @@ const chatSlice = createSlice({
       const { chatId, groupName, groupAvatar } = action.payload
       const chatIndex = state.chats.findIndex((c) => c._id === chatId)
       if (chatIndex !== -1) {
-        if(groupAvatar){
+        if (groupAvatar) {
           state.chats[chatIndex].groupAvatar = groupAvatar
           state.selectedChat!.groupAvatar = groupAvatar
         }
-        if(groupName){
+        if (groupName) {
           state.chats[chatIndex].groupName = groupName
           state.selectedChat!.groupName = groupName
         }
@@ -247,77 +247,103 @@ const chatSlice = createSlice({
         (message) => message._id !== action.payload
       )
     },
-    toggleChatInfo: (state)=> {
+    toggleChatInfo: (state) => {
       state.showChatInfo = !state.showChatInfo
     },
-    closeShowChat: (state)=> {
+    closeShowChat: (state) => {
       state.showChatInfo = false
     },
     addNewMembers: (state, action) => {
-      const newMembers = action.payload;
-      const members = newMembers.map((m:IUser)=>({...m, role:'member'}))
+      const newMembers = action.payload
+      const members = newMembers.map((m: IUser) => ({ ...m, role: 'member' }))
       if (state.selectedChat) {
         state.selectedChat = {
           ...state.selectedChat,
-          members: [
-            ...(state.selectedChat.members || []), 
-            ...members,
-          ]
-        };
+          members: [...(state.selectedChat.members || []), ...members],
+        }
       }
     },
-    removeMembers: (state, action:PayloadAction<IUser[]>) => {
-      const membersToRemove = action.payload; // Array of members to remove
+    removeMembers: (state, action: PayloadAction<IUser[]>) => {
+      const membersToRemove = action.payload // Array of members to remove
       if (state.selectedChat) {
         state.selectedChat = {
           ...state.selectedChat,
-          members: state.selectedChat.members?.filter(
-            (member) => !membersToRemove.some((m: IUser) => m._id === member._id)
-          ) || [],
-        };
+          members:
+            state.selectedChat.members?.filter(
+              (member) =>
+                !membersToRemove.some((m: IUser) => m._id === member._id)
+            ) || [],
+        }
       }
     },
     removeMember: (state, action) => {
-      const memberToRemove = action.payload;
-      console.log({memberToRemove})
+      const memberToRemove = action.payload
+      console.log({ memberToRemove })
       if (state.selectedChat) {
         state.selectedChat = {
           ...state.selectedChat,
-          members: state.selectedChat.members?.filter(
-            (member) => member._id !== memberToRemove._id
-          ) || [],
-        };
+          members:
+            state.selectedChat.members?.filter(
+              (member) => member._id !== memberToRemove._id
+            ) || [],
+        }
       }
     },
-    setIsAddingContent: (state,action)=>{
-      state.isAddingContent = action.payload;
-
-      setTimeout(()=>{
-        state.isAddingContent= false
-      },1000)
+    setIsAddingContent: (state, action) => {
+      state.isAddingContent = action.payload
     },
     reset: () => initialState,
   },
 })
 
+const actions = chatSlice.actions
+
 export const {
+  setChatToFirst,
+  setIsAddingContent,
+  removeMembers,
+  removeMember,
+  addNewMembers,
+  editMessageById,
+  setEditMessage,
+  markAllMessagesAsSeen,
+  seenMessage,
+  removeMessage,
+  setCurrentMessageReply,
   setChats,
+  reactMessage,
   setSelectedChat,
-  setMessages,
-  addChat,
-  setMessageChatId,
-  reset,
-  setSelectedMessage,
+  removeChat,
+  updateGroupInfo,
   setIsSelectMessages,
   resetSelectedMessages,
-  removeChat,
+  setSelectedMessage,
+  setMessages,
+  setIsLoadingMessage,
+  setHasNextMessage,
+  setMessagePage,
+  addMessage,
+  setSelectChats,
+  setSelectedChats,
+  resetSelectedChats,
+  addMessageFromSocket,
+  closeShowChat,
+  addChat,
+  deleteMessagesByIds,
   reorderChat,
-} = chatSlice.actions
+  reset,
+  setMessageChatId,
+  toggleChatInfo,
+} = actions
 
 const useChatSlice = () => {
   const dispatch = useDispatch()
 
-  const chat = useSelector((state: RootState) => state.chat)
+  const chat = useSelector((state: RootState) => state.chat, shallowEqual)
+  const selectedChat = useSelector(
+    (state: RootState) => state.chat.selectedChat,
+    shallowEqual
+  )
   const actions = chatSlice.actions
 
   const setChats = useCallback(
@@ -341,12 +367,9 @@ const useChatSlice = () => {
     [dispatch]
   )
 
-  const setSelectedChat = useCallback(
-    (chat: any) => {
-      dispatch(actions.setSelectedChat(chat))
-    },
-    [dispatch]
-  )
+  const setSelectedChat = useCallback((chat: any) => {
+    dispatch(actions.setSelectedChat(chat))
+  }, [])
 
   const removeChat = useCallback(
     (chat: any) => {
@@ -355,12 +378,9 @@ const useChatSlice = () => {
     [dispatch]
   )
 
-  const setIsSelectMessages = useCallback(
-    (isSelectedMessage: any) => {
-      dispatch(actions.setIsSelectMessages(isSelectedMessage))
-    },
-    [dispatch]
-  )
+  const setIsSelectMessages = useCallback((isSelectedMessage: any) => {
+    dispatch(actions.setIsSelectMessages(isSelectedMessage))
+  }, [])
 
   const setSelectedMessage = useCallback((messageId: string) => {
     dispatch(actions.setSelectedMessage(messageId))
@@ -370,12 +390,9 @@ const useChatSlice = () => {
     dispatch(actions.resetSelectedMessages())
   }, [dispatch])
 
-  const setIsLoadingMessage = useCallback(
-    (loading: boolean) => {
-      dispatch(actions.setIsLoadingMessage(loading))
-    },
-    [dispatch]
-  )
+  const setIsLoadingMessage = useCallback((loading: boolean) => {
+    dispatch(actions.setIsLoadingMessage(loading))
+  }, [])
 
   const setHasNextMessage = useCallback(
     (hasNext: boolean) => {
@@ -457,48 +474,35 @@ const useChatSlice = () => {
   const setEditMessage = useCallback((payload: IMessage | null) => {
     dispatch(actions.setEditMessage(payload))
   }, [])
+
   const editMessageById = useCallback(
     (payload: { text: string; messageId: string }) => {
       dispatch(actions.editMessageById(payload))
     },
     []
   )
-  const toggleShowChat = useCallback(
-    () => {
-      dispatch(actions.toggleChatInfo())
-    },
-    []
-  )
-  const closeShowChat = useCallback(
-    () => {
-      dispatch(actions.closeShowChat())
-    },
-    []
-  )
-  const addNewMembers = useCallback(
-    (members: IMember[]) => {
-      dispatch(actions.addNewMembers(members))
-    },
-    []
-  )
-  const removeMembers = useCallback(
-    (members: IUser[]) => {
-      dispatch(actions.removeMembers(members))
-    },
-    []
-  )
-  const removeMember = useCallback(
-    (member: IMember) => {
-      dispatch(actions.removeMember(member))
-    },
-    []
-  )
-  const setIsAddingContent = useCallback((isAdding:boolean)=>{
-     dispatch(actions.setIsAddingContent(isAdding))
-  },[])
+  const toggleShowChat = useCallback(() => {
+    dispatch(actions.toggleChatInfo())
+  }, [])
+  const closeShowChat = useCallback(() => {
+    dispatch(actions.closeShowChat())
+  }, [])
+  const addNewMembers = useCallback((members: IMember[]) => {
+    dispatch(actions.addNewMembers(members))
+  }, [])
+  const removeMembers = useCallback((members: IUser[]) => {
+    dispatch(actions.removeMembers(members))
+  }, [])
+  const removeMember = useCallback((member: IMember) => {
+    dispatch(actions.removeMember(member))
+  }, [])
+  const setIsAddingContent = useCallback((isAdding: boolean) => {
+    dispatch(actions.setIsAddingContent(isAdding))
+  }, [])
 
   return {
     ...chat,
+    selectedChat,
     setChatToFirst,
     setIsAddingContent,
     removeMembers,
@@ -530,10 +534,109 @@ const useChatSlice = () => {
     resetSelectedChats,
     addMessageFromSocket,
     toggleShowChat,
-    closeShowChat
+    closeShowChat,
   }
 }
 
 export { useChatSlice }
+
+export const useMessage = () => {
+  const dispatch = useDispatch()
+
+  const setIsSelectMessages = (isSelected: boolean) => {
+    dispatch(actions.setIsSelectMessages(isSelected))
+  }
+
+  const setMessagePage = useCallback(
+    (page: number) => {
+      dispatch(actions.setMessagePage(page))
+    },
+    [dispatch]
+  )
+
+  const setMessages = useCallback(
+    (messages: any) => {
+      dispatch(actions.setMessages(messages))
+    },
+    [dispatch]
+  )
+
+  return {
+    setIsSelectMessages,
+    setMessagePage,
+    setMessages,
+  }
+}
+
+export const useChat = () => {
+  const dispatch = useDispatch()
+  const chats = useSelector(
+    (state: RootState) => state.chat.chats,
+    shallowEqual
+  )
+
+  const selectChats = useSelector(
+    (state: RootState) => state.chat.selectChats,
+    shallowEqual
+  )
+  const selectedChats = useSelector(
+    (state: RootState) => state.chat.selectedChats,
+    shallowEqual
+  )
+
+  const toggleShowChat = useCallback(() => {
+    dispatch(actions.toggleChatInfo())
+  }, [])
+
+  const setChats = useCallback((chats: IChat[]) => {
+    dispatch(actions.setChats(chats))
+  }, [])
+
+  const setSelectChats = useCallback((isSelected: boolean) => {
+    dispatch(actions.setSelectChats(isSelected))
+  }, [])
+
+  const resetSelectedChats = useCallback(() => {
+    dispatch(actions.resetSelectedChats())
+  }, [])
+
+  const setChat = (chat: IChat) => {
+    dispatch(actions.addChat(chat))
+  }
+
+  const setSelectedChats = useCallback((chatId: string) => {
+    dispatch(actions.setSelectedChats(chatId))
+  }, [])
+
+  const setSelectedChat = useCallback((chat: any) => {
+    dispatch(actions.setSelectedChat(chat))
+  }, [])
+
+  const removeChat = useCallback((chat: any) => {
+    dispatch(actions.removeChat(chat))
+  }, [])
+
+  const setChatToFirst = useCallback(
+    (payload: { message: IMessage; shouldSetUnseenMessageCount: boolean }) => {
+      dispatch(actions.setChatToFirst(payload))
+    },
+    []
+  )
+
+  return {
+    chats,
+    selectChats,
+    selectedChats,
+    toggleShowChat,
+    setChats,
+    setSelectChats,
+    resetSelectedChats,
+    setChat,
+    setSelectedChats,
+    setSelectedChat,
+    removeChat,
+    setChatToFirst,
+  }
+}
 
 export default chatSlice.reducer

@@ -1,3 +1,5 @@
+import { memo } from 'react'
+
 const DotLoading = () => <div className="dots" />
 
-export default DotLoading
+export default memo(DotLoading)

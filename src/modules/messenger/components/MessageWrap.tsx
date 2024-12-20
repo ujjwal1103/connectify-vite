@@ -37,41 +37,30 @@ const MessageWrap = ({
   message,
 }: MessageWrapProps) => {
   const { setEditMessage, editMessage, removeMessage } = useChatSlice()
-  const [scope, animate] = useAnimate()
-  const [animationCompleted, setAnimationCompleted] = useState(0)
 
   const onDelete = useCallback(async () => {
-    await animate(
-      scope.current,
-      {
-        height: 0,
-        scale: 0,
-      },
-      {
-        duration: 0.3,
-        onComplete: ()=>{
-          setAnimationCompleted(animationCompleted+1)
-        }
-      }
-    )
+    removeMessage(messageId)
+    deleteMessageById(message._id)
   }, [message._id])
-
-  useEffect(() => {
-    if (animationCompleted === 1) {
-      try {
-        removeMessage(messageId);
-        deleteMessageById(message._id);
-      } catch (error) {
-        console.error('Failed to delete message:', error);
-      }
-    }
-  }, [animationCompleted, messageId, removeMessage]);
-  
 
   return (
     <motion.div
-      id={message._id || message.tempId}
-      ref={scope}
+      key={message._id || message.tempId}
+      initial={{
+        opacity: 0,
+        y: 10,
+      }}
+      animate={{
+        opacity: 1,
+        y: 0,
+      }}
+      exit={{
+        opacity: 0,
+        height: 0,
+        y: -10,
+        transition: { duration: 0.4 },
+      }}
+      transition={{ duration: 0.4 }}
       className={cn(
         'relative origin-[left] flex-col',
         className,
@@ -146,6 +135,5 @@ const MessageWrap = ({
 }
 export default memo(
   MessageWrap,
-  (prev, next) =>
-    prev.message._id === next.message._id 
-);
+  (prev, next) => prev.message._id === next.message._id
+)

@@ -12,7 +12,6 @@ import useModalStore from '@/zustand/newChatStore'
 
 const ChatListHeader = () => {
   const [open, setOpen] = useState(false)
-  const [openNewChat, setOpenNewChat] = useState(false)
   const {isModalOpen, closeModal, openModal } = useModalStore();
   const user = getCurrentUser()
   const { selectChats, setSelectChats } = useChatSlice()
@@ -45,7 +44,7 @@ const ChatListHeader = () => {
           </UsernameLink>
         </div>
         <div className="flex">
-          <div className="tooltip tooltip-bottom" data-tip="New Chat">
+          <div  className="tooltip tooltip-bottom" data-tip="New Chat">
             <button
               className="mr-2"
               onClick={openModal}

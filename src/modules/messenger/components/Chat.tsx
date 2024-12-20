@@ -1,11 +1,5 @@
-import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import {
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from 'react'
+import { memo, useCallback } from 'react'
 import {
   ArchiveIcon,
   AudioLines,
@@ -17,15 +11,38 @@ import {
   Trash2,
   VideoIcon,
 } from 'lucide-react'
-import { useChatSlice } from '@/redux/services/chatSlice'
+import { useChat } from '@/redux/services/chatSlice'
 import Avatar from '@/components/shared/Avatar'
-import { cn, formatDate, tranformUrl } from '@/lib/utils'
+import { cn, formatDate } from '@/lib/utils'
 import { deleteConversation } from '@/api'
 import { IChat } from '@/lib/types'
 import { useSocket } from '@/context/SocketContext'
 import useSocketEvents from '@/hooks/useSocketEvent'
 import DropDownMenu from '@/components/shared/dialogs/DropDownMenu/DropDownMenu'
-import { toast } from 'react-toastify'
+import { faker } from '@faker-js/faker'
+
+const items = [
+  {
+    title: 'Archive Chat',
+    icon: ArchiveIcon,
+  },
+  {
+    title: 'Mute',
+    icon: BellOff,
+  },
+  {
+    title: 'Clear Chat',
+    icon: MessageSquareX,
+  },
+  {
+    title: 'Block',
+    icon: ShieldBan,
+  },
+  {
+    title: 'Delete Chat',
+    icon: Trash2,
+  },
+]
 
 const formatMessage = (message: string, messageType: string) => {
   if (messageType === 'IMAGE') {
@@ -57,82 +74,32 @@ const formatMessage = (message: string, messageType: string) => {
 
 interface ChatProps {
   chat: IChat
+  isChatSelected: boolean
+  handleSelect: (chat: IChat) => void
 }
 
-const Chat = ({ chat }: ChatProps) => {
-  const { chatId } = useParams()
+const Chat = ({ chat, isChatSelected, handleSelect }: ChatProps) => {
   const {
     selectChats,
-    selectedChat,
-    setSelectedChat,
-    setMessagePage,
-    setMessages,
-    setSelectedChats,
     selectedChats,
+    setSelectedChats,
     removeChat,
     setChatToFirst,
-  } = useChatSlice()
+  } = useChat()
+
   const { socket } = useSocket()
-  const [moreOptions, setMoreOptions] = useState(false)
-  const menuRef = useRef<HTMLDivElement>(null)
-  const buttonRef = useRef<HTMLButtonElement>(null)
-  const navigate = useNavigate()
-  const location = useLocation()
-
-  const selectThisChat = () => {
-    if (selectedChat?._id !== chat._id || !chatId) {
-      setMessagePage(1)
-      setMessages([])
-      navigate(`/inbox/${chat._id}`, {replace: location.pathname !== '/inbox'})
-      setSelectedChat(chat)
-    }
-  }
-
-  const handleClickOutside = (event: MouseEvent) => {
-    if (
-      menuRef.current &&
-      !menuRef.current.contains(event.target as Node) &&
-      buttonRef.current &&
-      !buttonRef.current.contains(event.target as Node)
-    ) {
-      setMoreOptions(false)
-    }
-  }
-
-  const handleScroll = () => {
-    setMoreOptions(false)
-  }
 
   const handleDeleteChat = useCallback(async () => {
     const chatId = chat?._id
-    setMoreOptions(false)
     removeChat(chatId)
-    navigate('/inbox')
     await deleteConversation(chatId)
   }, [])
 
-
-  useEffect(() => {
-    if (moreOptions) {
-      document.addEventListener('mousedown', handleClickOutside)
-      document.addEventListener('scroll', handleScroll, true)
-    } else {
-      document.removeEventListener('mousedown', handleClickOutside)
-      document.removeEventListener('scroll', handleScroll, true)
-    }
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
-      document.removeEventListener('scroll', handleScroll, true)
-    }
-  }, [moreOptions])
-
   const handleMessage = useCallback((data: any) => {
     if (data.chat) {
-      console.log('updating chat index')
       setChatToFirst({
         message: data.message,
-        shouldSetUnseenMessageCount: chatId !== data.chat,
+        shouldSetUnseenMessageCount: chat._id !== data.chat,
       })
     }
   }, [])
@@ -154,10 +121,10 @@ const Chat = ({ chat }: ChatProps) => {
       className={cn(
         'group relative flex w-full cursor-pointer items-center justify-between p-2 transition-colors duration-500 hover:bg-secondary',
         {
-          'bg-secondary': chatId === chat?._id,
+          'bg-secondary': isChatSelected,
         }
       )}
-      onClick={selectThisChat}
+      onClick={() => handleSelect(chat)}
     >
       <AvatarAndCheckbox
         selectChats={selectChats}
@@ -165,6 +132,7 @@ const Chat = ({ chat }: ChatProps) => {
         chat={chat}
         setSelectedChats={setSelectedChats}
       />
+      {faker.person.firstName()}
       {chat?.unseenMessagesCount! > 0 && (
         <button className="ml-auto mr-3 h-5 w-5 rounded-full bg-gradient-to-l from-sky-900 to-indigo-900 text-xss text-sky-100">
           {chat?.unseenMessagesCount}
@@ -177,34 +145,15 @@ const Chat = ({ chat }: ChatProps) => {
         <motion.span className="text-xss">
           {formatDate(chat?.lastMessage?.createdAt!)}
         </motion.span>
-        <DropDownMenu 
-        onPressItem={ (title: string)=>{
-          if(title === 'Delete Chat'){
-            handleDeleteChat()
-          }
-        }}
-        items={[
-           {
-            title:"Archive Chat",
-            icon: ArchiveIcon
-           },
-           {
-            title:"Mute",
-            icon: BellOff
-           },
-           {
-            title:"Clear Chat",
-            icon: MessageSquareX
-           },
-           {
-            title:"Block",
-            icon: ShieldBan
-           },
-           {
-            title:"Delete Chat",
-            icon: Trash2,
-           }
-        ]} className="translate-x-7 self-end transition-transform duration-300 group-hover:inline-block group-hover:-translate-x-0 focus-visible:translate-x-0 focus-visible:outline-none hover:bg-background/50 focus-visible:bg-background/50 rounded">
+        <DropDownMenu
+          onPressItem={(title: string) => {
+            if (title === 'Delete Chat') {
+              handleDeleteChat()
+            }
+          }}
+          items={items}
+          className="translate-x-7 self-end rounded transition-transform duration-300 group-hover:inline-block group-hover:-translate-x-0 hover:bg-background/50 focus-visible:translate-x-0 focus-visible:bg-background/50 focus-visible:outline-none"
+        >
           <span className="">
             <Ellipsis />
           </span>
@@ -213,8 +162,7 @@ const Chat = ({ chat }: ChatProps) => {
     </motion.div>
   )
 }
-export default Chat
-
+export default memo(Chat)
 
 const AvatarAndCheckbox = ({
   selectChats,
@@ -250,7 +198,9 @@ const AvatarAndCheckbox = ({
         )}
       >
         <Avatar
-          src={chat.isGroup ? chat?.groupAvatar?.url : chat?.friend?.avatar?.url}
+          src={
+            chat.isGroup ? chat?.groupAvatar?.url : chat?.friend?.avatar?.url
+          }
           name={chat.isGroup ? chat?.groupName : chat?.friend?.name}
           className="inline-block size-8 rounded-full bg-background object-cover duration-500 hover:scale-90"
         />

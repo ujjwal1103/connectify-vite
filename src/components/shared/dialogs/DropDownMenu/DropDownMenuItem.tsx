@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils"
 import { LucideIcon } from "lucide-react"
-import { MouseEvent } from "react"
+import { memo, MouseEvent } from "react"
 
 interface MenuListItemProps {
     label: string
@@ -30,5 +30,5 @@ const DropDownMenuItem = ({
 }
 
 
-export default DropDownMenuItem;
+export default memo(DropDownMenuItem);
   

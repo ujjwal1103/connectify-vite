@@ -6,6 +6,7 @@ import { X } from 'lucide-react'
 import { useState, ChangeEvent } from 'react'
 import { IoClose } from 'react-icons/io5'
 import { useNavigate } from 'react-router-dom'
+import { motion } from 'framer-motion'
 
 const CreateGroup = ({ selectedUsers, onClose, onGroupCreated }: any) => {
   const [avatar, setAvatar] = useState<string | null>(null)
@@ -52,8 +53,8 @@ const CreateGroup = ({ selectedUsers, onClose, onGroupCreated }: any) => {
   }
 
   return (
-    <div className="w-screen h-dvh bg-background py-3 shadow-lg md:size-96">
-      <div>
+    <motion.div layoutId="newGroup">
+      <div className="h-dvh sh w-screen bg-background shadow-lg md:size-auto">
         <div>
           <div className="mb-2 flex items-center justify-between rounded-sm p-2 text-gray-50 shadow-lg">
             <h1>New Group</h1>
@@ -128,7 +129,7 @@ const CreateGroup = ({ selectedUsers, onClose, onGroupCreated }: any) => {
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   )
 }
 

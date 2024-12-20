@@ -77,131 +77,143 @@ const ChatInfo = () => {
     .some((m) => m._id === getCurrentUserId())
 
   return (
-    <div className="z-100 h-full w-[288px] overflow-y-scroll scrollbar-none">
-      <div className="sticky top-0 z-10 flex items-center gap-4 bg-background p-2">
-        <span className="cursor-pointer" onClick={toggleShowChat}>
-          <X />
-        </span>
-        <span className="py-3 text-xl">Chat Info</span>
-      </div>
-      <div className="relative z-0 flex flex-col items-center gap-2">
-        <motion.div
-          layoutId={_id}
-          onClick={() =>
-            setImagePreview(isGroup ? groupAvatar?.url : friend?.avatar?.url)
-          }
-          className="relative"
-        >
-          <Avatar
-            src={isGroup ? groupAvatar?.url : friend?.avatar?.url}
-            className="z-100 size-24"
-          />
-          {status === 'loading' && (
-            <div className="absolute inset-0 z-[111] flex items-center justify-center rounded-full bg-black/60">
-              <Loader className="animate-spin" />
-            </div>
-          )}
-       {isMeAdmin &&  <label
-            htmlFor="new Avatar"
-            onClick={(e) => {
-              e.stopPropagation()
-            }}
-            className="absolute bottom-0 right-0 z-[110] cursor-pointer rounded-full border border-border bg-background p-1"
+    <motion.div
+      initial={{ width: 0, opacity: 0 }}
+      animate={{ width: 288, opacity: 100 }}
+      exit={{ width: 0, opacity: 0 }}
+      transition={{ duration: 0.3 }}
+      className="absolute right-0 z-100 h-dvh border-l border-border bg-background md:static"
+    >
+      <div className="z-100 h-full w-[288px] overflow-y-scroll scrollbar-none">
+        <div className="sticky top-0 z-10 flex items-center gap-4 bg-background p-2">
+          <span className="cursor-pointer" onClick={toggleShowChat}>
+            <X />
+          </span>
+          <span className="py-3 text-xl">Chat Info</span>
+        </div>
+        <div className="relative z-0 flex flex-col items-center gap-2">
+          <motion.div
+            layoutId={_id}
+            onClick={() =>
+              setImagePreview(isGroup ? groupAvatar?.url : friend?.avatar?.url)
+            }
+            className="relative"
           >
-            <PencilIcon size={16} />
-            <input
-              type="file"
-              id="new Avatar"
-              hidden
-              onChange={handleNewAvatar}
+            <Avatar
+              src={isGroup ? groupAvatar?.url : friend?.avatar?.url}
+              className="z-100 size-24"
             />
-          </label>}
-        </motion.div>
-        <div ref={groupNameRef}>
-          {isGroup ? (
-            <div className="flex items-center gap-2">
-              <div>
-                {editGroupName && isMeAdmin ? (
-                  <input
-                    autoFocus
-                    value={newGroupName}
-                    onChange={(e) => setNewGroupName(e.target.value)}
-                    className="bg-secondary p-1.5 focus-visible:outline-none"
-                  />
-                ) : (
-                  <span>{groupName}</span>
+            {status === 'loading' && (
+              <div className="absolute inset-0 z-[111] flex items-center justify-center rounded-full bg-black/60">
+                <Loader className="animate-spin" />
+              </div>
+            )}
+            {isMeAdmin && (
+              <label
+                htmlFor="new Avatar"
+                onClick={(e) => {
+                  e.stopPropagation()
+                }}
+                className="absolute bottom-0 right-0 z-[110] cursor-pointer rounded-full border border-border bg-background p-1"
+              >
+                <PencilIcon size={16} />
+                <input
+                  type="file"
+                  id="new Avatar"
+                  hidden
+                  onChange={handleNewAvatar}
+                />
+              </label>
+            )}
+          </motion.div>
+          <div ref={groupNameRef}>
+            {isGroup ? (
+              <div className="flex items-center gap-2">
+                <div>
+                  {editGroupName && isMeAdmin ? (
+                    <input
+                      autoFocus
+                      value={newGroupName}
+                      onChange={(e) => setNewGroupName(e.target.value)}
+                      className="bg-secondary p-1.5 focus-visible:outline-none"
+                    />
+                  ) : (
+                    <span>{groupName}</span>
+                  )}
+                </div>
+                {isMeAdmin && (
+                  <div>
+                    {!editGroupName ? (
+                      <button onClick={() => setEditGroupName(true)}>
+                        <PencilLineIcon size={15} />
+                      </button>
+                    ) : (
+                      <button
+                        onClick={handleChangeNewName}
+                        className="disabled:opacity-70"
+                        disabled={groupName === newGroupName}
+                      >
+                        <Check size={15} />
+                      </button>
+                    )}
+                  </div>
                 )}
               </div>
-             {isMeAdmin && <div>
-              {!editGroupName ? (
-                <button onClick={() => setEditGroupName(true)}>
-                  <PencilLineIcon size={15} />
-                </button>
-              ) : (
-                <button
-                  onClick={handleChangeNewName}
-                  className="disabled:opacity-70"
-                  disabled={groupName === newGroupName}
-                >
-                  <Check size={15} />
-                </button>
-              )}
-              </div>}
-            </div>
-          ) : (
-            <div>{friend.username}</div>
-          )}
-        </div>
-        {isGroup && <span>Group: {members?.length} members</span>}
-      </div>
-      {isGroup && (
-        <div className="mt-6">
-          <div className="flex justify-between">
-            <p className="p-2 text-base font-[500]">Group Members</p>
-            {selectedChat && members && isMeAdmin && (
-              <AddGroupMembers
-                chatId={_id}
-                members={members.map((m) => m._id)}
-              />
+            ) : (
+              <div>{friend.username}</div>
             )}
           </div>
-          <div className="space-y-2">
-            {members?.map((member: IMember) => {
-              if (!member) return <></>
-              return (
-                <MemberItem
-                  key={member._id}
-                  member={member}
-                  chatId={_id}
-                  isMeAdmin={isMeAdmin}
-                />
-              )
-            })}
-          </div>
+          {isGroup && <span>Group: {members?.length} members</span>}
         </div>
-      )}
-      <AnimatePresence>
-        {imagePreview && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setImagePreview(null)}
-            className="fixed inset-0 z-100 flex h-dvh w-screen items-center justify-center bg-background bg-opacity-60"
-          >
-            <div className="aspect-square w-1/3">
-              <motion.div layoutId={_id}>
-                <img
-                  src={imagePreview}
-                  alt="image preview"
-                  className="h-full w-full"
+        {isGroup && (
+          <div className="mt-6">
+            <div className="flex justify-between">
+              <p className="p-2 text-base font-[500]">Group Members</p>
+              {selectedChat && members && isMeAdmin && (
+                <AddGroupMembers
+                  chatId={_id}
+                  members={members.map((m) => m._id)}
                 />
-              </motion.div>
+              )}
             </div>
-          </motion.div>
+            <div className="space-y-2">
+              {members?.map((member: IMember) => {
+                if (!member) return <></>
+                return (
+                  <MemberItem
+                    key={member._id}
+                    member={member}
+                    chatId={_id}
+                    isMeAdmin={isMeAdmin}
+                  />
+                )
+              })}
+            </div>
+          </div>
         )}
-      </AnimatePresence>
-    </div>
+        <AnimatePresence>
+          {imagePreview && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setImagePreview(null)}
+              className="fixed inset-0 z-100 flex h-dvh w-screen items-center justify-center bg-background bg-opacity-60"
+            >
+              <div className="aspect-square w-1/3">
+                <motion.div layoutId={_id}>
+                  <img
+                    src={imagePreview}
+                    alt="image preview"
+                    className="h-full w-full"
+                  />
+                </motion.div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </motion.div>
   )
 }
 

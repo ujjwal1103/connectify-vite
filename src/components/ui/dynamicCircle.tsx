@@ -15,8 +15,6 @@ const StoryRing: React.FC<{ user: UserStories }> = ({ user }) => {
   const radius = 48 // Radius of the circle
   const circumference = 2 * Math.PI * radius // Circumference of the circle
 
-  console.log(circumference / storyCount)
-
   return (
     <div className="relative flex h-32 w-32 items-center justify-center">
       {/* SVG Ring */}

@@ -1,21 +1,18 @@
 import Avatar from '@/components/shared/Avatar'
 import { Button } from '@/components/ui/button'
-import { IChat } from '@/lib/types'
-import { useChatSlice } from '@/redux/services/chatSlice'
 import { InfoIcon, UserPlus } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import AddGroupMembers from './AddGroupMembers'
 import { getCurrentUserId } from '@/lib/localStorage'
+import { memo } from 'react'
+import { useChat } from '@/redux/services/chatSlice'
+const ChatProfileCard = () => {
+  const { selectedChat, toggleShowChat } = useChat()
 
-interface ChatProfileCardProps {
-  chat?: IChat | null
-}
+  if (!selectedChat) return
 
-const ChatProfileCard = ({ chat }: ChatProfileCardProps) => {
-  if (!chat) return
-
-  const { isGroup, groupAvatar, groupName, friend, createdBy, members } = chat
-  const {toggleShowChat} = useChatSlice()
+  const { isGroup, groupAvatar, groupName, friend, createdBy, members, _id } =
+    selectedChat
 
   const avatar = isGroup ? groupAvatar?.url : friend.avatar?.url
   const name = isGroup ? groupName : friend.name
@@ -25,17 +22,17 @@ const ChatProfileCard = ({ chat }: ChatProfileCardProps) => {
   )?.name
 
   const isMeAdmin = members
-  ?.filter((m) => m.role === 'admin')
-  .some((m) => m._id === getCurrentUserId())
-  
+    ?.filter((m) => m.role === 'admin')
+    .some((m) => m._id === getCurrentUserId())
+
   return (
-    <div className="mb-2 flex w-full flex-col items-center justify-center gap-2">
-      <div className="flex md:w-96 w-80 items-center justify-center rounded bg-background p-3 py-5">
+    <div className="mb-2 mt-3 flex w-full flex-col items-center justify-center gap-2">
+      <div className="flex w-80 items-center justify-center rounded bg-background p-3 py-5 md:w-96">
         <div className="flex flex-col items-center justify-center rounded-full">
           <Avatar className="mb-2 size-28" src={avatar} resize={300} />
           {isGroup ? (
             <>
-              <div className="md:text-2xl w-full text-center text-xl text-wrap font-semibold text-ellipsis">
+              <div className="w-full text-ellipsis text-wrap text-center text-xl font-semibold md:text-2xl">
                 {createdByName} created this group
               </div>
               <div>{members?.length} members</div>
@@ -52,23 +49,25 @@ const ChatProfileCard = ({ chat }: ChatProfileCardProps) => {
                   <span>Group Info</span>
                 </Button>
               </div>
-            {isMeAdmin &&  <AddGroupMembers
-                chatId={chat?._id}
-                members={chat!.members!.map(m=>m._id)}
-              >
-              <div className="py-2">
-                <Button
-                  disabled={members!.length >= 10}
-                  variant={'secondary'}
-                  className="space-x-2"
+              {isMeAdmin && (
+                <AddGroupMembers
+                  chatId={_id}
+                  members={members!.map((m) => m._id)}
                 >
-                  <span>
-                    <UserPlus size={14} absoluteStrokeWidth={true} />
-                  </span>
-                  <span>Add Members</span>
-                </Button>
-              </div>
-              </AddGroupMembers>}
+                  <div className="py-2">
+                    <Button
+                      disabled={members!.length >= 10}
+                      variant={'secondary'}
+                      className="space-x-2"
+                    >
+                      <span>
+                        <UserPlus size={14} absoluteStrokeWidth={true} />
+                      </span>
+                      <span>Add Members</span>
+                    </Button>
+                  </div>
+                </AddGroupMembers>
+              )}
             </>
           ) : (
             <>
@@ -85,4 +84,4 @@ const ChatProfileCard = ({ chat }: ChatProfileCardProps) => {
   )
 }
 
-export default ChatProfileCard
+export default memo(ChatProfileCard)

@@ -108,3 +108,5 @@ export interface Pagination {
   prev?: any
   next?: any
 }
+
+export type Status = 'idel' | 'loading' | 'success' | 'error'

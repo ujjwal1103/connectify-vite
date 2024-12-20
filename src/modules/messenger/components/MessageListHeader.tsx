@@ -1,9 +1,8 @@
-import Avatar from '@/components/shared/Avatar';
-import DropDownMenuItem from '@/components/shared/dialogs/DropDownMenu/DropDownMenuItem';
-import { tranformUrl } from '@/lib/utils';
-import { useChatSlice } from '@/redux/services/chatSlice';
-import { useClickOutside } from '@react-hookz/web';
-import { motion, AnimatePresence } from 'framer-motion';
+import Avatar from '@/components/shared/Avatar'
+import DropDownMenuItem from '@/components/shared/dialogs/DropDownMenu/DropDownMenuItem'
+import { tranformUrl } from '@/lib/utils'
+import { useClickOutside } from '@react-hookz/web'
+import { motion, AnimatePresence } from 'framer-motion'
 import {
   ChevronLeft,
   Ellipsis,
@@ -11,12 +10,19 @@ import {
   ListChecks,
   MessageSquareX,
   Trash2,
-} from 'lucide-react';
-import { useState, useRef, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+} from 'lucide-react'
+import { useState, useRef, useEffect, memo } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { useChat, useMessage } from '@/redux/services/chatSlice'
+import { IChat } from '@/lib/types'
 
-const MessageListHeader = () => {
-  const { selectedChat, setIsSelectMessages, toggleShowChat} = useChatSlice()
+type MessageListHeaderProps = {
+  selectedChat: IChat | null
+}
+
+const MessageListHeader = ({ selectedChat }: MessageListHeaderProps) => {
+  const { toggleShowChat } = useChat()
+  const { setIsSelectMessages } = useMessage()
   const [open, setOpen] = useState(false)
 
   const menuRef = useRef<any>(null)
@@ -40,24 +46,24 @@ const MessageListHeader = () => {
   const handleButtonClick = () => setOpen((prev) => !prev)
 
   const handleGoBack = () => {
-    navigate(-1);
+    navigate(-1)
   }
 
   return (
     <div className="relative z-100 flex flex-[0.05] items-center bg-background px-4 py-2">
-      <button className='pr-2' onClick={handleGoBack}>
-        <ChevronLeft size={24}/>
+      <button className="pr-2" onClick={handleGoBack}>
+        <ChevronLeft size={24} />
       </button>
       <div
         className="flex items-center gap-3 font-semibold"
         onClick={toggleShowChat}
       >
         <Avatar
-          src={
-            tranformUrl(selectedChat?.isGroup
+          src={tranformUrl(
+            selectedChat?.isGroup
               ? selectedChat?.groupAvatar?.url
-              : selectedChat?.friend?.avatar?.url)
-          }
+              : selectedChat?.friend?.avatar?.url
+          )}
         />
         <span>
           {selectedChat?.isGroup
@@ -78,13 +84,17 @@ const MessageListHeader = () => {
               exit={{ opacity: 0, scale: 0 }}
               layout
               transition={{ type: 'tween' }}
-              className="absolute right-10 z-100 origin-top-right rounded bg-accent w-44"
+              className="absolute right-10 z-100 w-44 origin-top-right rounded bg-accent"
             >
               <ul ref={menuRef} tabIndex={0} className="z-100 p-1 shadow">
-                <DropDownMenuItem label="Chat Info" icon={Info} onClick={()=>{
+                <DropDownMenuItem
+                  label="Chat Info"
+                  icon={Info}
+                  onClick={() => {
                     setOpen(false)
-                  toggleShowChat()
-                  }}/>
+                    toggleShowChat()
+                  }}
+                />
                 <DropDownMenuItem
                   label="Select Messages"
                   icon={ListChecks}
@@ -103,4 +113,4 @@ const MessageListHeader = () => {
     </div>
   )
 }
-export default MessageListHeader
+export default memo(MessageListHeader)

@@ -1,14 +1,14 @@
-import { useCallback, useRef, useState } from 'react'
+import { memo, useCallback, useRef, useState } from 'react'
 import ChatListHeader from './ChatListHeader'
 import { Loader, Search, X, XIcon } from 'lucide-react'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import Chat from './Chat'
 import { useGetQuery } from '@/hooks/useGetQuery'
-import { useChatSlice } from '@/redux/services/chatSlice'
+import { useChat, useMessage } from '@/redux/services/chatSlice'
 import { useDebounce } from '@/hooks/useDebounce'
 import { getConversations } from '@/api'
 import { cn } from '@/lib/utils'
-import { useParams } from 'react-router-dom'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { NEW_CHAT } from '@/constants/Events'
 import useSocketEvents from '@/hooks/useSocketEvent'
 import { useSocket } from '@/context/SocketContext'
@@ -18,22 +18,28 @@ import useModalStore from '@/zustand/newChatStore'
 
 const ChatList = () => {
   const [searchTerm, setSearchTerm] = useState('')
-  const openModal = useModalStore(state=>state.openModal);
+  const openModal = useModalStore((state) => state.openModal)
   const [isSearching, setIsSearching] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
   const debouceSearch = useDebounce(searchTerm, 400)
   const { socket } = useSocket()
   const { chatId } = useParams()
+  const navigate = useNavigate()
+
+  const location = useLocation()
   const {
     chats,
-    setChats,
     selectChats,
-    setSelectChats,
     selectedChats,
+    setChats,
+    setSelectChats,
     resetSelectedChats,
     setChat,
-  } = useChatSlice()
-  const { isLoading } = useGetQuery({
+    setSelectedChat,
+  } = useChat()
+  const { setMessagePage, setMessages } = useMessage()
+
+  const { isLoading, isSuccess } = useGetQuery({
     fn: () => {
       if (debouceSearch) {
         setIsSearching(true)
@@ -61,6 +67,24 @@ const ChatList = () => {
   }
 
   useSocketEvents(socket, eventHandlers)
+
+
+  const handleSelect = useCallback(
+    (chat: IChat) => {
+      if (!(chatId && chatId === chat._id)) {
+        setMessagePage(1)
+        setMessages([])
+        setSelectedChat(chat)
+        navigate(
+          {
+            pathname: `/inbox/${chat._id}`,
+          },
+          { replace: location.pathname !== '/inbox' }
+        )
+      }
+    },
+    [chatId]
+  )
 
   return (
     <div
@@ -133,17 +157,18 @@ const ChatList = () => {
         ref={containerRef}
         className={cn('overflow-y-scroll scrollbar-none md:flex-[0.85]')}
       >
-        {chats.length === 0 && (
-          <div className='flex flex-col justify-center items-center h-full'>
-            <div className='text-xl font-semibold'> No chats yet. </div>
-            <div className='text-foreground/50'>Send a message to start!</div>
+        {isSuccess && Boolean(!chats.length) && (
+          <div className="flex h-full flex-col items-center justify-center">
+            <div className="text-xl font-semibold"> No chats yet. </div>
+            <div className="text-foreground/50">Send a message to start!</div>
 
-            <Button onClick={openModal} variant='outline' className='mt-3'>New Chat</Button>
+            <Button onClick={openModal} variant="outline" className="mt-3">
+              New Chat
+            </Button>
           </div>
         )}
         {isLoading && !isSearching ? (
-          <div className="flex h-full flex-col items-center justify-center gap-2">
-            <Loader className="animate-spin" />
+          <div className="flex h-full flex-col items-center gap-2">
             <span className="text-sm">Loading Chats...</span>
           </div>
         ) : (
@@ -159,11 +184,18 @@ const ChatList = () => {
             ))}
             scrollableTarget={'scrollableDiv'}
           >
-            {chats?.map((chat: IChat) => <Chat key={chat._id} chat={chat} />)}
+            {chats?.map((chat: IChat) => (
+              <Chat
+                key={chat._id}
+                isChatSelected={Boolean(chatId && chatId === chat._id)}
+                chat={chat}
+                handleSelect={handleSelect}
+              />
+            ))}
           </InfiniteScroll>
         )}
       </div>
     </div>
   )
 }
-export default ChatList
+export default memo(ChatList)

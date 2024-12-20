@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useState } from "react";
+import { Status } from '@/lib/types'
+import { useCallback, useEffect, useState } from 'react'
 
 const useGetQuery = ({
   fn,
@@ -6,35 +7,35 @@ const useGetQuery = ({
   onSuccess = () => {},
   onError = () => {},
 }: any) => {
-  const [error, setError] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [data, setData] = useState(null);
+  const [status, setStatus] = useState<Status>('idel')
+  const [data, setData] = useState(null)
 
   const queryFn = useCallback(async () => {
     try {
-      const res = await fn();
+      const res = await fn()
       if (res) {
-        setData(res);
-        onSuccess(res);
+        setData(res)
+        onSuccess(res)
+        setStatus('success')
       }
     } catch (error: any) {
-      onError(error);
-      console.log(error, "error");
-      setError(error);
-    } finally {
-      setIsLoading(false);
+      onError(error)
+      setStatus('error')
     }
-  }, deps);
+  }, deps)
 
   useEffect(() => {
-    queryFn();
-  }, [queryFn]);
+    queryFn()
+  }, [queryFn])
 
   const refech = () => {
-    queryFn();
-  };
+    queryFn()
+  }
 
-  return { data, error, isLoading, refech, setData };
-};
+  const isLoading = status === 'loading'
+  const isSuccess = status === 'success'
 
-export { useGetQuery };
+  return { data, status, refech, setData, isLoading, isSuccess }
+}
+
+export { useGetQuery }
