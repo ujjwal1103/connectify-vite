@@ -6,8 +6,14 @@ import AddGroupMembers from './AddGroupMembers'
 import { getCurrentUserId } from '@/lib/localStorage'
 import { memo } from 'react'
 import { useChat } from '@/redux/services/chatSlice'
+import { shallowEqual, useSelector } from 'react-redux'
+import { RootState } from '@/redux/store'
+
+const selectSelectedChat = (state: RootState) => state.chat.selectedChat
+
 const ChatProfileCard = () => {
-  const { selectedChat, toggleShowChat } = useChat()
+  const selectedChat = useSelector(selectSelectedChat, shallowEqual)
+  const { toggleShowChat } = useChat()
 
   if (!selectedChat) return
 

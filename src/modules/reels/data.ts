@@ -1,5 +1,3 @@
-import { duration } from "moment";
-
 export const users = [
   {
     id: 1,

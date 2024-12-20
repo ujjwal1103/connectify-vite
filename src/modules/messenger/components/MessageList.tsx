@@ -15,8 +15,6 @@ import useSocketEvents from '@/hooks/useSocketEvent'
 import ChatProfileCard from './ChatProfileCard'
 import DotLoading from '@/components/shared/Loading/DotLoading'
 import { AnimatePresence } from 'framer-motion'
-import { shallowEqual, useSelector } from 'react-redux'
-import { RootState } from '@/redux/store'
 
 const MessageList = () => {
   const {
@@ -30,13 +28,8 @@ const MessageList = () => {
     markAllMessagesAsSeen,
     isAddingContent,
     setIsAddingContent,
-    toggleShowChat,
   } = useChatSlice()
 
-  const selectedChat = useSelector(
-    (state: RootState) => state.chat.selectedChat,
-    shallowEqual
-  )
   const [loadingMore, setLoadingMore] = useState(false)
   const { chatId } = useParams()
   const [page, setPage] = useState(1)
@@ -167,7 +160,7 @@ const MessageList = () => {
       setIsAddingContent={setIsAddingContent}
     >
       {showProfileCard && (
-        <ChatProfileCard toggleShowChat={toggleShowChat} chat={selectedChat} />
+        <ChatProfileCard />
       )}
       {loadingMore && <LoadMoreIndicator />}
       <AnimatePresence>

@@ -11,7 +11,6 @@ import LoadingFeed from './components/LoadingFeed'
 import { ChevronUpIcon } from 'lucide-react'
 import Wrapper from '@/components/Wrapper'
 import NoPosts from './components/NoPosts'
-import Stories from './components/stories/Stories'
 
 const fetchPosts = (page: number) =>
   getAllPost(page).then((res: any) => ({

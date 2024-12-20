@@ -1,5 +1,3 @@
-import NewStoryIcon from '@/components/icons/NewStoryIcon'
-import Reels from '@/components/icons/Reels'
 import ReelsFill from '@/components/icons/ReelsFill'
 import { ModalStateNames } from '@/redux/services/modalStateSlice'
 import {
@@ -11,7 +9,6 @@ import {
   Menu as MenuIcon,
   Search as SearchIcon,
   Send,
-  SquarePlay,
   SquarePlus,
   User2,
 } from 'lucide-react'

@@ -1,5 +1,5 @@
 import { cn } from '@/lib/utils'
-import { memo, useCallback, useEffect, useState } from 'react'
+import { memo, useCallback } from 'react'
 import CheckBox from './CheckBox'
 import Avatar from '@/components/shared/Avatar'
 import { IMessage, IUser } from '@/lib/types'
@@ -8,7 +8,7 @@ import MessageMenu from './MessageMenu'
 import { useChatSlice } from '@/redux/services/chatSlice'
 import Modal from '@/components/shared/modal/Modal'
 import EditMessage from './EditMessage'
-import { AnimatePresence, motion, useAnimate } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion'
 import { deleteMessageById } from '@/api'
 
 interface MessageWrapProps {

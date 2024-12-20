@@ -147,7 +147,7 @@ const Post = ({ post }: { post: IPost }) => {
               <BookmarkButton
                 postId={post?._id}
                 isBookmarked={post.isBookmarked}
-                onBookmarkClick={(isBookmarked) => {
+                onBookmarkClick={() => {
                   // onBookmark?.(isBookmarked)
                   // addAndRemoveBookmark(isBookmarked, post?._id)
                 }}

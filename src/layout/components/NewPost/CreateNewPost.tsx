@@ -1,12 +1,11 @@
-import { useEffect, useLayoutEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import ImageCropper from '@/components/crop/ImageCropper'
 import CaptionComponent from './CaptionComponent'
 import ImagePicker from './ImagePicker'
 import Modal from '@/components/shared/modal/Modal'
 import usePostStore from '@/zustand/newPostStore.tsx'
-import { convertToImageData, pickImage, urlToFile } from './helper'
-import { readFileAsDataURL } from '@/lib/utils'
+import { convertToImageData, urlToFile } from './helper'
 
 type Step = 'Crop' | 'Caption' | 'Pick'
 

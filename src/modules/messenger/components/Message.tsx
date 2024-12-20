@@ -9,7 +9,7 @@ import AudioMessage from './AudioMessage'
 import PostMessage from './PostMessage'
 import MessageWrap from './MessageWrap'
 import { IMessage } from '@/lib/types'
-import { getCurrentName, getCurrentUserId } from '@/lib/localStorage'
+import { getCurrentName } from '@/lib/localStorage'
 
 interface MessageProps {
   currentUserMessage: boolean
@@ -32,7 +32,7 @@ const Message = ({
 }: MessageProps) => {
   const { messageType, _id } = message
 
-  const { isSelectMessages, setSelectedMessage, selectedChat } = useChatSlice()
+  const { isSelectMessages, setSelectedMessage } = useChatSlice()
 
   const handleSelectMessage = useCallback(() => {
     if (isSelectMessages) {

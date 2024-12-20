@@ -1,17 +1,8 @@
-import { useState } from 'react'
-
 import Modal from '../modal/Modal'
 import { Button } from '@/components/ui/button'
-import { CircleFadingPlus, Download, PlusSquare, Save, SendIcon, Share } from 'lucide-react'
+import { CircleFadingPlus, Download, PlusSquare, SendIcon, Share } from 'lucide-react'
 
 const ImageModal = ({ openImage, setOpenImage }: any) => {
-  const [imageLoaded, setImageLoaded] = useState(false) // Track if the main image has loaded
-
-  const handleImageLoad = () => {
-    console.log('Main image loaded')
-    setImageLoaded(true) // Set to true when the main image is loaded
-  }
-
   const handleShare = () => {
     if (navigator.share) {
       navigator.share({
@@ -24,22 +15,22 @@ const ImageModal = ({ openImage, setOpenImage }: any) => {
     }
   }
 
-  const handleAddToCollection = () => {
-    console.log('Image added to collection');
-    // You can implement a function to add to a collection
-  }
+  // const handleAddToCollection = () => {
+  //   console.log('Image added to collection');
+  //   // You can implement a function to add to a collection
+  // }
 
-  // Handle sending the image (could be an API or email send)
-  const handleSend = () => {
-    console.log('Send Image');
-    // Add the sending functionality (email, message, etc.)
-  }
+  // // Handle sending the image (could be an API or email send)
+  // const handleSend = () => {
+  //   console.log('Send Image');
+  //   // Add the sending functionality (email, message, etc.)
+  // }
 
-  // Handle creating a new project or action with the image
-  const handleCreateProject = () => {
-    console.log('Create new project with the image');
-    // Implement project creation functionality
-  }
+  // // Handle creating a new project or action with the image
+  // const handleCreateProject = () => {
+  //   console.log('Create new project with the image');
+  //   // Implement project creation functionality
+  // }
 
   const handleDownload = () => {
     // Create a temporary link element
@@ -65,7 +56,6 @@ const ImageModal = ({ openImage, setOpenImage }: any) => {
         <img
           src={openImage.src.original} // The main image path
           className={`z-20 h-full w-full rounded-md object-contain md:object-cover transition-opacity duration-200`}
-          onLoad={handleImageLoad} // Trigger onLoad event when the main image finishes loading
           alt="Main Image"
           loading="lazy"
         />

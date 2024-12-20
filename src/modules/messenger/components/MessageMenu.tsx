@@ -45,7 +45,6 @@ const MessageMenu = ({
   const {
     reactMessage,
     setCurrentMessageReply,
-    removeMessage,
     setEditMessage,
   } = useChatSlice()
   const menuRef = useRef<HTMLDivElement>(null)

@@ -25,7 +25,6 @@ import Route from './Route'
 import { useSocket } from '@/context/SocketContext'
 import { LIKE_POST, NEW_MESSAGE, NEW_REQUEST } from '@/constants/Events'
 import useSocketEvents from '@/hooks/useSocketEvent'
-import { useChatSlice } from '@/redux/services/chatSlice'
 import { XIcon } from 'lucide-react'
 import { NewStory } from '@/modules/story/NewStory/NewStory'
 
