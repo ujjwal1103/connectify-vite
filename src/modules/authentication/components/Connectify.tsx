@@ -1,4 +1,4 @@
-import backgroundImage from '../../../assets/background/bgg.png'
+import backgroundImage from '../../../assets/background/bgg.webp'
 import { motion } from "framer-motion";
 import ConnectifyLogoText from "@/components/icons/ConnectifyLogoText";
 import ConnectifyIcon from "@/components/icons/Connectify";

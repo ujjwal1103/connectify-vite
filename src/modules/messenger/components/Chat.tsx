@@ -19,7 +19,6 @@ import { IChat } from '@/lib/types'
 import { useSocket } from '@/context/SocketContext'
 import useSocketEvents from '@/hooks/useSocketEvent'
 import DropDownMenu from '@/components/shared/dialogs/DropDownMenu/DropDownMenu'
-import { faker } from '@faker-js/faker'
 
 const items = [
   {
@@ -132,7 +131,6 @@ const Chat = ({ chat, isChatSelected, handleSelect }: ChatProps) => {
         chat={chat}
         setSelectedChats={setSelectedChats}
       />
-      {faker.person.firstName()}
       {chat?.unseenMessagesCount! > 0 && (
         <button className="ml-auto mr-3 h-5 w-5 rounded-full bg-gradient-to-l from-sky-900 to-indigo-900 text-xss text-sky-100">
           {chat?.unseenMessagesCount}

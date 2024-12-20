@@ -2,7 +2,6 @@ import { memo, useCallback, useRef, useState } from 'react'
 import ChatListHeader from './ChatListHeader'
 import { Loader, Search, X, XIcon } from 'lucide-react'
 import InfiniteScroll from 'react-infinite-scroll-component'
-import Chat from './Chat'
 import { useGetQuery } from '@/hooks/useGetQuery'
 import { useChat, useMessage } from '@/redux/services/chatSlice'
 import { useDebounce } from '@/hooks/useDebounce'
@@ -15,6 +14,7 @@ import { useSocket } from '@/context/SocketContext'
 import { IChat } from '@/lib/types'
 import { Button } from '@/components/ui/button'
 import useModalStore from '@/zustand/newChatStore'
+import Chat from './Chat'
 
 const ChatList = () => {
   const [searchTerm, setSearchTerm] = useState('')
@@ -67,7 +67,6 @@ const ChatList = () => {
   }
 
   useSocketEvents(socket, eventHandlers)
-
 
   const handleSelect = useCallback(
     (chat: IChat) => {

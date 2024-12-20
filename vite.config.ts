@@ -13,4 +13,14 @@ export default defineConfig({
   server: {
     port: 3000,
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom', '@tanstack/react-query'], // Example vendor chunk
+        },
+      },
+    },
+    assetsDir: 'assets',
+  },
 })

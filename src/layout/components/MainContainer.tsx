@@ -2,7 +2,9 @@ import { Outlet } from "react-router-dom";
 import useMobileSidebar from "../hooks/useMobileSidebar";
 import Appbar from "./Sidebar/AppBar";
 import TabBar from "./Sidebar/TabBar";
-import Sidebar from "./Sidebar/Sidebar";
+import { lazy } from "react";
+
+const Sidebar = lazy(() => import("./Sidebar/Sidebar"));
 
 const MainContainer = () => {
   const { show, hideAppBar, setHideAppBar } = useMobileSidebar();

@@ -27,7 +27,6 @@ const VideoMessage = ({
   const [isPlaying, setIsPlaying] = useState(false)
   const playPause = () => {
     const video = videoRef.current
-    console.dir(video)
     if (video?.paused) {
       setIsPlaying(true)
       video.play()
@@ -36,8 +35,6 @@ const VideoMessage = ({
       setIsPlaying(false)
     }
   }
-
-  console.log(message.attachments[0].url)
 
   return (
     <div

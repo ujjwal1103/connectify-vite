@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { Suspense, useEffect } from 'react'
 import { Outlet, useParams } from 'react-router-dom'
 import { MessagesSquare } from 'lucide-react'
 
@@ -49,9 +49,11 @@ const Messenger = () => {
 
   return (
     <div className="flex flex-1">
-      <ChatList />
+        <ChatList />
       {chatId ? (
-        <Outlet />
+        <Suspense fallback={<div>Loading messenger</div>}>
+          <Outlet />
+        </Suspense>
       ) : (
         <div className="hidden w-full flex-1 md:block md:flex-1">
           <NoSelectedChat />
