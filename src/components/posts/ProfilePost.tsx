@@ -71,7 +71,7 @@ export const ProfilePost = ({
   }
 
   return (
-    <motion.div className="bg-black-600 relative flex items-center">
+    <motion.div className="bg-black relative flex items-center">
       <div
         onClick={() => {
           onClickPost?.(index)
@@ -238,11 +238,7 @@ const PostMenu = ({
     <>
       <div
         ref={buttonRef}
-        style={{
-          backgroundImage:
-            'radial-gradient(farthest-side at 60% 55%, transparent, transparent, black)',
-        }}
-        className="absolute right-0 top-0 hidden rounded-bl-lg bg-gradient-to-bl from-zinc-950 to-transparent p-2 md:block"
+        className="absolute right-0 top-0 hidden p-2 md:block"
       >
         <MoreHorizontal
           className="size-3 cursor-pointer md:size-6"

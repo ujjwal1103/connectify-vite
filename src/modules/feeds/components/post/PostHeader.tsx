@@ -92,12 +92,22 @@ const PostHeaderMenu = ({ postId, post }: PostHeaderMenuProps) => {
   }
   return (
     <div className="text-secondary-foreground">
-      <button onClick={() => setMenu(!menu)}>
-        <Ellipsis className="cursor-pointer" />
+      <button
+        onClick={() => setMenu(!menu)}
+        className={cn(
+          'box-content flex h-6 w-6 items-center justify-center rounded-md p-1 transition-colors duration-300 hover:bg-secondary',
+          menu && 'bg-secondary'
+        )}
+      >
+        <Ellipsis className="cursor-pointer" size={24} />
       </button>
       <AnimatePresence>
         {menu && (
-          <PostOptions post={post} open={menu} onClose={() => setMenu(false)} />
+          <PostOptions post={post} open={menu} onClose={() => setMenu(false)} handleDelete={()=>{
+            setMenu(false)
+            setModalOpen(true)
+
+          }} />
         )}
       </AnimatePresence>
       <AnimatePresence>

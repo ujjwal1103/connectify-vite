@@ -68,7 +68,7 @@ const Post = () => {
   }
 
   return (
-    <div className="flex h-full w-full flex-1 flex-col md:flex-row z-10">
+    <div className="z-10 flex h-full w-full flex-1 flex-col md:flex-row">
       <div className="w-screen md:w-144">
         <div className="md:pl-5 md:pt-5">
           <div className="flex items-center gap-3 p-2 md:hidden md:p-0">
@@ -135,7 +135,7 @@ const Post = () => {
                 <span>{post?.user?.name}</span>
               </div>
 
-              <button onClick={()=>setMenu(true)} className="ml-auto">
+              <button onClick={() => setMenu(true)} className="ml-auto">
                 <Ellipsis className="cursor-pointer" />
               </button>
             </div>
@@ -155,6 +155,7 @@ const Post = () => {
       <AnimatePresence>
         {menu && (
           <PostOptions
+            handleDelete={() => {}}
             post={post!}
             open={menu}
             onClose={() => setMenu(false)}

@@ -21,9 +21,10 @@ interface Props {
   open: boolean
   onClose: () => void
   post: IPost
+  handleDelete: () => void
 }
 
-const PostOptions = ({ onClose, post }: Props) => {
+const PostOptions = ({ onClose, post, handleDelete }: Props) => {
   const ref = useRef<HTMLDivElement>(null)
 
   const navigate = useNavigate()
@@ -40,7 +41,7 @@ const PostOptions = ({ onClose, post }: Props) => {
 
   const isFollowing = post?.user?.isFollow
 
-  useClickOutside(ref,onClose)
+  useClickOutside(ref, onClose)
 
   return createPortal(
     <div className="fixed inset-0 z-100 flex h-screen w-screen justify-center">
@@ -82,7 +83,12 @@ const PostOptions = ({ onClose, post }: Props) => {
             <SheetOption icon={Link} text="Copy link" />
             <SheetOption icon={User} text="About this account" />
             <SheetOption icon={Pencil} text="Edit" />
-            <SheetOption icon={Trash2} text="Delete" color="text-red-500" />
+            <SheetOption
+              icon={Trash2}
+              text="Delete"
+              color="text-red-500"
+              onClick={handleDelete}
+            />
             <SheetOption icon={X} text="Cancel" onClick={onClose} />
           </div>
         </div>

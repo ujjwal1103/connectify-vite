@@ -50,12 +50,12 @@ const MessageListHeader = ({ selectedChat }: MessageListHeaderProps) => {
   }
 
   return (
-    <div className="relative z-100 flex flex-[0.05] items-center bg-background px-4 py-2">
-      <button className="pr-2" onClick={handleGoBack}>
+    <div className="relative z-100 flex flex-[0.05] items-center bg-background py-2 pr-3">
+      <button className="md:hidden block pl-2" onClick={handleGoBack}>
         <ChevronLeft size={24} />
       </button>
       <div
-        className="flex items-center gap-3 font-semibold"
+        className="flex items-center gap-3 font-semibold ml-2"
         onClick={toggleShowChat}
       >
         <Avatar

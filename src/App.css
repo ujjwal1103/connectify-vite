@@ -1,5 +1,6 @@
 :root {
   font-size: 16px;
+  color: hsl(var(--foreground));
 }
 
 #root {
@@ -141,15 +142,13 @@ input:-webkit-autofill:focus {
   }
 }
 
-
-
 .chat-bubble:before {
   position: absolute;
   bottom: 0px;
   height: 0.75rem /* 12px */;
   width: 0.75rem /* 12px */;
   background-color: inherit;
-  content: "";
+  content: '';
   mask-size: contain;
   mask-repeat: no-repeat;
   mask-position: center;
@@ -159,8 +158,8 @@ input:-webkit-autofill:focus {
   border-end-start-radius: 0px;
 }
 .start .chat-bubble:before {
-  mask-image: url("./assets/svg/bubble.svg");
-  inset-inline-start: -0.749rem
+  mask-image: url('./assets/svg/bubble.svg');
+  inset-inline-start: -0.749rem;
 }
 
 .end .chat-bubble {
@@ -169,6 +168,6 @@ input:-webkit-autofill:focus {
   border-bottom-left-radius: 0.75rem;
 }
 .end .chat-bubble:before {
-  mask-image: url("./assets/svg/bubble-end.svg");
+  mask-image: url('./assets/svg/bubble-end.svg');
   inset-inline-start: 99.9%;
 }
