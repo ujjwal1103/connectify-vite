@@ -7,13 +7,13 @@ import {
   CropperRef,
 } from 'react-advanced-cropper'
 import {
-	zoomStencil,
-	fitStencilToImage,
-	resizeCoordinates,
-	transformImage,
-	defaultSize,
-	stencilConstraints,
-} from 'advanced-cropper/showcase/mobile';
+  zoomStencil,
+  fitStencilToImage,
+  resizeCoordinates,
+  transformImage,
+  defaultSize,
+  stencilConstraints,
+} from 'advanced-cropper/showcase/mobile'
 
 const Cropper = (
   { aspectRatio, src }: { aspectRatio: number; src: string },
@@ -27,6 +27,7 @@ const Cropper = (
     resizable: true,
     className: 'overlay transition-all ease-in-out shadow-md',
   }
+
   return (
     <MCropper
       ref={ref}
@@ -35,7 +36,7 @@ const Cropper = (
       stencilProps={tensileProps}
       src={src}
       postProcess={[fitStencilToImage, zoomStencil]}
-      className={'cursor-move rounded-b-lg md:h-500 md:w-500 w-screen h-96'}
+      className={'sm:h-500 sm:w-500 w-screen aspect-1 cursor-move rounded-b-lg'}
       stencilComponent={RectangleStencil}
       imageRestriction={ImageRestriction.none}
       transformImageAlgorithm={transformImage}

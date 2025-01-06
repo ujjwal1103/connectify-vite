@@ -3,6 +3,7 @@ import imageIcon from '../../../assets/Icons/gallery.png'
 import { pickImage } from './helper'
 import { ChangeEvent } from 'react'
 import { X } from 'lucide-react'
+import { cn } from '@/lib/utils'
 
 type NewImage = {
   originalImage: File
@@ -15,16 +16,23 @@ type NewImage = {
 type ImagePickerProps = {
   onImageSelect: (data: { name: string; image: NewImage } | undefined) => void
   onClose: () => void
+  loading?: boolean
 }
 
-const ImagePicker = ({ onImageSelect, onClose }: ImagePickerProps) => {
+const ImagePicker = ({ onImageSelect, onClose, loading }: ImagePickerProps) => {
   const handleImagePick = async (e: ChangeEvent<HTMLInputElement>) => {
     const data = await pickImage(e)
     onImageSelect(data)
   }
 
+
+
   return (
-    <motion.div className="relative flex h-96 max-h-96 min-h-96 min-w-96 flex-col items-center justify-center gap-4 bg-zinc-950 text-white">
+    <motion.div
+      className={cn(
+        'relative flex w-screen aspect-1 md:w-500 md:h-500 flex-col items-center justify-center gap-4 bg-background text-white'
+      )}
+    >
       <button className="absolute right-3 top-3" onClick={onClose}>
         <X />
       </button>
@@ -45,6 +53,7 @@ const ImagePicker = ({ onImageSelect, onClose }: ImagePickerProps) => {
         accept="image/*, video/*"
         onChange={handleImagePick}
       />
+      {loading && <div className="absolute inset-0 bg-black/50"></div>}
     </motion.div>
   )
 }

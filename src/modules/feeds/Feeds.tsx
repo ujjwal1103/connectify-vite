@@ -11,6 +11,8 @@ import LoadingFeed from './components/LoadingFeed'
 import { ChevronUpIcon } from 'lucide-react'
 import Wrapper from '@/components/Wrapper'
 import NoPosts from './components/NoPosts'
+import StoryComponent from './StoryComponent'
+// import Stories from './components/stories/Stories'
 
 const fetchPosts = (page: number) =>
   getAllPost(page).then((res: any) => ({
@@ -55,41 +57,38 @@ const Feeds = () => {
   }
 
   return (
-    <main
-      ref={containerRef}
-      className="h-dvh w-full overflow-x-hidden overflow-y-scroll scrollbar-thin sm:my-0 md:flex md:justify-center md:p-2 lg:justify-start lg:scrollbar"
-      id="scrollableDiv"
-    >
-      <section className="mt-10 flex flex-1 flex-col gap-2 py-1 md:mt-0 md:flex-[0.8] md:gap-3 md:p-3 lg:flex-[0.6]">
-        {/* <Stories /> */}
-
-        <div className="flex flex-col w-full">
-          <div className="flex flex-col">
+    <>
+      <main
+        ref={containerRef}
+        className="relative h-dvh w-screen overflow-y-scroll scrollbar-thin md:w-auto md:translate-y-0 md:bg-inherit md:p-4"
+        id="scrollableDiv"
+      >
+        <div className="flex h-full w-full gap-0 md:gap-10">
+          <section className="flex- flex w-full flex-[0.5] flex-col md:w-auto">
             <InfiniteScroll
-              className="flex flex-col"
               dataLength={feeds?.length}
               next={handleLoadMore}
               hasMore={hasNextPage}
               loader={<LoadingFeed />}
               scrollableTarget={'scrollableDiv'}
+              className="w-auto md:w-144"
             >
+              <StoryComponent />
               {isLoading && <div>Loading</div>}
               {feeds.length === 0 && !isLoading && <NoPosts />}
               {feeds?.map((feed: any) => <Post key={feed._id} post={feed} />)}
             </InfiniteScroll>
-          </div>
-        </div>
-      </section>
-      <section className="hidden flex-[0.4] lg:block sticky top-0">
-        <RightSideContainer />
-      </section>
+          </section>
 
+          <RightSideContainer />
+        </div>
+      </main>
       <Wrapper shouldRender={showScrollToTop}>
         <motion.div
           initial={{ opacity: 0, scale: 0.5 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.5 }}
-          className="fixed bottom-10 right-10 z-100"
+          className="absolute bottom-10 right-10"
         >
           <button
             type="button"
@@ -100,7 +99,7 @@ const Feeds = () => {
           </button>
         </motion.div>
       </Wrapper>
-    </main>
+    </>
   )
 }
 

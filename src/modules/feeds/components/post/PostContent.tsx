@@ -32,13 +32,13 @@ const PostContent = ({ images }: PostContentProps) => {
   }, [])
   
   return (
-    <div className="overflow-hidden">
+    <div ref={ref} className="overflow-hidden">
       <div
-        className="relative block h-full w-full overflow-hidden"
+        className="relative block w-full overflow-hidden"
         style={{ display: 'block' }}
       >
         <div className="block h-full w-full" onDoubleClick={handleDoubleClick}>
-          <ImageSlider images={images} width={ref?.current?.clientWidth} />
+          <ImageSlider images={images} />
           <AnimatePresence>
             {liked && (
               <motion.div

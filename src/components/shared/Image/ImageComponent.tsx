@@ -7,6 +7,7 @@ const ImageComponent = ({
   alt,
   loader,
   fallback,
+  width,
   className = '',
   ...props
 }: any) => {
@@ -35,7 +36,7 @@ const ImageComponent = ({
           alt={alt}
           onLoad={handleLoad}
           onError={handleError}
-          
+          style={{width: width}}
           className={cn(className, { hidden: loading })}
           {...props}
         />

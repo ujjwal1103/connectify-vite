@@ -1,3 +1,4 @@
+import { getCurrentUserId } from '@/lib/localStorage'
 import { IPost } from '@/lib/types'
 import { useClickOutside } from '@react-hookz/web'
 import { motion } from 'framer-motion'
@@ -40,11 +41,12 @@ const PostOptions = ({ onClose, post, handleDelete }: Props) => {
   }
 
   const isFollowing = post?.user?.isFollow
+  const isCurrentUserPost = post?.user._id === getCurrentUserId()
 
   useClickOutside(ref, onClose)
 
   return createPortal(
-    <div className="fixed inset-0 z-100 flex h-screen w-screen justify-center">
+    <div className="fixed inset-0 z-[999] flex h-screen w-screen justify-center">
       <motion.div
         onClick={onClose}
         initial={{ opacity: 0 }}
@@ -68,11 +70,13 @@ const PostOptions = ({ onClose, post, handleDelete }: Props) => {
           </div>
           <div className="space-y-0.5 pb-2">
             {/* <SheetOption icon={Flag} text="Report" color="text-red-500" /> */}
-            <SheetOption
-              icon={isFollowing ? UserMinus : UserPlus}
-              text={isFollowing ? 'Unfollow' : 'Follow'}
-              color={isFollowing ? 'text-red-500' : 'text-white'}
-            />
+            {!isCurrentUserPost && (
+              <SheetOption
+                icon={isFollowing ? UserMinus : UserPlus}
+                text={isFollowing ? 'Unfollow' : 'Follow'}
+                color={isFollowing ? 'text-red-500' : 'text-white'}
+              />
+            )}
             <SheetOption icon={Star} text="Add to favorites" />
             <SheetOption
               icon={ExternalLink}
@@ -82,13 +86,15 @@ const PostOptions = ({ onClose, post, handleDelete }: Props) => {
             <SheetOption icon={Share2} text="Share to..." />
             <SheetOption icon={Link} text="Copy link" />
             <SheetOption icon={User} text="About this account" />
-            <SheetOption icon={Pencil} text="Edit" />
-            <SheetOption
-              icon={Trash2}
-              text="Delete"
-              color="text-red-500"
-              onClick={handleDelete}
-            />
+            {isCurrentUserPost && <SheetOption icon={Pencil} text="Edit" />}
+            {isCurrentUserPost && (
+              <SheetOption
+                icon={Trash2}
+                text="Delete"
+                color="text-red-500"
+                onClick={handleDelete}
+              />
+            )}
             <SheetOption icon={X} text="Cancel" onClick={onClose} />
           </div>
         </div>

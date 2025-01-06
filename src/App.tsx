@@ -44,7 +44,14 @@ function App() {
           <Route path="/reels" element={<Reels />} />
           <Route path="/search" element={<MobileSearch />} />
           <Route path="/notifications" element={<MobileNotifications />} />
-          <Route path="/inbox" element={<Messenger />}>
+          <Route
+            path="/inbox"
+            element={
+              <Suspense fallback={<div>loading...</div>}>
+                <Messenger />
+              </Suspense>
+            }
+          >
             <Route path=":chatId" element={<ChatBox />} />
           </Route>
         </Route>

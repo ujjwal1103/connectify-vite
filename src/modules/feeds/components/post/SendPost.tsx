@@ -1,12 +1,34 @@
 import Avatar from '@/components/shared/Avatar'
 import { makeRequest } from '@/config/api.config'
 import { useDebounce } from '@/hooks/useDebounce'
-import { IUser } from '@/lib/types'
+import { IPost, IUser } from '@/lib/types'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, CircleCheck, Circle } from 'lucide-react'
 import { useState, useCallback, useEffect } from 'react'
 
-const SendPost = ({ onClose, post }: any) => {
+const variants = {
+  initial: {
+    // x: '100%',
+    scale: 0.9,
+  },
+  animate: {
+    // x: 0,
+    scale: 1,
+    transition: { duration: 0.2, ease: 'linear' },
+  },
+  exit: {
+    // x: '100%',
+    scale: 0.9,
+    transition: { duration: 0.2, ease: 'linear' },
+  },
+}
+
+interface SendPostProps {
+  onClose: () => void
+  post: IPost
+}
+
+const SendPost = ({ onClose, post }: SendPostProps) => {
   const [users, setUsers] = useState<IUser[]>([])
   const [search, setSearch] = useState<string>('')
   const [selectedUser, setSelectedUser] = useState<
@@ -36,9 +58,9 @@ const SendPost = ({ onClose, post }: any) => {
       })
       onClose()
     }
-  }, [selectedUser])
+  }, [onClose, post?._id, selectedUser])
 
-  const handleChange = (e: any) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value)
   }
 
@@ -52,27 +74,34 @@ const SendPost = ({ onClose, post }: any) => {
     }
   }
 
-  console.log(selectedUser)
-
-  const toggleUserSelection = useCallback((user: IUser) => {
-    if (selectedUser.some((u) => u.username === user.username)) {
-      setSelectedUser((prev) =>
-        prev.filter((u) => u.username !== user.username)
-      )
-    } else {
-      setSelectedUser((prev) => [
-        ...prev,
-        { username: user.username, id: user?._id },
-      ])
-    }
-  }, [])
+  const toggleUserSelection = useCallback(
+    (user: IUser) => {
+      if (selectedUser.some((u) => u.username === user.username)) {
+        setSelectedUser((prev) =>
+          prev.filter((u) => u.username !== user.username)
+        )
+      } else {
+        setSelectedUser((prev) => [
+          ...prev,
+          { username: user.username, id: user?._id },
+        ])
+      }
+    },
+    [selectedUser]
+  )
 
   useEffect(() => {
     fetchUsers()
   }, [fetchUsers])
 
   return (
-    <div className="relative h-screen w-screen overflow-hidden bg-background text-foreground md:h-auto md:w-500">
+    <motion.div
+      variants={variants}
+      initial="initial"
+      animate="animate"
+      exit="exit"
+      className="relative h-screen w-screen overflow-hidden bg-background text-foreground md:h-auto md:w-500"
+    >
       <div className="flex items-center justify-between p-3">
         <h1>Share</h1>
         <button onClick={onClose}>
@@ -174,7 +203,7 @@ const SendPost = ({ onClose, post }: any) => {
           Send
         </button>
       </div>
-    </div>
+    </motion.div>
   )
 }
 

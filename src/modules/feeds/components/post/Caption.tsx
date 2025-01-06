@@ -7,7 +7,6 @@ import parse from 'html-react-parser'
 
 const getCaption = (caption: string) => {
   const jsx = caption?.split(' ').map((word, index) => {
-    console.log(word)
     if (word.trim().startsWith('#') || word.startsWith('@')) {
       return (
         <Link
@@ -46,7 +45,7 @@ const Caption = ({
   const [showMore, setShowMore] = useState(false)
   const shouldShowMoreButton = caption && caption.length > 100
   return (
-    <>
+    <div className='p-2'>
       <div
         className={cn(
           'w-full overflow-hidden text-ellipsis break-words text-sm',
@@ -71,7 +70,7 @@ const Caption = ({
           more
         </button>
       )}
-    </>
+    </div>
   )
 }
 

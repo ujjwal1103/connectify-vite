@@ -36,7 +36,7 @@ const Register = () => {
   }, [])
 
   return (
-    <div className="relative flex h-dvh w-full flex-1 flex-col items-center text-black bg-appcolor lg:flex-row">
+    <div className="relative  flex h-dvh w-full flex-1 flex-col items-center text-black bg-appcolor lg:flex-row">
       <div className="absolute top-0 hidden h-[400px] w-full bg-black lg:block" />
       <div className="absolute bottom-0 hidden h-[400px] w-full lg:block" />
       <Connectify />
@@ -44,7 +44,7 @@ const Register = () => {
         <form
           noValidate
           onSubmit={handleSubmit(onSubmit)}
-          className="flex flex-col items-center justify-center gap-3"
+          className="flex flex-col items-center bg-white p-5 justify-center gap-3"
         >
           <h1 className="text-bold flex items-center justify-center lg:hidden">
             <ConnectifyLogoText />

@@ -57,16 +57,16 @@ const StoryCanvas = ({ initalShape, color, canvasDimensions, onBack }: any) => {
   const addTextElement = () => {
     const newId = `text${shapes.length + 1}`
     const newText = {
-      x: 50,
-      y: 50,
+      x: (canvasDimensions.width - 24 * 8) / 2,
+      y: (canvasDimensions.height - 24) / 2,
       text: 'New Text',
       fontSize: 24,
-      fill: 'black',
+      fill: 'white',
       id: newId,
       type: 'text',
     }
     setShapes([...shapes, newText])
-    selectShape(newId) // Select the new text element
+    selectShape(newId)
   }
 
   const addImageElement = (img: HTMLImageElement, isBgImage = false) => {
@@ -163,7 +163,7 @@ const StoryCanvas = ({ initalShape, color, canvasDimensions, onBack }: any) => {
   }, [selectedId])
 
   return (
-    <div className="relative flex">
+    <div className="relative flex bg-red-400">
       <div className="absolute z-100 flex h-16 w-full flex-col p-2">
         <div className="flex justify-between gap-2">
           {!isDone && (

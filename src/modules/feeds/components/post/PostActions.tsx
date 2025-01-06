@@ -75,6 +75,7 @@ const PostActions = ({
             shouldCloseOutsideClick={false}
             onClose={() => setSendPost(false)}
             showCloseButton={false}
+            animate={false}
           >
             <SendPost post={post} />
           </Modal>

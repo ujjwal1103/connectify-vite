@@ -1,487 +1,392 @@
-// import {
-//   ChevronLeft,
-//   ChevronRight,
-//   Heart,
-//   MoreHorizontal,
-//   PauseIcon,
-//   PlayIcon,
-//   Send,
-// } from 'lucide-react'
-// import { useCallback, useEffect, useRef, useState } from 'react'
-// import {
-//   AnimatePresence,
-//   AnimationPlaybackControls,
-//   motion,
-//   useAnimate,
-// } from 'framer-motion'
-// import { users } from './data'
-// import Avatar from '@/components/shared/Avatar'
+import { useEffect, useState } from 'react'
+import ImageGallary from '../gallery/ImageGallary'
+import { Button } from '@/components/ui/button'
+import { AnimatePresence, motion } from 'framer-motion'
 
-// const urls = users
+const t = [
+  {
+    id: 29861079,
+    width: 3703,
+    height: 5708,
+    url: 'https://www.pexels.com/photo/photographer-capturing-view-on-a-ferry-ride-29861079/',
+    photographer: 'Oktay Köseoğlu',
+    photographer_url: 'https://www.pexels.com/@oktay-koseoglu-42034955',
+    photographer_id: 42034955,
+    avg_color: '#5A574E',
+    src: {
+      original:
+        'https://images.pexels.com/photos/29861079/pexels-photo-29861079.jpeg',
+      large2x:
+        'https://images.pexels.com/photos/29861079/pexels-photo-29861079.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940',
+      large:
+        'https://images.pexels.com/photos/29861079/pexels-photo-29861079.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
+      medium:
+        'https://images.pexels.com/photos/29861079/pexels-photo-29861079.jpeg?auto=compress&cs=tinysrgb&h=350',
+      small:
+        'https://images.pexels.com/photos/29861079/pexels-photo-29861079.jpeg?auto=compress&cs=tinysrgb&h=130',
+      portrait:
+        'https://images.pexels.com/photos/29861079/pexels-photo-29861079.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1200&w=800',
+      landscape:
+        'https://images.pexels.com/photos/29861079/pexels-photo-29861079.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=627&w=1200',
+      tiny: 'https://images.pexels.com/photos/29861079/pexels-photo-29861079.jpeg?auto=compress&cs=tinysrgb&dpr=1&fit=crop&h=200&w=280',
+    },
+    liked: false,
+    alt: 'A person takes a photo while sitting on a ferry with scenic views outside.',
+  },
+  {
+    id: 3354675,
+    width: 2979,
+    height: 3973,
+    url: 'https://www.pexels.com/photo/human-hands-illustrations-3354675/',
+    photographer: 'Matheus Viana',
+    photographer_url: 'https://www.pexels.com/@prismattco',
+    photographer_id: 1246688,
+    avg_color: '#797776',
+    src: {
+      original:
+        'https://images.pexels.com/photos/3354675/pexels-photo-3354675.jpeg',
+      large2x:
+        'https://images.pexels.com/photos/3354675/pexels-photo-3354675.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940',
+      large:
+        'https://images.pexels.com/photos/3354675/pexels-photo-3354675.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
+      medium:
+        'https://images.pexels.com/photos/3354675/pexels-photo-3354675.jpeg?auto=compress&cs=tinysrgb&h=350',
+      small:
+        'https://images.pexels.com/photos/3354675/pexels-photo-3354675.jpeg?auto=compress&cs=tinysrgb&h=130',
+      portrait:
+        'https://images.pexels.com/photos/3354675/pexels-photo-3354675.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1200&w=800',
+      landscape:
+        'https://images.pexels.com/photos/3354675/pexels-photo-3354675.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=627&w=1200',
+      tiny: 'https://images.pexels.com/photos/3354675/pexels-photo-3354675.jpeg?auto=compress&cs=tinysrgb&dpr=1&fit=crop&h=200&w=280',
+    },
+    liked: false,
+    alt: 'Two hands reaching across a stark black and white divide, symbolizing connection and unity.',
+  },
+  {
+    id: 29855578,
+    width: 4000,
+    height: 6000,
+    url: 'https://www.pexels.com/photo/portrait-of-young-adult-with-blonde-hair-and-septum-piercing-29855578/',
+    photographer: '_visualbruno',
+    photographer_url: 'https://www.pexels.com/@_visualbruno-1157201511',
+    photographer_id: 1157201511,
+    avg_color: '#B1A99E',
+    src: {
+      original:
+        'https://images.pexels.com/photos/29855578/pexels-photo-29855578.jpeg',
+      large2x:
+        'https://images.pexels.com/photos/29855578/pexels-photo-29855578.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940',
+      large:
+        'https://images.pexels.com/photos/29855578/pexels-photo-29855578.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
+      medium:
+        'https://images.pexels.com/photos/29855578/pexels-photo-29855578.jpeg?auto=compress&cs=tinysrgb&h=350',
+      small:
+        'https://images.pexels.com/photos/29855578/pexels-photo-29855578.jpeg?auto=compress&cs=tinysrgb&h=130',
+      portrait:
+        'https://images.pexels.com/photos/29855578/pexels-photo-29855578.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1200&w=800',
+      landscape:
+        'https://images.pexels.com/photos/29855578/pexels-photo-29855578.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=627&w=1200',
+      tiny: 'https://images.pexels.com/photos/29855578/pexels-photo-29855578.jpeg?auto=compress&cs=tinysrgb&dpr=1&fit=crop&h=200&w=280',
+    },
+    liked: false,
+    alt: 'Contemporary portrait of a young adult with blonde hair and septum piercing, wearing a white top.',
+  },
+  {
+    id: 29860838,
+    width: 7007,
+    height: 10000,
+    url: 'https://www.pexels.com/photo/elegant-portrait-with-hanging-sunflowers-29860838/',
+    photographer: 'Helin Gezer',
+    photographer_url: 'https://www.pexels.com/@helin-gezer-903013644',
+    photographer_id: 903013644,
+    avg_color: '#958262',
+    src: {
+      original:
+        'https://images.pexels.com/photos/29860838/pexels-photo-29860838.jpeg',
+      large2x:
+        'https://images.pexels.com/photos/29860838/pexels-photo-29860838.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940',
+      large:
+        'https://images.pexels.com/photos/29860838/pexels-photo-29860838.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
+      medium:
+        'https://images.pexels.com/photos/29860838/pexels-photo-29860838.jpeg?auto=compress&cs=tinysrgb&h=350',
+      small:
+        'https://images.pexels.com/photos/29860838/pexels-photo-29860838.jpeg?auto=compress&cs=tinysrgb&h=130',
+      portrait:
+        'https://images.pexels.com/photos/29860838/pexels-photo-29860838.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1200&w=800',
+      landscape:
+        'https://images.pexels.com/photos/29860838/pexels-photo-29860838.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=627&w=1200',
+      tiny: 'https://images.pexels.com/photos/29860838/pexels-photo-29860838.jpeg?auto=compress&cs=tinysrgb&dpr=1&fit=crop&h=200&w=280',
+    },
+    liked: false,
+    alt: 'Stylish portrait of a person surrounded by hanging sunflowers in a unique artistic setup.',
+  },
+  {
+    id: 1853354,
+    width: 2730,
+    height: 4096,
+    url: 'https://www.pexels.com/photo/man-standing-on-a-rock-near-snow-covered-land-1853354/',
+    photographer: 'Tobias Bjørkli',
+    photographer_url: 'https://www.pexels.com/@tobiasbjorkli',
+    photographer_id: 706370,
+    avg_color: '#185B6B',
+    src: {
+      original:
+        'https://images.pexels.com/photos/1853354/pexels-photo-1853354.jpeg',
+      large2x:
+        'https://images.pexels.com/photos/1853354/pexels-photo-1853354.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940',
+      large:
+        'https://images.pexels.com/photos/1853354/pexels-photo-1853354.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
+      medium:
+        'https://images.pexels.com/photos/1853354/pexels-photo-1853354.jpeg?auto=compress&cs=tinysrgb&h=350',
+      small:
+        'https://images.pexels.com/photos/1853354/pexels-photo-1853354.jpeg?auto=compress&cs=tinysrgb&h=130',
+      portrait:
+        'https://images.pexels.com/photos/1853354/pexels-photo-1853354.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1200&w=800',
+      landscape:
+        'https://images.pexels.com/photos/1853354/pexels-photo-1853354.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=627&w=1200',
+      tiny: 'https://images.pexels.com/photos/1853354/pexels-photo-1853354.jpeg?auto=compress&cs=tinysrgb&dpr=1&fit=crop&h=200&w=280',
+    },
+    liked: false,
+    alt: 'A lone figure stands on a snowy slope, gazing at the vibrant Northern Lights under a starry sky.',
+  },
+  {
+    id: 616376,
+    width: 4000,
+    height: 6016,
+    url: 'https://www.pexels.com/photo/women-s-blue-tank-top-and-black-pants-616376/',
+    photographer: 'Marx Ilagan',
+    photographer_url: 'https://www.pexels.com/@marx-ilagan',
+    photographer_id: 89229,
+    avg_color: '#8A9455',
+    src: {
+      original:
+        'https://images.pexels.com/photos/616376/pexels-photo-616376.jpeg',
+      large2x:
+        'https://images.pexels.com/photos/616376/pexels-photo-616376.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940',
+      large:
+        'https://images.pexels.com/photos/616376/pexels-photo-616376.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
+      medium:
+        'https://images.pexels.com/photos/616376/pexels-photo-616376.jpeg?auto=compress&cs=tinysrgb&h=350',
+      small:
+        'https://images.pexels.com/photos/616376/pexels-photo-616376.jpeg?auto=compress&cs=tinysrgb&h=130',
+      portrait:
+        'https://images.pexels.com/photos/616376/pexels-photo-616376.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1200&w=800',
+      landscape:
+        'https://images.pexels.com/photos/616376/pexels-photo-616376.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=627&w=1200',
+      tiny: 'https://images.pexels.com/photos/616376/pexels-photo-616376.jpeg?auto=compress&cs=tinysrgb&dpr=1&fit=crop&h=200&w=280',
+    },
+    liked: false,
+    alt: 'A stylish young woman stands confidently in a lush Dubai park under the sun.',
+  },
+  {
+    id: 1020016,
+    width: 3931,
+    height: 4914,
+    url: 'https://www.pexels.com/photo/two-person-carrying-black-inflatable-pool-float-on-brown-wooden-bridge-near-waterfalls-1020016/',
+    photographer: 'Oliver Sjöström',
+    photographer_url: 'https://www.pexels.com/@ollivves',
+    photographer_id: 333270,
+    avg_color: '#50594D',
+    src: {
+      original:
+        'https://images.pexels.com/photos/1020016/pexels-photo-1020016.jpeg',
+      large2x:
+        'https://images.pexels.com/photos/1020016/pexels-photo-1020016.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940',
+      large:
+        'https://images.pexels.com/photos/1020016/pexels-photo-1020016.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
+      medium:
+        'https://images.pexels.com/photos/1020016/pexels-photo-1020016.jpeg?auto=compress&cs=tinysrgb&h=350',
+      small:
+        'https://images.pexels.com/photos/1020016/pexels-photo-1020016.jpeg?auto=compress&cs=tinysrgb&h=130',
+      portrait:
+        'https://images.pexels.com/photos/1020016/pexels-photo-1020016.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1200&w=800',
+      landscape:
+        'https://images.pexels.com/photos/1020016/pexels-photo-1020016.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=627&w=1200',
+      tiny: 'https://images.pexels.com/photos/1020016/pexels-photo-1020016.jpeg?auto=compress&cs=tinysrgb&dpr=1&fit=crop&h=200&w=280',
+    },
+    liked: false,
+    alt: 'A couple in swimwear with float tubes exploring a lush waterfall in Bali, Indonesia.',
+  },
+  {
+    id: 29857613,
+    width: 1903,
+    height: 3380,
+    url: 'https://www.pexels.com/photo/stylish-woman-in-black-and-white-city-scene-29857613/',
+    photographer: 'Anıl Sarıca',
+    photographer_url: 'https://www.pexels.com/@anil-sarica-419904898',
+    photographer_id: 419904898,
+    avg_color: '#888888',
+    src: {
+      original:
+        'https://images.pexels.com/photos/29857613/pexels-photo-29857613.jpeg',
+      large2x:
+        'https://images.pexels.com/photos/29857613/pexels-photo-29857613.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940',
+      large:
+        'https://images.pexels.com/photos/29857613/pexels-photo-29857613.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
+      medium:
+        'https://images.pexels.com/photos/29857613/pexels-photo-29857613.jpeg?auto=compress&cs=tinysrgb&h=350',
+      small:
+        'https://images.pexels.com/photos/29857613/pexels-photo-29857613.jpeg?auto=compress&cs=tinysrgb&h=130',
+      portrait:
+        'https://images.pexels.com/photos/29857613/pexels-photo-29857613.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1200&w=800',
+      landscape:
+        'https://images.pexels.com/photos/29857613/pexels-photo-29857613.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=627&w=1200',
+      tiny: 'https://images.pexels.com/photos/29857613/pexels-photo-29857613.jpeg?auto=compress&cs=tinysrgb&dpr=1&fit=crop&h=200&w=280',
+    },
+    liked: false,
+    alt: 'Elegant woman in a suit and hat walks in a historic urban street in black and white.',
+  },
+  {
+    id: 29858279,
+    width: 3262,
+    height: 4077,
+    url: 'https://www.pexels.com/photo/emotional-portrait-of-violinist-in-deep-concentration-29858279/',
+    photographer: 'ORBABZ',
+    photographer_url: 'https://www.pexels.com/@orbabz-1963304473',
+    photographer_id: 1963304473,
+    avg_color: '#3C2C1D',
+    src: {
+      original:
+        'https://images.pexels.com/photos/29858279/pexels-photo-29858279.jpeg',
+      large2x:
+        'https://images.pexels.com/photos/29858279/pexels-photo-29858279.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940',
+      large:
+        'https://images.pexels.com/photos/29858279/pexels-photo-29858279.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
+      medium:
+        'https://images.pexels.com/photos/29858279/pexels-photo-29858279.jpeg?auto=compress&cs=tinysrgb&h=350',
+      small:
+        'https://images.pexels.com/photos/29858279/pexels-photo-29858279.jpeg?auto=compress&cs=tinysrgb&h=130',
+      portrait:
+        'https://images.pexels.com/photos/29858279/pexels-photo-29858279.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1200&w=800',
+      landscape:
+        'https://images.pexels.com/photos/29858279/pexels-photo-29858279.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=627&w=1200',
+      tiny: 'https://images.pexels.com/photos/29858279/pexels-photo-29858279.jpeg?auto=compress&cs=tinysrgb&dpr=1&fit=crop&h=200&w=280',
+    },
+    liked: false,
+    alt: '',
+  },
+  {
+    id: 2659475,
+    width: 1860,
+    height: 2500,
+    url: 'https://www.pexels.com/photo/photo-of-person-standing-on-a-famous-temple-2659475/',
+    photographer: 'Stijn Dijkstra',
+    photographer_url: 'https://www.pexels.com/@stijn-dijkstra-1306815',
+    photographer_id: 1306815,
+    avg_color: '#A18889',
+    src: {
+      original:
+        'https://images.pexels.com/photos/2659475/pexels-photo-2659475.jpeg',
+      large2x:
+        'https://images.pexels.com/photos/2659475/pexels-photo-2659475.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940',
+      large:
+        'https://images.pexels.com/photos/2659475/pexels-photo-2659475.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
+      medium:
+        'https://images.pexels.com/photos/2659475/pexels-photo-2659475.jpeg?auto=compress&cs=tinysrgb&h=350',
+      small:
+        'https://images.pexels.com/photos/2659475/pexels-photo-2659475.jpeg?auto=compress&cs=tinysrgb&h=130',
+      portrait:
+        'https://images.pexels.com/photos/2659475/pexels-photo-2659475.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1200&w=800',
+      landscape:
+        'https://images.pexels.com/photos/2659475/pexels-photo-2659475.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=627&w=1200',
+      tiny: 'https://images.pexels.com/photos/2659475/pexels-photo-2659475.jpeg?auto=compress&cs=tinysrgb&dpr=1&fit=crop&h=200&w=280',
+    },
+    liked: false,
+    alt: "Serene sunrise view of a person standing at Lempuyang Temple's gateway, Bali, Indonesia.",
+  },
+  {
+    id: 29846888,
+    width: 4624,
+    height: 6159,
+    url: 'https://www.pexels.com/photo/portrait-of-woman-by-water-in-denim-jacket-29846888/',
+    photographer: 'Vurzie  Kim',
+    photographer_url: 'https://www.pexels.com/@vurzie-kim-325095862',
+    photographer_id: 325095862,
+    avg_color: '#3E433D',
+    src: {
+      original:
+        'https://images.pexels.com/photos/29846888/pexels-photo-29846888.jpeg',
+      large2x:
+        'https://images.pexels.com/photos/29846888/pexels-photo-29846888.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940',
+      large:
+        'https://images.pexels.com/photos/29846888/pexels-photo-29846888.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
+      medium:
+        'https://images.pexels.com/photos/29846888/pexels-photo-29846888.jpeg?auto=compress&cs=tinysrgb&h=350',
+      small:
+        'https://images.pexels.com/photos/29846888/pexels-photo-29846888.jpeg?auto=compress&cs=tinysrgb&h=130',
+      portrait:
+        'https://images.pexels.com/photos/29846888/pexels-photo-29846888.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1200&w=800',
+      landscape:
+        'https://images.pexels.com/photos/29846888/pexels-photo-29846888.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=627&w=1200',
+      tiny: 'https://images.pexels.com/photos/29846888/pexels-photo-29846888.jpeg?auto=compress&cs=tinysrgb&dpr=1&fit=crop&h=200&w=280',
+    },
+    liked: false,
+    alt: 'Sunshine ',
+  },
+  {
+    id: 29822696,
+    width: 2687,
+    height: 3358,
+    url: 'https://www.pexels.com/photo/stylish-man-posing-in-sunglasses-against-textured-wall-29822696/',
+    photographer: 'Vurzie  Kim',
+    photographer_url: 'https://www.pexels.com/@vurzie-kim-325095862',
+    photographer_id: 325095862,
+    avg_color: '#4A483C',
+    src: {
+      original:
+        'https://images.pexels.com/photos/29822696/pexels-photo-29822696.jpeg',
+      large2x:
+        'https://images.pexels.com/photos/29822696/pexels-photo-29822696.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940',
+      large:
+        'https://images.pexels.com/photos/29822696/pexels-photo-29822696.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
+      medium:
+        'https://images.pexels.com/photos/29822696/pexels-photo-29822696.jpeg?auto=compress&cs=tinysrgb&h=350',
+      small:
+        'https://images.pexels.com/photos/29822696/pexels-photo-29822696.jpeg?auto=compress&cs=tinysrgb&h=130',
+      portrait:
+        'https://images.pexels.com/photos/29822696/pexels-photo-29822696.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1200&w=800',
+      landscape:
+        'https://images.pexels.com/photos/29822696/pexels-photo-29822696.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=627&w=1200',
+      tiny: 'https://images.pexels.com/photos/29822696/pexels-photo-29822696.jpeg?auto=compress&cs=tinysrgb&dpr=1&fit=crop&h=200&w=280',
+    },
+    liked: false,
+    alt: 'Block X',
+  },
+]
 
-// const initialIndex = 0
-
-// // interface Props {}
-// const InstagramStories = () => {
-//   const [animationDirection, setAnimationDirection] = useState<
-//     'left' | 'right'
-//   >('right')
-//   const [activeSlide, setActiveSlide] = useState(initialIndex)
-//   const [preIndex, setPreIndex] = useState(initialIndex - 1)
-//   const [prePrevIndex, setPrePrevIndex] = useState(initialIndex - 2)
-//   const [nextIndex, setNextIndex] = useState(initialIndex + 1)
-//   const [nextNextIndex, setNextNextIndex] = useState(initialIndex + 2)
-
-//   const [activeIndex, setActiveIndex] = useState(0)
-
-//   const handleClickNext = () => {
-//     const isLastIndexOfCurrentStory =
-//       activeIndex === urls[activeSlide].stories.length - 1
-//     if (isLastIndexOfCurrentStory) {
-//       if (activeSlide < urls.length - 1) {
-//         setActiveIndex(0)
-//         setActiveSlide((prev) => prev + 1)
-//         setPreIndex((prev) => prev + 1)
-//         setPrePrevIndex((prev) => prev + 1)
-//         setNextIndex((prev) => prev + 1)
-//         setNextNextIndex((prev) => prev + 1)
-//         setAnimationDirection('right')
-//       }
-//     } else {
-//       setActiveIndex((prev) => prev + 1)
-//     }
-//   }
-
-//   const handleClickPrev = () => {
-//     const isFirstIndexOfCurrentStory = activeIndex === 0
-//     if (isFirstIndexOfCurrentStory) {
-//       if (activeSlide > 0) {
-//         setActiveIndex(urls[activeSlide-1].stories.length - 1)
-//         setActiveSlide((prev) => prev - 1)
-//         setPreIndex((prev) => prev - 1)
-//         setPrePrevIndex((prev) => prev - 1)
-//         setNextIndex((prev) => prev - 1)
-//         setNextNextIndex((prev) => prev - 1)
-//         setAnimationDirection('left')
-//       }
-//     } else {
-//       setActiveIndex((prev) => prev - 1)
-//     }
-//   }
-
-//   const lastIndex = urls.length - 1
-
-//   return (
-//     <div className="relative flex h-dvh items-center justify-between gap-10 overflow-x-hidden overflow-y-hidden">
-//       <AnimatePresence initial={false}>
-//         <LeftSlides
-//           dir={animationDirection}
-//           key={`${preIndex}-${prePrevIndex}`}
-//           hide={activeSlide === 0}
-//           preIndex={preIndex}
-//           prePrevIndex={prePrevIndex}
-//           lastIndex={lastIndex}
-//         />
-//       </AnimatePresence>
-//       <AnimatePresence initial={false}>
-//         <ActiveSlide
-//           activeSlide={activeSlide}
-//           dir={animationDirection}
-//           activeIndex={activeIndex}
-//           handleClickNext={handleClickNext}
-//         />
-//       </AnimatePresence>
-//       <AnimatePresence initial={false}>
-//         <RightSlides
-//           hide={activeSlide === lastIndex}
-//           key={`${nextIndex}-${nextNextIndex}`}
-//           dir={animationDirection}
-//           nextIndex={nextIndex}
-//           nextNextIndex={nextNextIndex}
-//           lastIndex={lastIndex}
-//         />
-//       </AnimatePresence>
-//       <Navigation
-//         activeSlide={activeSlide}
-//         handleClickPrev={handleClickPrev}
-//         handleClickNext={handleClickNext}
-//         activeIndex={activeIndex}
-//         lastIndex={lastIndex}
-//       />
-//     </div>
-//   )
-// }
-// const Reels = InstagramStories
-// export default Reels
-
-// type LeftSlidesProps = {
-//   hide: boolean
-//   dir: 'right' | 'left'
-//   key: string
-//   preIndex: number
-//   prePrevIndex: number
-//   lastIndex: number
-// }
-
-// const LeftSlides = ({ hide, dir, prePrevIndex, preIndex }: LeftSlidesProps) => {
-//   if (hide) {
-//     return null
-//   }
-
-//   return (
-//     <motion.div
-//       key={`${preIndex}-${prePrevIndex}`}
-//       initial={{
-//         opacity: 0,
-//         x: dir === 'right' ? 50 : -50,
-//       }}
-//       animate={{ opacity: 1, x: 0 }}
-//       // exit={{ opacity: 0, x: dir === 'right' ? 50 : -50 }}
-//       transition={{ duration: 0.5 }}
-//       className="absolute left-0 hidden h-dvh w-[30%] items-center justify-end gap-10 md:flex"
-//     >
-//       {prePrevIndex >= 0 && (
-//         <Slide
-//           variants={{
-//             inital: { scale: 1 },
-//             animate: { scale: 1 },
-//           }}
-//           index={prePrevIndex}
-//         />
-//       )}
-//       <AnimatePresence>
-//         {preIndex >= 0 && (
-//           <Slide
-//             variants={{
-//               inital: { scale: 1 },
-//               animate: {
-//                 scale: dir === 'right' ? [1.5, 1] : [1, 1],
-//               },
-//               // exit: { scale: [1, 1.5] },
-//             }}
-//             index={preIndex}
-//           />
-//         )}
-//       </AnimatePresence>
-//     </motion.div>
-//   )
-// }
-// type RightSlidesProps = {
-//   hide: boolean
-//   dir: 'right' | 'left'
-//   key: string
-//   nextIndex: number
-//   nextNextIndex: number
-//   lastIndex: number
-// }
-// const RightSlides = ({
-//   hide,
-//   dir,
-//   nextIndex,
-//   nextNextIndex,
-//   lastIndex,
-// }: RightSlidesProps) => {
-//   if (hide) {
-//     return null
-//   }
-
-//   return (
-//     <motion.div
-//       initial={{ x: dir === 'right' ? 50 : -50 }}
-//       animate={{ x: 0 }}
-//       transition={{ duration: 0.5 }}
-//       key={`${nextIndex}-${nextNextIndex}`}
-//       className="absolute right-0 hidden h-dvh w-[30%] items-center gap-10 md:flex"
-//     >
-//       <Slide
-//         index={nextIndex}
-//         variants={{
-//           animate: { scale: dir === 'left' ? [1.5, 1] : [1, 1] },
-//         }}
-//       />
-//       {nextNextIndex <= lastIndex && (
-//         <Slide
-//           index={nextNextIndex}
-//           variants={{
-//             inital: { scale: 1 },
-//             animate: { scale: 1 },
-//           }}
-//         />
-//       )}
-//     </motion.div>
-//   )
-// }
-
-// type SlideProps = {
-//   index: number
-//   variants: any
-// }
-
-// const Slide = ({ index, variants }: SlideProps) => {
-//   return (
-//     <motion.div
-//       key={index}
-//       variants={variants}
-//       initial={'inital'}
-//       animate={'animate'}
-//       transition={{ duration: 0.4 }}
-//       className="relative aspect-16/9 h-[40%] w-[40%] flex-shrink-0 overflow-clip rounded-md bg-black"
-//     >
-//       <img
-//         src={urls[index].stories[0].content}
-//         className="h-full w-full bg-black object-cover opacity-65"
-//       />
-//       <div className="absolute top-0 flex h-full w-full flex-col items-center justify-center gap-2 bg-black/70">
-//         <div>
-//           <Avatar
-//             src={urls[index].stories[0].content}
-//             className="size-16 shadow-xl"
-//           />
-//         </div>
-//         <span>{urls[index].name}</span>
-//       </div>
-//     </motion.div>
-//   )
-// }
-
-// type NavigationProps = {
-//   activeSlide: number
-//   handleClickPrev: () => void
-//   handleClickNext: () => void
-//   lastIndex: number
-//   activeIndex: number
-// }
-
-// const Navigation = ({
-//   activeSlide,
-//   handleClickNext,
-//   handleClickPrev,
-//   lastIndex,
-//   activeIndex,
-// }: NavigationProps) => {
-//   return (
-//     <div className="absolute inset-0 flex h-dvh w-full justify-center gap-96">
-//       <div className="flex h-full w-10 items-center">
-//         {(activeSlide !== 0 || activeIndex !== 0) && (
-//           <button
-//             onClick={handleClickPrev}
-//             className="rounded-full bg-white/70"
-//           >
-//             <ChevronLeft color="black" />
-//           </button>
-//         )}
-//       </div>
-
-//       <div className="flex h-full w-10 items-center justify-end">
-//         {(activeSlide < lastIndex ||
-//           activeIndex !== urls[activeIndex].stories.length - 1) && (
-//           <button
-//             onClick={handleClickNext}
-//             className="rounded-full bg-white/70"
-//           >
-//             <ChevronRight color="black" />
-//           </button>
-//         )}
-//       </div>
-//     </div>
-//   )
-// }
-
-// type ActiveSlideProps = {
-//   activeSlide: number
-//   activeIndex: number
-//   dir: 'left' | 'right'
-//   handleClickNext: () => void
-// }
-
-// const ActiveSlide = ({
-//   activeSlide,
-//   dir,
-//   activeIndex,
-//   handleClickNext,
-// }: ActiveSlideProps) => {
-//   const stories = urls[activeSlide].stories
-//   const story = stories[activeIndex].content
-//   const [isPaused, setIsPaused] = useState(false)
-
-//   useEffect(() => {
-//     setIsPaused(false)
-//   }, [activeIndex, activeSlide])
-
-//   return (
-//     <motion.div
-//       key={activeSlide}
-//       className="absolute left-1/2 top-1/2 z-[100] aspect-16/9 w-screen flex-grow-0 -translate-x-1/2 overflow-clip rounded-md md:h-[90%] md:w-96"
-//       initial={{
-//         opacity: 0,
-//         scale: 0.4,
-//         y: '-50%',
-//         x: dir === 'right' ? '0%' : '-100%',
-//       }}
-//       animate={{ opacity: 1, scale: 1, y: '-50%', x: '-50%' }}
-//       transition={{ duration: 0.5 }}
-//     >
-//       <img
-//         src={story}
-//         className="z-100 h-full w-full bg-slate-50 object-cover"
-//       />
-//       <div className="absolute top-5 flex w-full flex-col gap-1 px-3">
-//         <div className="flex w-full gap-1">
-//           {stories.map((story, index) => {
-//             return (
-//               <Progress
-//                 handleClickNext={handleClickNext}
-//                 activeIndex={activeIndex}
-//                 key={`${story.id}-${activeIndex}-${activeSlide}`}
-//                 index={index}
-//                 isPaused={isPaused}
-//                 setIsPaused={setIsPaused}
-//               />
-//             )
-//           })}
-//         </div>
-
-//         <div className="flex pt-2">
-//           <div className="flex items-center gap-2">
-//             <Avatar
-//               src={urls[activeSlide].stories[activeIndex].content}
-//               className="shadow-md"
-//             />
-
-//             <span className="font-semibold text-white">Ujjwal Lade</span>
-//           </div>
-
-//           <div className="ml-auto flex items-center">
-//             <span className="text-gray-200">2h</span>
-//             <button
-//               onClick={() => {
-//                 setIsPaused(!isPaused)
-//               }}
-//               className="p-2"
-//             >
-//               {isPaused ? (
-//                 <PlayIcon fill="white" stroke="0" />
-//               ) : (
-//                 <PauseIcon fill="white" stroke="0" />
-//               )}
-//             </button>
-//             <button
-//               onClick={() => {
-//                 setIsPaused(!isPaused)
-//               }}
-//               className="p-2"
-//             >
-//               <MoreHorizontal />
-//             </button>
-//           </div>
-//         </div>
-//       </div>
-//       <div className="absolute bottom-5 flex w-full flex-col gap-1 px-3">
-//         <MessageInput />
-//       </div>
-//     </motion.div>
-//   )
-// }
-
-// type ProgressProps = {
-//   key: string
-//   activeIndex: number
-//   handleClickNext: () => void
-//   index: number
-//   isPaused: boolean
-//   setIsPaused: (isPaused: boolean) => void
-// }
-
-// const Progress = ({
-//   key,
-//   activeIndex,
-//   handleClickNext,
-//   index,
-//   isPaused,
-// }: ProgressProps) => {
-//   const [scope, animate] = useAnimate()
-//   const animeControl = useRef<AnimationPlaybackControls>()
-
-//   const toggleAnimation = useCallback(() => {
-//     if (isPaused) {
-//       animeControl.current?.pause()
-//     } else {
-//       animeControl.current?.play()
-//     }
-//   }, [isPaused])
-
-//   useEffect(() => {
-//     toggleAnimation()
-//   }, [toggleAnimation])
-
-//   useEffect(() => {
-//     if (activeIndex !== index) {
-//       if (activeIndex < index) {
-//         scope.current.style.backgroundColor = ' #9ca3af '
-//       } else {
-//         scope.current.style.backgroundColor = 'white'
-//       }
-//       return
-//     }
-
-//     const control = animate(
-//       scope.current,
-//       {
-//         width: [0, '100%'],
-//       },
-//       {
-//         duration: 1,
-//         ease: 'linear',
-//         // onComplete: () => {
-//         //   handleClickNext()
-//         // },
-//       }
-//     )
-
-//     animeControl.current = control
-
-//     return () => {
-//       if (animeControl.current) {
-//         animeControl.current.stop()
-//       }
-//     }
-//   }, [activeIndex])
-
-//   return (
-//     <motion.div
-//       key={key}
-//       className="h-0.5 w-full flex-1 transform rounded-full bg-gray-400"
-//     >
-//       <motion.div ref={scope} className="h-full rounded-full bg-white" />
-//     </motion.div>
-//   )
-// }
-
-// const MessageInput = () => {
-//   return (
-//     <div className="flex w-full items-center gap-2">
-//       <input
-//         type="text"
-//         className="w-full rounded-full border border-white bg-transparent p-3 focus-visible:outline-none"
-//         placeholder="Reply to ujjwal_lade"
-//       />
-//       <Heart />
-//       <Send />
-//     </div>
-//   )
-// }
-
-import StoryRing from '@/components/ui/dynamicCircle'
-
+const variants = {
+  initial: {
+    x: '100%', // Start off-screen to the right
+  },
+  animate: {
+    x: 0, // Slide into view
+    transition: { duration: 0.5, ease: 'easeInOut' },
+  },
+  exit: {
+    x: '100%', // Slide out to the left
+    transition: { duration: 0.5, ease: 'easeInOut' },
+  },
+}
 const Reels = () => {
+  const [show, setShow] = useState(false)
   return (
-    <div className="flex h-dvh items-center justify-center">
-      <StoryRing
-        user={{
-          userName: '',
-          stories: [],
-        }}
-      />
+    <div className="flex h-dvh w-full items-center justify-center">
+      <div className="flex h-full w-full items-center justify-center bg-green-950">
+        <Button onClick={() => setShow(true)}>Click</Button>
+        <AnimatePresence>
+          {show && (
+            <motion.div
+              variants={variants}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+              className="absolute flex h-full w-full items-center justify-center bg-emerald-700"
+            >
+              <Button onClick={() => setShow(false)}>Click</Button>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
     </div>
   )
 }

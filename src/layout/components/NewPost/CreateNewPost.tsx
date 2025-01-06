@@ -33,10 +33,12 @@ const CreatePost = ({ onClose }: any) => {
   const [step, setStep] = useState<Step>('Pick')
   const [imageData, setImageData] = useState<any>({})
   const [aspectRatio, setAspectRatio] = useState<any>(1 / 1)
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     if (initialImage) {
       const handleSetInitalImage = async () => {
+        setLoading(true)
         const file = await urlToFile(initialImage, 'image.jpg', 'image/jpg')
         if (file) {
           const imageD = await convertToImageData(file)
@@ -45,9 +47,9 @@ const CreatePost = ({ onClose }: any) => {
             [imageD?.name]: imageD?.image,
           })
           setSelectedImage(imageD?.image)
-
+          setStep('Crop')
           setTimeout(() => {
-            setStep('Crop')
+            setLoading(false)
           }, 1000)
         }
       }
@@ -138,7 +140,11 @@ const CreatePost = ({ onClose }: any) => {
       className="flex items-center justify-center"
     >
       {step === 'Pick' && (
-        <ImagePicker onImageSelect={handleImagePick} onClose={onClose} />
+        <ImagePicker
+          loading={loading}
+          onImageSelect={handleImagePick}
+          onClose={onClose}
+        />
       )}
 
       {step === 'Crop' && (

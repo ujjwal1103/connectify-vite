@@ -51,7 +51,7 @@ export const sidebarRoutes: SidebarRoute[] = [
     modalName: 'openPostModal',
   },
   { route: '/profile', label: 'Profile', Icon: User2 },
-  { route: '/newstory', label: 'New Story', Icon: CircleFadingPlus, modalName: 'newStory',modal: true },
+  // { route: '/newstory', label: 'New Story', Icon: CircleFadingPlus, modalName: 'newStory',modal: true },
   {
     route: '/more',
     label: 'More',

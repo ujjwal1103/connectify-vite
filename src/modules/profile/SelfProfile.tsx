@@ -1,7 +1,7 @@
 import Avatar from '@/components/shared/Avatar'
 import { TabControl } from '@/components/shared/TabControl'
 import { Button } from '@/components/ui/button'
-import { Bookmark, Grid } from 'lucide-react'
+import { Bookmark, Grid, VideoIcon } from 'lucide-react'
 import { IoIosSettings } from 'react-icons/io'
 import { Link, useSearchParams } from 'react-router-dom'
 import Posts from './components/Posts'
@@ -10,12 +10,18 @@ import Counts from './components/Counts'
 import PageLoading from '@/components/shared/Loading/PageLoading'
 import PageError from '@/components/shared/Error/PageError'
 import { useAuth } from '@/context/AuthContext'
+import Reels from './components/Reels'
 
 const tabs = [
   {
     icon: <Grid />,
     name: 'posts',
     id: 'posts',
+  },
+  {
+    icon: <VideoIcon />,
+    name: 'reels',
+    id: 'reels',
   },
   {
     icon: <Bookmark />,
@@ -92,7 +98,7 @@ const SelfProfile = () => {
               <span>{user?.name}</span>
             </div>
             <div>
-            <pre className="text-txs md:text-sm font-sans">{user?.bio}</pre>
+              <pre className="font-sans text-txs md:text-sm">{user?.bio}</pre>
             </div>
           </div>
         </div>
@@ -103,6 +109,7 @@ const SelfProfile = () => {
           tabs={tabs}
         />
         {tab === 'posts' && <Posts />}
+        {tab === 'reels' && <Reels />}
         {tab === 'saved' && <SavedPost />}
       </div>
     </div>

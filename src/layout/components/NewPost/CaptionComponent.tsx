@@ -1,10 +1,11 @@
+/* eslint-disable import/no-unresolved */
 import { uploadPosts } from '@/api'
 import Avatar from '@/components/shared/Avatar'
 import { ImageSlider } from '@/components/shared/ImageSlider/ImageSlider'
 import ProgressLoading from '@/components/shared/Loading/ProgressLoading'
 import RichTextEditor from '@/components/shared/RichTextEditor'
 import { useAuth } from '@/context/AuthContext'
-import { IUser } from '@/lib/types'
+import { IPost, IUser } from '@/lib/types'
 import { useFeedSlice } from '@/redux/services/feedSlice'
 import { usePostSlice } from '@/redux/services/postSlice'
 import EmojiPicker from '@emoji-mart/react'
@@ -23,9 +24,14 @@ const CaptionComponent = ({
   cropedImagesUrls,
   aspectRatio,
   onClose,
-}: any) => {
+}: { 
+  setStep: (step: string) => void; 
+  cropedImagesUrls: { file: File; croppedUrl: string; type: string }[]; 
+  aspectRatio: string; 
+  onClose: () => void; 
+}) => {
   const [caption, setCaption] = useState<string>('')
-  const [isLoading, setIsLoading] = useState<any>(false)
+  const [isLoading, setIsLoading] = useState(false)
   const { addPost } = usePostSlice()
   const { addNewFeed } = useFeedSlice()
   const { updateUser, user } = useAuth()
@@ -43,7 +49,8 @@ const CaptionComponent = ({
       }
       formData.append('caption', caption || '')
       formData.append('aspectRatio', aspectRatio)
-      const data = (await uploadPosts(formData)) as any
+      const response = await uploadPosts(formData);
+      const data = response.data as { isSuccess: boolean; post: IPost };
 
       if (data?.isSuccess) {
         addPost(data.post)
@@ -65,7 +72,7 @@ const CaptionComponent = ({
   return (
     <motion.div className="flex h-dvh max-h-dvh w-screen flex-col bg-background md:m-auto md:w-2/3 lg:h-1/2 lg:w-4/5">
       {isLoading && <ProgressLoading />}
-      <div className="flex w-full justify-between bg-secondary p-2">
+      <div className="flex w-full justify-between bg-background p-2">
         <button
           className="middle none center rounded-md font-sans text-sm font-bold uppercase text-white transition-all focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none md:px-4 md:py-2"
           data-ripple-light="true"
@@ -111,7 +118,7 @@ const CaptionComponent = ({
                   alignOffset={200}
                 >
                   <EmojiPicker
-                    onEmojiSelect={(event: any) => {
+                    onEmojiSelect={(event: { native: string }) => {
                       const emoji = event.native
                       console.log(caption + emoji)
                       setCaption((prev = '') => prev + emoji)
@@ -128,7 +135,7 @@ const CaptionComponent = ({
         </div>
         <div className="flex items-center justify-center lg:flex-1">
           <ImageSlider
-            images={cropedImagesUrls.map((c: any) => ({
+            images={cropedImagesUrls.map((c: { file: File; croppedUrl: string; type: string }) => ({
               url: c.croppedUrl,
               type: c.type,
             }))}

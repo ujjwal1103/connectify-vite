@@ -1,5 +1,6 @@
-import React from "react";
-import { Text, Transformer } from "react-konva";
+import Konva from 'konva'
+import React from 'react'
+import { Text, Transformer } from 'react-konva'
 
 export const TextElement = ({
   shapeProps,
@@ -7,17 +8,26 @@ export const TextElement = ({
   onSelect,
   onChange,
   onDoubleClick,
-}: any) => {
-  const textRef = React.useRef();
-  const trRef = React.useRef<any>(null);
+}: {
+  shapeProps: Konva.TextConfig,
+  isSelected: boolean,
+  onSelect: () => void,
+  onChange: (newAttrs: Konva.TextConfig) => void,
+  onDoubleClick: () => void,
+}) => {
+  const textRef = React.useRef<Konva.Text>(null)
+  const trRef = React.useRef<Konva.Transformer>(null)
 
   React.useEffect(() => {
     if (isSelected) {
-      // Attach transformer manually
-      trRef.current?.nodes([textRef.current]);
-      trRef.current?.getLayer().batchDraw();
+      if (textRef.current) {
+        trRef.current?.nodes([textRef.current])
+      }
+      if (trRef.current?.getLayer()) {
+        trRef.current.getLayer()!.batchDraw()
+      }
     }
-  }, [isSelected]);
+  }, [isSelected])
 
   return (
     <React.Fragment>
@@ -33,21 +43,20 @@ export const TextElement = ({
             ...shapeProps,
             x: e.target.x(),
             y: e.target.y(),
-          });
+          })
         }}
         onTransformEnd={() => {
-          const node = textRef.current as any;
-          const scaleX = node!.scaleX();
-          const scaleY = node!.scaleY();
-
-          node!.scaleX(1);
-          node!.scaleY(1);
+          const node = textRef.current
+          const scaleX = node!.scaleX()
+          const scaleY = node!.scaleY()
+          node!.scaleX(1)
+          node!.scaleY(1)
           onChange({
             ...shapeProps,
             x: node!.x(),
             y: node!.y(),
             fontSize: Math.max(5, node!.fontSize() * Math.max(scaleX, scaleY)),
-          });
+          })
         }}
       />
       {isSelected && (
@@ -56,14 +65,13 @@ export const TextElement = ({
           flipEnabled={false}
           centeredScaling={true}
           boundBoxFunc={(oldBox, newBox) => {
-            // Limit resize
             if (Math.abs(newBox.width) < 5 || Math.abs(newBox.height) < 5) {
-              return oldBox;
+              return oldBox
             }
-            return newBox;
+            return newBox
           }}
         />
       )}
     </React.Fragment>
-  );
-};
+  )
+}

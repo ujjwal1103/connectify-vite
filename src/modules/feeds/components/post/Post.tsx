@@ -8,10 +8,10 @@ const Post = ({ post }: { post: IPost }) => {
   return (
     <article
       id={post._id}
-      className="relative mb-2 flex overflow-hidden border-b border-border bg-transparent text-secondary-foreground drop-shadow-md md:rounded-md md:border-none md:bg-card"
+      className="relative mb-2 bg-red-400 overflow-hidden w-full border-b border-border bg-transparent text-secondary-foreground drop-shadow-md md:w-auto md:rounded-md md:border-none md:bg-card"
     >
       <div className="flex-1 flex-col justify-between">
-        <PostHeader 
+        <PostHeader
           post={post}
           postId={post._id}
           userId={post.user._id}

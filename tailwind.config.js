@@ -1,4 +1,5 @@
 /** @type {import('tailwindcss').Config} */
+
 module.exports = {
   content: [
     "./pages/**/*.{ts,tsx}",
@@ -145,12 +146,12 @@ module.exports = {
         "16/9": [16, 9],
         "21/9": [21, 9],
       },
-      backgroundImage: {
-        appgrade:
-          "linear-gradient(250deg, rgba(34,193,195,1) 0%, rgba(253,187,45,1) 100%)",
-        "gradient-to-r": "linear-gradient(to right, var(--tw-gradient-stops))",
-        "gradient-to-b": "linear-gradient(to bottom, var(--tw-gradient-stops))",
-      },
+      // backgroundImage: {
+      //   appgrade:
+      //     "linear-gradient(250deg, rgba(34,193,195,1) 0%, rgba(253,187,45,1) 100%)",
+      //   "gradient-to-r": "linear-gradient(to right, var(--tw-gradient-stops))",
+      //   "gradient-to-b": "linear-gradient(to bottom, var(--tw-gradient-stops))",
+      // },
       boxShadow: {
         "custom-light": "0 4px 6px rgba(0, 0, 0, 0.1)",
         "custom-dark": "0 4px 6px rgba(0, 0, 0, 0.6)",

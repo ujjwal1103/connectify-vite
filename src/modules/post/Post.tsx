@@ -32,22 +32,22 @@ const Post = () => {
   const [menu, setMenu] = useState(false)
   const [loadingPost, setLoadingPost] = useState(true)
   const [post, setPost] = useState<IPost | null>(null)
-  const [error, setError] = useState<any>(null)
-
-  const fetchPost = async () => {
-    try {
-      const res = (await getPostById(postId!)) as any
-      if (res.isSuccess) {
-        setPost(res?.post)
-      }
-    } catch (error) {
-      setError(error)
-    } finally {
-      setLoadingPost(false)
-    }
-  }
+  const [error, setError] = useState<Error | null>(null)
 
   useEffect(() => {
+    const fetchPost = async () => {
+      try {
+        const res = await getPostById(postId!)
+        if (res.isSuccess) {
+          setPost(res?.post)
+        }
+      } catch (error) {
+        setError(error as Error)
+      } finally {
+        setLoadingPost(false)
+      }
+    }
+
     fetchPost()
   }, [postId])
 
@@ -68,7 +68,7 @@ const Post = () => {
   }
 
   return (
-    <div className="z-10 flex h-full w-full flex-1 flex-col md:flex-row">
+    <div className="z-10 flex h-full flex-1 flex-col md:flex-row">
       <div className="w-screen md:w-144">
         <div className="md:pl-5 md:pt-5">
           <div className="flex items-center gap-3 p-2 md:hidden md:p-0">
@@ -85,13 +85,13 @@ const Post = () => {
             <PostActions
               post={post!}
               onLike={(liked: boolean) => {
-                setPost((prev: any) => {
+                setPost((prev: IPost | null) => {
                   const p = { ...prev, isLiked: liked } as IPost
                   return p
                 })
               }}
               onBookmark={(bookmark: boolean) => {
-                setPost((prev: any) => {
+                setPost((prev: IPost | null) => {
                   return {
                     ...prev,
                     isBookmarked: bookmark,
@@ -113,7 +113,6 @@ const Post = () => {
             </div>
             <div>Liked by grace and others</div>
           </div>
-
           <div className="flex px-2 md:hidden md:p-0">
             {post?.caption && (
               <Caption

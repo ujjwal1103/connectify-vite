@@ -1,3 +1,4 @@
+/* eslint-disable import/no-unresolved */
 import SidePannel, { Menu } from '@/components/shared/SidePannel/SidePannel'
 import { cn } from '@/lib/utils'
 import Search from '@/modules/search/Search'
@@ -5,6 +6,7 @@ import {
   memo,
   useCallback,
   useEffect,
+  useLayoutEffect,
   useRef,
   useState,
 } from 'react'
@@ -40,6 +42,7 @@ const Sidebar = () => {
     moreOptions,
     openPostModal,
     newStory,
+    newPost,
     resetModalState,
   } = useModalStateSlice()
 
@@ -121,10 +124,26 @@ const Sidebar = () => {
         />
       )
     },
-    [counts.messenger, counts.notification,isInboxOpen]
+    [
+      counts.messenger,
+      counts.notification,
+      isInboxOpen,
+      handleModalClick,
+      moreOptions,
+      notiSheet,
+      openPostModal,
+      searchSheet,
+    ]
   )
 
-  
+  const handleOpenNewPost = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    handleModalClick(e, 'newPost', true)
+    handleModalClose('openPostModal', 'create', e.target!)
+  }
+  const handleOpenNewStory = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    handleModalClick(e, 'newStory', true)
+    handleModalClose('openPostModal', 'create', e.target!)
+  }
 
   return (
     <>
@@ -132,12 +151,12 @@ const Sidebar = () => {
         ref={sidebarRef}
         id="sidebar"
         className={cn(
-          'hidden z-[120]  h-dvh flex-col bg-background border-r-[0.2px] border-zinc-800 p-2 font-semibold text-foreground sm:flex',
-          isInboxOpen && 'sm:flex hidden transition-all duration-300'
+          'z-[120] hidden h-dvh w-64 flex-col border-r-[0.2px] border-zinc-800 bg-background p-2 font-semibold text-foreground sm:flex',
+          isInboxOpen && 'hidden transition-all duration-300 sm:flex w-auto'
         )}
       >
-        <SidebarHeader hide={isInboxOpen}/>
-        <ul className={cn("flex flex-[1] flex-col gap-2 py-3")}>
+        <SidebarHeader hide={isInboxOpen} />
+        <ul className={cn('flex flex-[1] flex-col gap-2 py-3')}>
           {sidebarRoutes.map(renderRouteItem)}
         </ul>
       </aside>
@@ -157,7 +176,7 @@ const Sidebar = () => {
       <AnimatePresence>
         {notiSheet && (
           <SidePannel
-            onClose={(e: any) =>
+            onClose={(e: { target: EventTarget }) =>
               handleModalClose('notiSheet', 'notifications', e.target)
             }
             width={notiSheet ? sidebarRef?.current?.offsetWidth : -400}
@@ -168,12 +187,20 @@ const Sidebar = () => {
       </AnimatePresence>
       <AnimatePresence>
         {openPostModal && (
+          <PostOptions
+            handleOpenNewPost={handleOpenNewPost}
+            handleOpenNewStory={handleOpenNewStory}
+          />
+        )}
+      </AnimatePresence>
+      <AnimatePresence>
+        {newPost && (
           <Modal
             shouldCloseOutsideClick={false}
             showCloseButton={false}
-            onClose={(e: any) =>
-              handleModalClose('openPostModal', 'create', e?.target)
-            }
+            onClose={(e) => {
+              handleModalClose('newPost', 'newpost', e?.target)
+            }}
           >
             <CreateNewPost />
           </Modal>
@@ -181,27 +208,27 @@ const Sidebar = () => {
       </AnimatePresence>
       <AnimatePresence>
         {moreOptions && (
-          <Menu
+            <Menu
             left={sidebarRef?.current?.offsetWidth}
-            onClose={(e: any) =>
-              handleModalClose('moreOptions', 'more', e?.target)
-            }
-          >
+            onClose={(e: React.MouseEvent<HTMLButtonElement>) => {
+              if (e.target) {
+                handleModalClose('moreOptions', 'more', e.target)
+              }
+            }}
+            >
             <MoreMenu />
-          </Menu>
+            </Menu>
         )}
       </AnimatePresence>
       <AnimatePresence>
         {newStory && (
-          <Modal
-            showCloseButton={false}
-            onClose={(e: any) =>
-              handleModalClose('newStory', 'New Story', e?.target)
-            }
-            shouldCloseOutsideClick={false}
-          >
-            <StoryModal />
-          </Modal>
+          <StoryModal
+            onClose={(e: React.MouseEvent<HTMLButtonElement>) => {
+              if (e.target) {
+                handleModalClose('newStory', 'New Story', e.target)
+              }
+            }}
+          />
         )}
       </AnimatePresence>
     </>
@@ -210,7 +237,7 @@ const Sidebar = () => {
 
 export default memo(Sidebar)
 
-const StoryModal = ({ onClose }: any) => {
+const StoryModal = ({ onClose }: {onClose:(e: React.MouseEvent<HTMLButtonElement>)=>void}) => {
   return (
     <div className="relative h-96 w-screen bg-black md:w-96">
       <button className="absolute right-3 top-3" onClick={onClose}>
@@ -218,5 +245,38 @@ const StoryModal = ({ onClose }: any) => {
       </button>
       <NewStory />
     </div>
+  )
+}
+
+const PostOptions = ({ handleOpenNewPost, handleOpenNewStory }: any) => {
+  const [top, setBottom] = useState('144px')
+  useLayoutEffect(() => {
+    const createButton = document.getElementById('create')
+
+    const rect = createButton?.getBoundingClientRect()
+    console.log(rect)
+    if (rect?.top) {
+      setBottom(rect?.top + rect.height + 8 + 'px')
+    }
+  }, [])
+
+  return (
+    <ul
+      className="absolute z-[200] w-60 rounded-md border border-border bg-background"
+      style={{
+        top,
+        left: '8px',
+      }}
+    >
+      <li className="p-2 hover:bg-secondary" onClick={handleOpenNewPost}>
+        Post
+      </li>
+      <li onClick={handleOpenNewStory} className="p-2 hover:bg-secondary">
+        Reel
+      </li>
+      <li onClick={handleOpenNewStory} className="p-2 hover:bg-secondary">
+        Story
+      </li>
+    </ul>
   )
 }

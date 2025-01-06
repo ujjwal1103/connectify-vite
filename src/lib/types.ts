@@ -23,6 +23,7 @@ export interface IUser {
 }
 
 export interface IPost {
+  postType: 'REEL' | 'POST'
   _id: string
   images: IIamge[]
   caption: string

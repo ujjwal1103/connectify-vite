@@ -41,8 +41,7 @@ const CommetsForPost = ({
   // )
 
   return (
-    <div>
-      
+    <div className='w-full'>
       {comments.length > 0 ? (
         <Comments
           postId={postId!}

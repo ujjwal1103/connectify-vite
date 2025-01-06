@@ -5,7 +5,7 @@ module.exports = {
   parser: '@typescript-eslint/parser',
   plugins: ['react-refresh'],
   rules: {
-    'no-unused-vars': ['warning', { args: 'none' }],
+    'no-unused-vars': ['warn', { args: 'none' }],
     // 'import/no-unused-modules': [1, { unusedExports: true }],
     // 'react/react-in-jsx-scope': 'off', // If using React 17+ with new JSX Transform
   },

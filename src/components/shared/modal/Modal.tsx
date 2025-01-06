@@ -80,9 +80,9 @@ const Modal = ({
         <div className="flex h-dvh w-screen items-center justify-center">
           {animate ? (
             <motion.div
-              initial={{ scale: 0 }}
+              initial={{ scale: 0.8 }}
               animate={{ scale: 1 }}
-              exit={{ scale: 0 }}
+              exit={{ scale: 0.8 }}
               transition={{ type: 'tween' }}
               onClick={handleChildClick}
               tabIndex={-1}

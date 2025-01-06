@@ -3,7 +3,7 @@ import Suggetions from "./Suggetions";
 
 const RightSideContainer = () => {
   return (
-    <div className="w-full h-full p-2">
+    <div className="flex-[0.4] hidden md:block">
       <Self />
       <Suggetions />
     </div>
