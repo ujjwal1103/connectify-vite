@@ -3,7 +3,6 @@ import { cn } from '@/lib/utils'
 import Search from '@/modules/search/Search'
 import {
   memo,
-  MouseEvent,
   useCallback,
   useEffect,
   useRef,
@@ -89,7 +88,7 @@ const Sidebar = () => {
   useSocketEvents(socket, eventHandlers)
 
   const handleModalClick = (
-    e: MouseEvent<HTMLAnchorElement, globalThis.MouseEvent>,
+    e: React.MouseEvent<HTMLAnchorElement>,
     modalName: ModalStateNames,
     modal?: boolean
   ) => {
