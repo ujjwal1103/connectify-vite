@@ -1,8 +1,9 @@
 import UsernameLink from '@/components/shared/UsernameLink'
 import Avatar from '@/components/shared/Avatar'
 import { IPost } from '@/lib/types'
-import { memo } from 'react'
-import PostHeaderMenu from './PostHeaderMenu'
+import { memo, } from 'react'
+import PostHeaderMenu from '@/components/shared/modal/PostHeaderMenu'
+
 
 type PostHeaderProps = {
   postId: string
@@ -45,3 +46,4 @@ const PostHeader = ({
 }
 
 export default memo(PostHeader)
+

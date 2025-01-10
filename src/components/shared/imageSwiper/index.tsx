@@ -24,7 +24,7 @@ import { BookmarkButton } from '../BookmarkButton'
 import Caption from '@/modules/feeds/components/post/Caption'
 import CommetsForPost from '@/modules/feeds/components/post/CommentsSingle'
 import { motion } from 'framer-motion'
-import PostHeaderMenu from '@/modules/feeds/components/post/PostHeaderMenu'
+import PostHeaderMenu from '../modal/PostHeaderMenu'
 
 interface Props {
   posts: IPost[]

@@ -11,7 +11,7 @@ import LoadingFeed from './components/LoadingFeed'
 import { ChevronUpIcon } from 'lucide-react'
 import Wrapper from '@/components/Wrapper'
 import NoPosts from './components/NoPosts'
-import StoryComponent from './StoryComponent'
+// import StoryComponent from './StoryComponent'
 // import Stories from './components/stories/Stories'
 
 const fetchPosts = (page: number) =>
@@ -73,7 +73,7 @@ const Feeds = () => {
               scrollableTarget={'scrollableDiv'}
               className="w-auto md:w-144"
             >
-              <StoryComponent />
+              {/* <StoryComponent /> */}
               {isLoading && <div>Loading</div>}
               {feeds.length === 0 && !isLoading && <NoPosts />}
               {feeds?.map((feed: any) => <Post key={feed._id} post={feed} />)}

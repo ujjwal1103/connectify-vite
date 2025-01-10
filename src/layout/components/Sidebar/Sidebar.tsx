@@ -1,4 +1,3 @@
-/* eslint-disable import/no-unresolved */
 import SidePannel, { Menu } from '@/components/shared/SidePannel/SidePannel'
 import { cn } from '@/lib/utils'
 import Search from '@/modules/search/Search'
