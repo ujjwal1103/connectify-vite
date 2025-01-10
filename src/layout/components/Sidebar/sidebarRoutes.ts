@@ -1,7 +1,6 @@
 import ReelsFill from '@/components/icons/ReelsFill'
 import { ModalStateNames } from '@/redux/services/modalStateSlice'
 import {
-  CircleFadingPlus,
   Compass,
   Heart,
   Home,

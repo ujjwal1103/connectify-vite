@@ -2,17 +2,11 @@ import { getSelfReels } from '@/api'
 import { useCallback, useEffect, useState } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { IPost } from '@/lib/types'
-import { CommentIcon } from '@/components/icons'
-import { HeartIcon, MessageCircle, MessageSquareIcon } from 'lucide-react'
-import { LikeButton } from '@/components/shared/LikeButton'
+import { HeartIcon, MessageCircle } from 'lucide-react'
 import Modal from '@/components/shared/modal/Modal'
 import PostSliderModal from '@/components/shared/imageSwiper'
 import { useLocation } from 'react-router-dom'
 
-interface PostsProps {
-  isSelfPosts?: boolean
-  userId?: string
-}
 
 const fetchReels = async (page: number) => {
   const res = (await getSelfReels(page)) as any
@@ -35,7 +29,7 @@ const Reels = () => {
     try {
       setLoadingPost(true)
       const res = await fetchReels(page)
-      console.log(res.data)
+      setHasNext(true)
       setReels(res.data)
     } catch (error) {
       alert('Something went wrong')
@@ -68,8 +62,9 @@ const Reels = () => {
         loader={<div />}
         scrollableTarget={'scrollableDiv'}
         next={function () {
-          throw new Error('Function not implemented.')
+          setPage(prev=>prev+1)
         }}
+        
       >
         <div className="grid grid-cols-3 gap-[1px] md:grid-cols-4 md:px-20">
           {reels?.map((reel: IPost, index: number) => (
@@ -90,6 +85,7 @@ const Reels = () => {
               </div>
             </div>
           ))}
+          {loadingPost && <></>}
         </div>
       </InfiniteScroll>
 
@@ -107,18 +103,3 @@ const Reels = () => {
 }
 
 export default Reels
-
-// const NoPosts: React.FC = () => (
-//   <div className="py-10">
-//     <EmptyPost message="" />
-//     <div className="mx-auto max-w-[1000px] md:max-w-[750px] lg:max-w-[834px] xl:max-w-[1000px]">
-//       <SuggetionsSlider />
-//     </div>
-//   </div>
-// )
-
-// const LoaderComponent: React.FC = () => (
-//   <div className="flex w-full items-center justify-center py-3" role="status">
-//     <Loader className="animate-spin" />
-//   </div>
-// )

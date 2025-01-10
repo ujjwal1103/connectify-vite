@@ -77,7 +77,7 @@ const PostActions = ({
             showCloseButton={false}
             animate={false}
           >
-            <SendPost post={post} />
+            <SendPost post={post}  onClose={() => setSendPost(false)}/>
           </Modal>
         )}
       </AnimatePresence>

@@ -7,7 +7,7 @@ import Modal from '@/components/shared/modal/Modal'
 import usePostStore from '@/zustand/newPostStore.tsx'
 import { convertToImageData, urlToFile } from './helper'
 
-type Step = 'Crop' | 'Caption' | 'Pick'
+export type Step = 'Crop' | 'Caption' | 'Pick'
 
 function extractCroppedImageUrls(data: any) {
   const croppedImageUrls = []
@@ -168,6 +168,7 @@ const CreatePost = ({ onClose }: any) => {
             setStep={setStep}
             cropedImagesUrls={cropedImagesUrls}
             aspectRatio={aspectRatio}
+            onClose={onClose}
           />
         </Modal>
       )}

@@ -1,4 +1,3 @@
-/* eslint-disable import/no-unresolved */
 import { uploadPosts } from '@/api'
 import Avatar from '@/components/shared/Avatar'
 import { ImageSlider } from '@/components/shared/ImageSlider/ImageSlider'
@@ -16,8 +15,9 @@ import {
 } from '@radix-ui/react-dropdown-menu'
 import { motion } from 'framer-motion'
 import { ArrowLeft, SmileIcon } from 'lucide-react'
-import { useState } from 'react'
+import { Dispatch, SetStateAction, useState } from 'react'
 import { toast } from 'react-toastify'
+import { Step } from './CreateNewPost'
 
 const CaptionComponent = ({
   setStep,
@@ -25,7 +25,7 @@ const CaptionComponent = ({
   aspectRatio,
   onClose,
 }: { 
-  setStep: (step: string) => void; 
+  setStep: Dispatch<SetStateAction<Step>>; 
   cropedImagesUrls: { file: File; croppedUrl: string; type: string }[]; 
   aspectRatio: string; 
   onClose: () => void; 

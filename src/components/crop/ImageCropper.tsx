@@ -23,8 +23,6 @@ import { AnimatePresence, motion } from 'framer-motion'
 import {
   ChevronLeft,
   ChevronRight,
-  LocateIcon,
-  MapIcon,
   MapPin,
   Smile,
 } from 'lucide-react'
@@ -51,7 +49,6 @@ const ImageCropper: React.FC<ImageCropperProps> = ({
   clearImage = emptyFn,
   croppedImagesUrls = [],
   setCroppedImagesUrls,
-  onResetAndClose,
   selectImage,
   aspectRatio,
   setAspectRatio,
@@ -279,7 +276,7 @@ const CaptionComponent = ({ croppedUrls }: CaptionComponentProps) => {
   )
 }
 
-const ImageCanvas = ({ urls }: { urls: string }) => {
+const ImageCanvas = ({ urls }: { urls: string[] }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [selectedIndex, setSelectedIndex] = useState(0)
   useEffect(() => {

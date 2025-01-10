@@ -11,6 +11,8 @@ import io, { Socket } from 'socket.io-client'
 import { SOCKET_SERVER_URL } from '@/config/constant'
 import { useAuth } from './AuthContext'
 
+const isDev = import.meta.env.DEV
+
 interface SocketContextProps {
   socket: Socket | null
   users: any[]
@@ -70,11 +72,11 @@ export const SocketProvider = ({ children }: PropsWithChildren) => {
     <SocketContext.Provider value={{ socket, users, isUserOnline, setUsers }}>
       {children}
 
-      {/* {isConnected && import.meta.env.DEV && (
+      {isConnected && isDev && import.meta.env.DEV && (
         <span className="fixed bottom-0 z-[10000929] bg-green-500 px-2 text-primary">
           Socket Connected
         </span>
-      )} */}
+      )}
     </SocketContext.Provider>
   )
 }
