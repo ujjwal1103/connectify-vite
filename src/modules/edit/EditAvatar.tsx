@@ -82,12 +82,12 @@ const EditAvatar = () => {
 
   return (
     <div className="my-2 w-full">
-      <div className="flex items-center justify-between gap-3 rounded-xl bg-secondary p-2 md:flex-row md:gap-0 md:p-4">
+      <div className="flex items-center justify-between gap-3 rounded-xl bg-background p-2 md:flex-row md:gap-0 md:p-4">
         <div className="flex items-center gap-3">
           <div className="relative">
             <Avatar
               src={avatar}
-              className="size-14 cursor-pointer bg-rose-950 object-cover"
+              className="size-14 cursor-pointer  object-cover"
               onClick={handleAvatar}
             />
             {uploadingAvatar && (

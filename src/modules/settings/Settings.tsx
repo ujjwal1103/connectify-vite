@@ -43,15 +43,15 @@ const Setting = () => {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="md:w-1/2 w-[95%] mx-auto"
+      className="md:w-1/2  mx-auto"
     >
-      <header className=" py-4">
+      <header className="py-4 md:flex hidden">
         <h1 className="font-bold text-xl">Settings</h1>
       </header>
-      <section className="">
+      <section className="space-y-2">
         {settings.map((setting) => {
           return (
-            <div className="bg-secondary p-2 rounded-md">
+            <div className="bg-background p-2 rounded-md">
               <h2 className="text-semibold text-xl">{setting.title}</h2>
               <div>{setting.component}</div>
               <p className="text-xs">{setting.subText}</p>

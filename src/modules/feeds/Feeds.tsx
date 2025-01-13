@@ -60,7 +60,7 @@ const Feeds = () => {
     <>
       <main
         ref={containerRef}
-        className="relative h-dvh w-screen overflow-y-scroll scrollbar-thin md:w-auto md:translate-y-0 md:bg-inherit md:p-4"
+        className="relative h-dvh pt-14 md:mt-0 w-screen overflow-y-scroll scrollbar-thin md:w-auto md:translate-y-0 md:bg-inherit md:p-4"
         id="scrollableDiv"
       >
         <div className="flex h-full w-full gap-0 md:gap-10">

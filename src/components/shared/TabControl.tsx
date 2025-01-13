@@ -42,10 +42,10 @@ export const TabControl = ({
               <motion.span
                 layoutId={tabId}
                 className={cn(
-                  'absolute inset-0 top-[35px] z-10 h-[5px] w-full bg-foreground mix-blend-exclusion',
+                  'absolute inset-0 top-[35px] z-10 h-[5px] rounded-xl w-full bg-foreground mix-blend-exclusion',
                   indicatorClasses
                 )}
-                style={{ borderRadius: 10 }}
+                // style={{ borderRadius: broderRadius }}
                 transition={{ duration: 0.2 }}
               />
             )}
