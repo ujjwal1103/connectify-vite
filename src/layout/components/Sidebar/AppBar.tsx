@@ -1,3 +1,4 @@
+import ConnectifyLogoText from '@/components/icons/ConnectifyLogoText'
 import Modal from '@/components/shared/modal/Modal'
 import MoreMenu from '@/components/shared/MoreMenu'
 import { cn } from '@/lib/utils'
@@ -23,13 +24,13 @@ const Appbar = ({ hideAppBar, show }: any) => {
       variants={variants}
       transition={{ duration: 0.2 }}
       className={cn(
-        'absolute z-10 flex w-full items-center justify-between bg-zinc-800 p-2 sm:hidden',
+        'absolute z-10 flex w-full items-center justify-between h-14  p-2 sm:hidden',
         { hidden: !show }
       )}
     >
       <div>
         <Link to={'/'}>
-          <span>App Name</span>
+          <ConnectifyLogoText w={"175"} h={"36"}/>
         </Link>
       </div>
       <div className="flex items-center gap-2">
