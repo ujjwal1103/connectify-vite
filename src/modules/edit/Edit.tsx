@@ -207,7 +207,7 @@ const Edit = () => {
               </Button>
             </div>
           </motion.form>
-          <DevTool control={control} />
+          {import.meta.env.DEV && <DevTool control={control} />}
         </motion.div>
       )}
       {tab === 'settings' && <Setting />}
