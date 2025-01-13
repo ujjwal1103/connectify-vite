@@ -81,7 +81,7 @@ const useSendMessage = () => {
           isCurrentUserMessage: true,
           reply: reply,
         })
-
+        setIsAddingContent(true)
         const res = await sendAttachmentMessage(chatId, formData)
         if (res.isSuccess) {
           addMessage({
