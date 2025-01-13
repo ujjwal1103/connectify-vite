@@ -41,7 +41,7 @@ const TabBar = ({ hideAppBar, show }: any) => {
     },
   }
 
-  const { setModalState } = useModalStateSlice()
+  const { setModalState, setPostion } = useModalStateSlice()
 
   return (
     <motion.div
@@ -65,6 +65,20 @@ const TabBar = ({ hideAppBar, show }: any) => {
                 onClick={(e) => {
                   if (modal) {
                     e.preventDefault()
+
+                    const rect = e.currentTarget.getBoundingClientRect()
+                    console.log(rect)
+
+                    const top = rect.top - rect.height - 112.33
+                    const left = rect.left - 112.33
+
+                    setPostion({
+                      top,
+                      left,
+                      bottom:'auto',
+                      right: 'auto',
+                    })
+
                     setModalState('openPostModal')
                   }
                 }}

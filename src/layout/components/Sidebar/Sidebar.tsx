@@ -43,6 +43,7 @@ const Sidebar = () => {
     newStory,
     newPost,
     resetModalState,
+    setPostion,
   } = useModalStateSlice()
 
   const sidebarRef = useRef<any>()
@@ -96,6 +97,20 @@ const Sidebar = () => {
   ) => {
     if (modal) {
       e.preventDefault()
+      if (modalName === 'openPostModal') {
+        const rect = e.currentTarget.getBoundingClientRect()
+
+        const top = rect.top + rect.height + 10
+        const left = rect.left
+
+        setPostion({
+          top,
+          left,
+          bottom: 'auto',
+          right: 'auto',
+        })
+      }
+
       handleModalToggle(modalName!)
     }
   }
@@ -151,7 +166,7 @@ const Sidebar = () => {
         id="sidebar"
         className={cn(
           'z-[120] hidden h-dvh w-64 flex-col border-r-[0.2px] border-zinc-800 bg-background p-2 font-semibold text-foreground sm:flex',
-          isInboxOpen && 'hidden transition-all duration-300 sm:flex w-auto'
+          isInboxOpen && 'hidden w-auto transition-all duration-300 sm:flex'
         )}
       >
         <SidebarHeader hide={isInboxOpen} />
@@ -207,16 +222,16 @@ const Sidebar = () => {
       </AnimatePresence>
       <AnimatePresence>
         {moreOptions && (
-            <Menu
+          <Menu
             left={sidebarRef?.current?.offsetWidth}
             onClose={(e: React.MouseEvent<HTMLButtonElement>) => {
               if (e.target) {
                 handleModalClose('moreOptions', 'more', e.target)
               }
             }}
-            >
+          >
             <MoreMenu />
-            </Menu>
+          </Menu>
         )}
       </AnimatePresence>
       <AnimatePresence>
@@ -236,7 +251,11 @@ const Sidebar = () => {
 
 export default memo(Sidebar)
 
-const StoryModal = ({ onClose }: {onClose:(e: React.MouseEvent<HTMLButtonElement>)=>void}) => {
+const StoryModal = ({
+  onClose,
+}: {
+  onClose: (e: React.MouseEvent<HTMLButtonElement>) => void
+}) => {
   return (
     <div className="relative h-96 w-screen bg-black md:w-96">
       <button className="absolute right-3 top-3" onClick={onClose}>
@@ -248,24 +267,21 @@ const StoryModal = ({ onClose }: {onClose:(e: React.MouseEvent<HTMLButtonElement
 }
 
 const PostOptions = ({ handleOpenNewPost, handleOpenNewStory }: any) => {
-  const [top, setBottom] = useState('144px')
+  const { postMenuPosition } = useModalStateSlice()
+
   useLayoutEffect(() => {
     const createButton = document.getElementById('create')
 
     const rect = createButton?.getBoundingClientRect()
     console.log(rect)
     if (rect?.top) {
-      setBottom(rect?.top + rect.height + 8 + 'px')
     }
   }, [])
 
   return (
     <ul
       className="absolute z-[200] w-60 rounded-md border border-border bg-background"
-      style={{
-        top,
-        left: '8px',
-      }}
+      style={postMenuPosition}
     >
       <li className="p-2 hover:bg-secondary" onClick={handleOpenNewPost}>
         Post

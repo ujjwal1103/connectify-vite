@@ -2,6 +2,14 @@ import { PayloadAction, createSlice } from '@reduxjs/toolkit'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../store'
 import { useCallback } from 'react'
+import { state } from './storySlice'
+
+interface PositionTypes {
+  left: number | string
+  right: number | string
+  top: number | string
+  bottom: number | string
+}
 
 interface ModalStateSlice {
   searchSheet: boolean
@@ -11,6 +19,7 @@ interface ModalStateSlice {
   mobileDrawer: boolean
   newStory: boolean
   newPost: boolean
+  postMenuPosition: PositionTypes
 }
 
 const initialState: ModalStateSlice = {
@@ -20,7 +29,13 @@ const initialState: ModalStateSlice = {
   openPostModal: false,
   mobileDrawer: false,
   newStory: false,
-  newPost: false
+  newPost: false,
+  postMenuPosition: {
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+  },
 }
 
 const modalStateSlice = createSlice({
@@ -30,6 +45,9 @@ const modalStateSlice = createSlice({
     setModalState: (state: any, action: PayloadAction<string>) => {
       const name = action.payload
       state[name] = !state[name]
+    },
+    setPosition: (state, action) => {
+      state.postMenuPosition = action.payload
     },
     resetModalState: () => {
       return initialState
@@ -58,7 +76,11 @@ export const useModalStateSlice = () => {
     dispatch(actions.resetModalState())
   }, [])
 
-  return { ...state, setModalState, resetModalState }
+  const setPostion = useCallback((position: PositionTypes) => {
+    dispatch(actions.setPosition(position))
+  }, [])
+
+  return { ...state, setModalState, resetModalState, setPostion }
 }
 
 export default modalStateSlice
