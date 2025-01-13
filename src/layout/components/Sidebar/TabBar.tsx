@@ -4,32 +4,31 @@ import { motion } from 'framer-motion'
 import { Home, SearchIcon, SquarePlus, Heart, User2 } from 'lucide-react'
 import { NavLink } from 'react-router-dom'
 
-const sidebarRoutes: any[] = [
-  { route: '/', label: 'Home', icon: <Home /> },
+const sidebarRoutes = [
+  { route: '/', label: 'Home', icon: Home },
   {
     route: '/search',
     label: 'Search',
-    icon: <SearchIcon />,
+    icon: SearchIcon,
+
     modalName: 'searchSheet',
   },
-  // { route: "/explore", label: "Explore", icon: <Compass /> },
-  // { route: "/reels", label: "Reels", icon: <SquarePlay /> },
-  // { route: "/inbox", label: "Messages", icon: <Send /> },
-
   {
     route: '/create',
     label: 'Create',
-    icon: <SquarePlus />,
+    icon: SquarePlus,
+
     modal: true,
     modalName: 'openPostModal',
   },
   {
     route: '/notifications',
     label: 'Notifications',
-    icon: <Heart />,
+    icon: Heart,
+
     modalName: 'notiSheet',
   },
-  { route: '/profile', label: 'Profile', icon: <User2 /> },
+  { route: '/profile', label: 'Profile', icon: User2 },
 ]
 
 const TabBar = ({ hideAppBar, show }: any) => {
@@ -50,17 +49,19 @@ const TabBar = ({ hideAppBar, show }: any) => {
       variants={variants}
       transition={{ duration: 0.2 }}
       className={cn(
-        'absolute bottom-0 block w-full bg-zinc-800 p-2 sm:hidden',
+        'absolute bottom-0 flex h-14 w-full items-center bg-secondary sm:hidden',
         { hidden: !show }
       )}
     >
-      <div className="">
+      <div className="w-full">
         <ul className="flex justify-evenly">
-          {sidebarRoutes.map(({ route, label, icon, modal }) => (
+          {sidebarRoutes.map(({ route, label, icon: Icon, modal }) => (
             <li key={label} className="cursor-pointer">
               <NavLink
-                
                 to={route}
+                className={({ isActive }) =>
+                  isActive ? 'text-foreground' : 'text-foreground/50'
+                }
                 onClick={(e) => {
                   if (modal) {
                     e.preventDefault()
@@ -68,7 +69,7 @@ const TabBar = ({ hideAppBar, show }: any) => {
                   }
                 }}
               >
-                {icon}
+                <Icon />
               </NavLink>
             </li>
           ))}
