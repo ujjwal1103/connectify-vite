@@ -27,6 +27,12 @@ const Appbar = ({ hideAppBar, show }: any) => {
         'absolute z-10 flex w-full items-center justify-between h-14  p-2 sm:hidden',
         { hidden: !show }
       )}
+      style={{
+        paddingTop: "env(safe-area-inset-top)",
+        paddingRight: "env(safe-area-inset-right)",
+        paddingBottom: "env(safe-area-inset-bottom)",
+        paddingLeft: "env(safe-area-inset-left)",
+      }}
     >
       <div>
         <Link to={'/'}>
