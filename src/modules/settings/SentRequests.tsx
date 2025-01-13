@@ -45,7 +45,7 @@ const SentRequests: React.FC = () => {
       className="rounded-md bg-background"
     >
       <div className="flex items-center p-2">
-        <h2 className="text-semibold text-xl">Sent Follow Requests</h2>
+        <h2 className="text-semibold text-base">Sent Follow Requests</h2>
 
         <button className="ml-auto" onClick={() => setExpanded(!expanded)}>
           {expanded ? <ChevronUp /> : <ChevronDown />}
@@ -62,12 +62,17 @@ const SentRequests: React.FC = () => {
           >
             {loading && <div className="p-2">Loading...</div>}
             {error && <div>Error: {error}</div>}
-            {sentRequests.length === 0 ? (
-              <p className='p-2'>No sent requests found.</p>
+            {sentRequests.length === 0 && !loading ? (
+              <p className="p-2">No sent requests found.</p>
             ) : (
               <ul className="">
                 {sentRequests.map((request) => (
-                  <li
+                  <motion.li
+                    animate={{ opacity: 1, y: 0 }}
+                    layout
+                    initial={{opacity:0, y:-20}}
+                    transition={{ duration: 0.3 }}
+                    exit={{ opacity: 0, y: -20 }}
                     key={request._id}
                     className="group flex items-center gap-3 p-2"
                   >
@@ -88,12 +93,12 @@ const SentRequests: React.FC = () => {
                     <Button
                       variant={'secondary'}
                       size={'sm'}
-                      className="ml-auto transition "
+                      className="ml-auto transition"
                       onClick={() => handleCancelRequest(request._id)}
                     >
                       Cancel
                     </Button>
-                  </li>
+                  </motion.li>
                 ))}
               </ul>
             )}

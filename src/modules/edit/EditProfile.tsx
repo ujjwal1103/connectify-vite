@@ -86,7 +86,7 @@ const EditProfile = () => {
           <div className="relative">
             <Input
               placeholder="Full Name"
-              className="resize-none border-[#363636] pr-14 placeholder:text-[#363636] focus-visible:border-gray-300"
+              className="resize-none border-[#363636] pr-14 focus-visible:border-gray-300"
               {...register('name', { required: 'Name is required' })}
             />
             {errors.name && (
@@ -100,7 +100,7 @@ const EditProfile = () => {
             <Textarea
               id="bio"
               placeholder="Tell us a little bit about yourself"
-              className="resize-none border-[#363636] pr-14 scrollbar-none placeholder:text-[#363636] focus-visible:border-gray-300"
+              className="resize-none min-h-24 border-[#363636] pr-14 scrollbar-none focus-visible:border-gray-300"
               {...register('bio', {
                 maxLength: {
                   value: 200,

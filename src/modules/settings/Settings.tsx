@@ -16,13 +16,14 @@ const PrivateAccount = () => {
 
   return (
     <div className="py-3 flex justify-between items-center">
-      <label htmlFor="private_account" className="text-[16px]">
+      <label htmlFor="private_account" className="text-sm">
         Private account
       </label>
       <Switch
         checked={checked}
         onChange={handleChange}
-        className="bg-background"
+        className="bg-secondary"
+        id="private_account"
       />
     </div>
   );
@@ -52,9 +53,9 @@ const Setting = () => {
         {settings.map((setting) => {
           return (
             <div className="bg-background p-2 rounded-md">
-              <h2 className="text-semibold text-xl">{setting.title}</h2>
+              <h2 className="text-semibold text-base">{setting.title}</h2>
               <div>{setting.component}</div>
-              <p className="text-xs">{setting.subText}</p>
+              <p className="text-[10px] text-muted-foreground">{setting.subText}</p>
             </div>
           );
         })}

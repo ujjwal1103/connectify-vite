@@ -2,7 +2,7 @@ import { deleteThisPost } from '@/api'
 import { IPost, IUser } from '@/lib/types'
 import { usePostSlice } from '@/redux/services/postSlice'
 import { AnimatePresence, motion } from 'framer-motion'
-import { Loader, MoreHorizontal } from 'lucide-react'
+import { Edit2, Loader, MaximizeIcon, MoreHorizontal, Trash2 } from 'lucide-react'
 import {
   Dispatch,
   SetStateAction,
@@ -12,7 +12,7 @@ import {
   useState,
 } from 'react'
 import { createPortal } from 'react-dom'
-import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { ImageSlider } from '../shared/ImageSlider/ImageSlider'
 import ConfirmModal from '../shared/modal/ConfirmModal'
@@ -20,6 +20,7 @@ import EditPostModal from '../shared/modal/EditPostModal'
 import { useAuth } from '@/context/AuthContext'
 import { cn } from '@/lib/utils'
 import { useFeedSlice } from '@/redux/services/feedSlice'
+import DropDownMenuItem from '../shared/dialogs/DropDownMenu/DropDownMenuItem'
 
 interface ProfilePostProps {
   post: IPost
@@ -147,7 +148,6 @@ const PostMenu = ({
   setModalOpen,
   setEditPost,
   isSelfPosts,
-  deletingPost,
   postId,
 }: PostMenuProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -160,6 +160,7 @@ const PostMenu = ({
 
   const menuRef = useRef<HTMLDivElement>(null)
   const buttonRef = useRef<HTMLDivElement>(null)
+  const navigate = useNavigate()
 
   useLayoutEffect(() => {
     if (isMenuOpen && buttonRef.current) {
@@ -208,7 +209,7 @@ const PostMenu = ({
     }
   }, [isMenuOpen])
 
-  const handleMenuToggle = (e:any) => {
+  const handleMenuToggle = (e: any) => {
     e.stopPropagation()
     setIsMenuOpen((prev) => !prev)
   }
@@ -243,6 +244,7 @@ const PostMenu = ({
     <>
       <div
         ref={buttonRef}
+        onClick={(e) => e.stopPropagation()}
         className="relative right-0 top-0 hidden p-2 transition-all duration-300 md:group-hover:flex"
       >
         <MoreHorizontal
@@ -255,8 +257,9 @@ const PostMenu = ({
         <AnimatePresence>
           {isMenuOpen && (
             <motion.div
+              onClick={(e) => e.stopPropagation()}
               ref={menuRef}
-              className="absolute z-50 rounded bg-zinc-900 p-2 shadow-xl"
+              className="absolute z-50 rounded bg-background-secondary p-2 shadow-xl md:w-44"
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
@@ -268,27 +271,28 @@ const PostMenu = ({
                 right: menuPosition.right,
               }}
             >
-              <ul className="text-sm md:w-44 md:text-sm">
-                <li className="cursor-pointer rounded-md p-2 hover:bg-zinc-800">
-                  <Link to={`/p/${postId}`}>View Post</Link>
-                </li>
+              <ul className="space-y-1 text-sm md:text-sm">
+                <DropDownMenuItem
+                  label="View"
+                  icon={MaximizeIcon}
+                  onClick={() => navigate(`/p/${postId}`)}
+               
+                />
                 {isSelfPosts && (
                   <>
-                    <li className="cursor-pointer rounded-md p-2 hover:bg-zinc-800">
-                      <button type="button" onClick={handleEditPost}>
-                        Edit Post
-                      </button>
-                    </li>
-                    <li className="cursor-pointer rounded-md p-2 text-red-600 hover:bg-zinc-800">
-                      <button
-                        type="button"
-                        onClick={handleOpen}
-                        disabled={deletingPost}
-                        className="flex w-full items-center justify-between"
-                      >
-                        Delete Post
-                      </button>
-                    </li>
+                    <DropDownMenuItem
+                      label="Edit"
+                      icon={Edit2}
+                      onClick={handleEditPost}
+                   
+                    />
+                    <DropDownMenuItem
+                      label="Delete"
+                      icon={Trash2}
+                      onClick={handleOpen}
+                      // disabled={deletingPost}
+                   
+                    />
                   </>
                 )}
               </ul>

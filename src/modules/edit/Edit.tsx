@@ -5,6 +5,16 @@ import { TabControl } from '@/components/shared/TabControl'
 import Setting from '../settings/Settings'
 import EditProfile from './EditProfile'
 
+const tabs = [
+  {
+    name: 'Edit Profle',
+    id: 'editProfile',
+  },
+  {
+    name: 'Settings',
+    id: 'settings',
+  },
+]
 const Edit = () => {
   const { user, loading } = useAuth()
   const [params, setParams] = useSearchParams()
@@ -23,7 +33,7 @@ const Edit = () => {
   }
 
   return (
-    <div className="relative min-h-dvh flex-1 overflow-y-scroll text-sm scrollbar-none md:text-sm">
+    <div className="relative min-h-dvh bg-[#17171a] flex-1 overflow-y-scroll text-sm scrollbar-none md:text-sm">
       <div className="flex h-14 items-center gap-2 bg-black px-3 md:hidden">
         <button className="block md:hidden" onClick={() => navigate(-1)}>
           <ChevronLeft size={24} />
@@ -38,18 +48,9 @@ const Edit = () => {
             <TabControl
               selectedTab={tab}
               setSelectedTab={(t) => setParams({ tab: t }, { replace: true })}
-              tabs={[
-                {
-                  name: 'Edit Profle',
-                  id: 'editProfile',
-                },
-                {
-                  name: 'Settings',
-                  id: 'settings',
-                },
-              ]}
+              tabs={tabs}
               tabId={'settingsTabs'}
-              indicatorClasses="md:h-full md:top-0 p-2"
+              indicatorClasses="md:h-full rounded-md md:top-0 p-2"
             />
           </div>
         </div>
