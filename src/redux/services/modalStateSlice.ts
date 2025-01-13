@@ -2,7 +2,6 @@ import { PayloadAction, createSlice } from '@reduxjs/toolkit'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../store'
 import { useCallback } from 'react'
-import { state } from './storySlice'
 
 interface PositionTypes {
   left: number | string
