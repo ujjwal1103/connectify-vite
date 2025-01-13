@@ -2,6 +2,7 @@ import { Outlet, useLocation } from 'react-router-dom'
 import useMobileSidebar from '../hooks/useMobileSidebar'
 import TabBar from './Sidebar/TabBar'
 import { lazy } from 'react'
+import Appbar from './Sidebar/AppBar'
 
 const Sidebar = lazy(() => import('./Sidebar/Sidebar'))
 
@@ -11,7 +12,7 @@ const MainContainer = () => {
   return (
     <main className="flex h-full w-full min-w-80 flex-1 flex-col bg-background-secondary text-foreground sm:flex-row">
       <Sidebar />
-      {/* <Appbar hideAppBar={hideAppBar} show={show} /> */}
+      <Appbar hideAppBar={hideAppBar} show={show} />
 
       <main
         key={location.pathname}

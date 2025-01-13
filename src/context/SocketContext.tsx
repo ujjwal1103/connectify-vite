@@ -71,9 +71,8 @@ export const SocketProvider = ({ children }: PropsWithChildren) => {
   return (
     <SocketContext.Provider value={{ socket, users, isUserOnline, setUsers }}>
       {children}
-
       {isConnected && isDev && import.meta.env.DEV && (
-        <span className="fixed bottom-0 z-[10000929] bg-green-500 px-2 text-primary">
+        <span className="fixed top-0 bg-green-500/20 px-2 text-primary lg:bottom-0">
           Socket Connected
         </span>
       )}

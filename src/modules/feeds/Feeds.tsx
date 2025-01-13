@@ -64,7 +64,7 @@ const Feeds = () => {
         id="scrollableDiv"
       >
         <div className="flex h-full w-full gap-0 md:gap-10">
-          <section className="flex- flex w-full flex-[0.5] flex-col md:w-auto">
+          <section className="flex- flex flex-1 flex-col md:w-auto md:flex-[0.5]">
             <InfiniteScroll
               dataLength={feeds?.length}
               next={handleLoadMore}
