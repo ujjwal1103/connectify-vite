@@ -49,15 +49,9 @@ const TabBar = ({ hideAppBar, show }: any) => {
       variants={variants}
       transition={{ duration: 0.2 }}
       className={cn(
-        'absolute bottom-0 flex min-h-14 w-full items-center bg-secondary sm:hidden',
+        'absolute bottom-0 flex p-4 pb-[calc(env(safe-area-inset-bottom)_+_16px)] w-full items-center bg-secondary sm:hidden',
         { hidden: !show }
       )}
-      style={{
-        paddingTop: "env(safe-area-inset-top)",
-        paddingRight: "env(safe-area-inset-right)",
-        paddingBottom: "env(safe-area-inset-bottom)",
-        paddingLeft: "env(safe-area-inset-left)",
-      }}
     >
       <div className="w-full">
         <ul className="flex justify-evenly">
