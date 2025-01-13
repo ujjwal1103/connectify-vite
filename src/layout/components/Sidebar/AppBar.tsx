@@ -24,7 +24,7 @@ const Appbar = ({ hideAppBar, show }: any) => {
       variants={variants}
       transition={{ duration: 0.2 }}
       className={cn(
-        'absolute z-10 flex w-full items-center justify-between h-14  p-2 sm:hidden',
+        'absolute z-10 flex w-full items-center justify-between h-14 p-2 sm:hidden',
         { hidden: !show }
       )}
     >
