@@ -94,6 +94,7 @@ const MessageList = () => {
     async (data: any) => {
       createNotification()
       if (data.chat === chatId) {
+        setIsAddingContent(true)
         addMessageFromSocket(data.message)
         if (socket) {
           socket!.emit(SEEN_MESSAGES, {
