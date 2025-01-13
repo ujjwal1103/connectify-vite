@@ -1,9 +1,11 @@
 const CropHeaderButtons = ({
   onResetAndClose,
   onCropImage,
+  isCaptionOpen
 }: {
   onResetAndClose: () => void;
   onCropImage: (val: boolean) => void;
+  isCaptionOpen: boolean
 }) => {
   return (
     <div className="w-full">
@@ -13,7 +15,7 @@ const CropHeaderButtons = ({
         </button>
 
         <button onClick={() => onCropImage(false)} className=" text-white ">
-          Next
+          {isCaptionOpen ? "Post":"Next"}
         </button>
       </div>
     </div>

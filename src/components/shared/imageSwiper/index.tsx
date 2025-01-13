@@ -61,7 +61,7 @@ const PostSliderModal: React.FC<Props> = ({ posts, index, onClose }: Props) => {
         className="relative h-dvh w-full md:h-[90%]"
       >
         {posts.map((post) => (
-          <SwiperSlide className="h-full">
+          <SwiperSlide className="h-full w-full">
             {post.postType === 'POST' ? (
               <Post post={post} />
             ) : (
@@ -94,7 +94,7 @@ const Post = ({ post }: { post: IPost }) => {
 
   return (
     <div className="m-auto flex h-full justify-center rounded-md bg-background md:w-[80%]">
-      <div className="flex h-full items-center md:w-144 lg:w-[611px]">
+      <div className="flex h-full w-full items-center md:w-144 lg:w-[611px]">
         <ImageSlider images={post.images} width="100%" />
       </div>
       <div className="hidden h-full max-w-144 flex-1 flex-col md:flex">

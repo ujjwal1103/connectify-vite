@@ -71,23 +71,25 @@ export const ProfilePost = ({
   }
 
   return (
-    <motion.div className="bg-black relative flex items-center">
+    <motion.div className="group relative flex aspect-1 items-center bg-black">
+      <div className="w-full">
+        <ImageSlider images={currentPost?.images} aspect={true} />
+      </div>
+
       <div
         onClick={() => {
           onClickPost?.(index)
         }}
+        className="absolute top-0 flex h-full w-full items-center justify-center group-hover:bg-black/50"
       >
-        <ImageSlider images={currentPost?.images}  aspect={true} />
+        <PostMenu
+          setModalOpen={setModalOpen}
+          setEditPost={setEditPost}
+          isSelfPosts={isSelfPosts}
+          deletingPost={deletingPost}
+          postId={post._id}
+        />
       </div>
-
-      <PostMenu
-        setModalOpen={setModalOpen}
-        setEditPost={setEditPost}
-        isSelfPosts={isSelfPosts}
-        deletingPost={deletingPost}
-        postId={post._id}
-      />
-
       {editPost && (
         <EditPostModal
           isOpen={editPost}
@@ -164,8 +166,8 @@ const PostMenu = ({
       const buttonRect = buttonRef.current.getBoundingClientRect()
       const menuHeight = menuRef.current?.offsetHeight
       const menuWidth = menuRef.current?.offsetWidth
-      let top = buttonRect.bottom + window.scrollY + 8
-      let left = buttonRect.left + window.scrollX
+      let top = buttonRect.bottom + window.scrollY
+      let left = buttonRect.left + -(menuRef.current?.clientWidth! - 115)!
       let bottom = 'auto'
       let right = 'auto'
 
@@ -206,7 +208,8 @@ const PostMenu = ({
     }
   }, [isMenuOpen])
 
-  const handleMenuToggle = () => {
+  const handleMenuToggle = (e:any) => {
+    e.stopPropagation()
     setIsMenuOpen((prev) => !prev)
   }
 
@@ -224,12 +227,14 @@ const PostMenu = ({
       setIsMenuOpen(false)
     }
   }
-  const handleOpen = () => {
+  const handleOpen = (e: React.MouseEvent) => {
+    e.stopPropagation()
     setIsMenuOpen(false)
     setModalOpen(true)
   }
 
-  const handleEditPost = () => {
+  const handleEditPost = (e: React.MouseEvent) => {
+    e.stopPropagation()
     setEditPost(true)
     setIsMenuOpen(false)
   }
@@ -238,10 +243,10 @@ const PostMenu = ({
     <>
       <div
         ref={buttonRef}
-        className="absolute right-0 top-0 hidden p-2 md:block"
+        className="relative right-0 top-0 hidden p-2 transition-all duration-300 md:group-hover:flex"
       >
         <MoreHorizontal
-          className="size-3 cursor-pointer md:size-6"
+          className="size-3 cursor-pointer rounded-md hover:bg-black/50 md:size-6"
           onClick={handleMenuToggle}
           size={30}
         />

@@ -12,7 +12,7 @@ export const ImageSlider = ({ images, width, aspect }: any) => {
   return (
     <Carousel
       defaultChecked={true}
-      className="relative block bg-red-300"
+      className="relative block bg-background"
       style={{ width }}
     >
       <CarouselContent className="w-full">
