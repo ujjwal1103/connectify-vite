@@ -1,4 +1,10 @@
-import React, { useEffect, useRef, useLayoutEffect, ReactNode } from 'react'
+import { cn } from '@/lib/utils'
+import React, {
+  useEffect,
+  useRef,
+  useLayoutEffect,
+  ReactNode,
+} from 'react'
 
 interface InfiniteScrollProps {
   loadMore: () => void
@@ -13,7 +19,6 @@ interface InfiniteScrollProps {
 const InfiniteScrollC: React.FC<InfiniteScrollProps> = ({
   loadMore,
   children,
-  className,
   id,
   disableScroll = false, // Default is false (scroll behavior is enabled)
   isAddingContent,
@@ -21,6 +26,16 @@ const InfiniteScrollC: React.FC<InfiniteScrollProps> = ({
 }) => {
   const scrollContainerRef = useRef<HTMLDivElement>(null)
   const prevScrollHeightRef = useRef(0)
+  // const [showScrollBar, setShowScrollBar] = useState(false)
+
+  // useEffect(() => {
+  //   if (scrollContainerRef.current) {
+  //     setShowScrollBar(
+  //       scrollContainerRef.current?.clientHeight ===
+  //         scrollContainerRef.current.scrollHeight
+  //     )
+  //   }
+  // }, [children])
 
   const handleScroll = () => {
     const scrollContainer = scrollContainerRef.current
@@ -50,7 +65,7 @@ const InfiniteScrollC: React.FC<InfiniteScrollProps> = ({
           : // Content removed: Prevent upward scroll
             previousScrollTop
     }
-  }, [children, id, disableScroll])
+  }, [id, disableScroll])
 
   useEffect(() => {
     if (disableScroll) return // Skip if scrolling is disabled
@@ -73,7 +88,7 @@ const InfiniteScrollC: React.FC<InfiniteScrollProps> = ({
     if (scrollContainer) {
       prevScrollHeightRef.current = scrollContainer.scrollHeight
     }
-  }, [children, id, disableScroll])
+  }, [id, disableScroll])
 
   useEffect(() => {
     if (isAddingContent) {
@@ -85,9 +100,14 @@ const InfiniteScrollC: React.FC<InfiniteScrollProps> = ({
     }
   }, [isAddingContent])
 
+  console.dir(scrollContainerRef.current)
+
   return (
-    <div className={className}>
-      <div ref={scrollContainerRef} className="flex flex-col overflow-y-scroll">
+    <div className="flex flex-1 flex-col justify-end overflow-hidden bg-zinc-900">
+      <div
+        ref={scrollContainerRef}
+        className={cn('flex flex-col overflow-y-scroll scrollbar-thin')}
+      >
         {children}
       </div>
     </div>

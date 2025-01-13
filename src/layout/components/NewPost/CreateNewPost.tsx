@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import ImageCropper from '@/components/crop/ImageCropper'
-import CaptionComponent from './CaptionComponent'
+// import CaptionComponent from './CaptionComponent'
 import ImagePicker from './ImagePicker'
-import Modal from '@/components/shared/modal/Modal'
+// import Modal from '@/components/shared/modal/Modal'
 import usePostStore from '@/zustand/newPostStore.tsx'
 import { convertToImageData, urlToFile } from './helper'
 
@@ -118,7 +118,7 @@ const CreatePost = ({ onClose }: any) => {
       setCropedImagesUrls((prev: any) =>
         prev.filter((img: any) => img.name !== file.name)
       )
-      setStep('Caption')
+      // setStep('Caption')
     }
   }
 
@@ -162,7 +162,7 @@ const CreatePost = ({ onClose }: any) => {
         />
       )}
 
-      {step === 'Caption' && (
+      {/* {step === 'Caption' && (
         <Modal showCloseButton={false} onClose={onClose}>
           <CaptionComponent
             setStep={setStep}
@@ -171,7 +171,7 @@ const CreatePost = ({ onClose }: any) => {
             onClose={onClose}
           />
         </Modal>
-      )}
+      )} */}
     </motion.div>
   )
 }

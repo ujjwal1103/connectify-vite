@@ -13,7 +13,7 @@ type EditMessageProps = {
 }
 
 const EditMessage = ({ message, end = false, onClose }: EditMessageProps) => {
-  const [messageText, setMessageText] = useState(message?.text)
+  const [messageText, setMessageText] = useState(message.text)
   const [isValid, setIsValid] = useState(false)
   const { editMessageById , setIsAddingContent} = useChatSlice()
 

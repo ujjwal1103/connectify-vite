@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import WaveSurfer from "wavesurfer.js";
 import RecordPlugin from "wavesurfer.js/dist/plugins/record.esm.js";
 
-function useAudioRecorder({ handleClose, handleSendRecording }: any) {
+function useAudioRecorder({ handleClose }: any) {
   const [scrollingWaveform, setScrollingWaveform] = useState(false);
   const [recording, setRecording] = useState(false);
   const [paused, setPaused] = useState(false);
@@ -15,21 +15,21 @@ function useAudioRecorder({ handleClose, handleSendRecording }: any) {
   useEffect(() => {
     const waveSurfer = WaveSurfer.create({
       container: "#mic",
-      barWidth: 3,
+      barWidth: 4,
     //   cursorWidth: 2,
       width: 133,
       backend: "WebAudio",
-      height: 50,
+      height: 30,
       progressColor: "#2D5BFF",
       barGap: 2,
       waveColor: "#EFEFEF",
       cursorColor: "white",
-      audioRate: 100,
+      audioRate: 200,
       autoCenter: true,
       autoScroll: true,
       hideScrollbar: true,
       minPxPerSec: 100,
-      barHeight: 50,
+      barHeight: 30,
       barRadius: 10,
       normalize: true,
       dragToSeek: true,
@@ -48,7 +48,7 @@ function useAudioRecorder({ handleClose, handleSendRecording }: any) {
 
     // Event listener for record end
     recordPlugin.on("record-end", (blob) => {
-      handleSendRecording(blob);
+      // handleSendRecording(blob);
       const recordedUrl = URL.createObjectURL(blob);
       setRecordedAudio(recordedUrl);
       handleClose();

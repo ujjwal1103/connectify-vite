@@ -2,9 +2,10 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { RefObject, useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
 
-import { PlusIcon, Send, Smile, Trash2 } from 'lucide-react'
+import { PlusIcon, Send, Smile } from 'lucide-react'
 import { BiMicrophone } from 'react-icons/bi'
 import { IoClose } from 'react-icons/io5'
+import { FaTrash } from 'react-icons/fa'
 
 import MessageAttachmentInput from './MessageAttachmentInput'
 import Input from '@/components/shared/Input'
@@ -178,7 +179,7 @@ const MessageInput = () => {
 
   if (isRecording) {
     return (
-      <div className="flex-[0.05] h-[53px] flex items-center justify-end p-2 bg-secondary">
+      <div className="flex-[0.05] bg-secondary">
         <AudioRecorder
           handleClose={() => setIsRecording(false)}
           handleSendRecording={(recording: any) => {
@@ -194,18 +195,17 @@ const MessageInput = () => {
   }
 
   return (
-    <div className="relative bg-secondary">
-      <AnimatePresence mode="wait" initial={false}>
+    <div className="relative flex-[0.05]">
+      <AnimatePresence mode="sync">
         {isSelectMessages ? (
           <motion.div
-            key={`${isSelectMessages}`}
-            transition={{ duration: 0.3 }}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{  opacity: 0  }}
-            className="flex items-center"
+            transition={{ duration: 0.2 }}
+            initial={{ y: '100%' }}
+            animate={{ y: '0%' }}
+            exit={{ y: '100%' }}
+            className="bg-secondary"
           >
-            <div className="flex h-[53px] w-full items-center gap-3 px-4 py-2">
+            <div className="flex items-center gap-3 px-4 py-2">
               <button onClick={handleClose}>
                 <IoClose size={24} />
               </button>
@@ -216,19 +216,13 @@ const MessageInput = () => {
                 disabled={!selectedMessages.length}
                 className="ml-auto text-gray-400 hover:text-white disabled:text-gray-400"
               >
-                <Trash2 size={20} className="" />
+                <FaTrash size={24} className="" />
               </button>
             </div>
           </motion.div>
         ) : (
-          <motion.div
-            key={`${isSelectMessages}`}
-            transition={{ duration: 0.3 }}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{  opacity: 0  }}
-          >
-            <div className="p-2 flex flex-col gap-2">
+          <>
+            <motion.div className="flex flex-col gap-2 bg-secondary p-2">
               <MessageReply />
               <div className="flex items-center gap-3">
                 <Input
@@ -267,8 +261,8 @@ const MessageInput = () => {
                   )}
                 </AnimatePresence>
               </div>
-            </div>
-          </motion.div>
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
     </div>

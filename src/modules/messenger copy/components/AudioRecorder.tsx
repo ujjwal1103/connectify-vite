@@ -24,7 +24,7 @@ const AudioRecorder = ({ handleClose, handleSendRecording }:any)=> {
   };
 
   return (
-    <div className="p-2 px-4  relative flex gap-3 items-center justify-end">
+    <div className="py-2 px-4  relative flex gap-3 items-center justify-end">
       <button onClick={handleClose}>
         <Trash2 size={24} />
       </button>
@@ -33,7 +33,7 @@ const AudioRecorder = ({ handleClose, handleSendRecording }:any)=> {
         {paused ? <PiPlay size={24} /> : <PiPauseCircle size={34} />}
       </button>
 
-      <div id="mic" ref={waveSurferRef} className="w-[140px]"/>
+      <div id="mic" ref={waveSurferRef}></div>
 
       <div>
         <div id="progress">{progress}</div>

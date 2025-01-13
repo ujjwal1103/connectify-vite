@@ -242,6 +242,7 @@ const chatSlice = createSlice({
       state.messages[message].text = action.payload.text
       state.messages[message].isEdited = true
     },
+    
     removeMessage: (state, action) => {
       state.messages = state.messages.filter(
         (message) => message._id !== action.payload

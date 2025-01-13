@@ -10,10 +10,14 @@ import Modal from '@/components/shared/modal/Modal'
 import EditMessage from './EditMessage'
 import { AnimatePresence, motion } from 'framer-motion'
 import { deleteMessageById } from '@/api'
-import clsx from 'clsx'
 
 interface MessageWrapProps {
   children: React.ReactNode
+  isSelectMessages: boolean
+  isMessageSelected: boolean
+  handleSelectMessage: () => void
+  className?: string
+  currentUserMessage: boolean
   sender: IUser
   messageId: string
   showProfile: boolean
@@ -22,41 +26,22 @@ interface MessageWrapProps {
 
 const MessageWrap = ({
   children,
+  isSelectMessages,
+  isMessageSelected,
+  handleSelectMessage,
+  className,
+  currentUserMessage,
   sender,
   messageId,
   showProfile,
   message,
 }: MessageWrapProps) => {
-
-  const {
-    setEditMessage,
-    editMessage,
-    removeMessage,
-    isSelectMessages,
-    setSelectedMessage,
-    selectedMessages
-  } = useChatSlice()
-
-  const isMessageSelected = selectedMessages.some(s=>s === message._id)
+  const { setEditMessage, editMessage, removeMessage } = useChatSlice()
 
   const onDelete = useCallback(async () => {
     removeMessage(messageId)
     deleteMessageById(message._id)
   }, [message._id])
-
-  const currentUserMessage = Boolean(message.isCurrentUserMessage)
-
-  const handleSelectMessage = () => {
-    if (isSelectMessages) {
-      setSelectedMessage(message._id)
-    }
-  }
-
-  const className = clsx(
-    'w-full transition-colors duration-300 flex mb-1',
-    isSelectMessages && 'hover:bg-zinc-950',
-    isMessageSelected && 'bg-zinc-950 bg-opacity-60'
-  )
 
   return (
     <motion.div
@@ -82,7 +67,7 @@ const MessageWrap = ({
         message.isCurrentUserMessage && 'origin-right'
       )}
     >
-      {!message.isCurrentUserMessage && showProfile && (
+      {!currentUserMessage && showProfile && (
         <div className="ml-3 flex gap-3">
           <UsernameLink username={sender?.username} className="flex gap-3">
             <div className="size-5">
@@ -92,7 +77,7 @@ const MessageWrap = ({
           </UsernameLink>
         </div>
       )}
-      <div className="flex">
+      <div className="flex" onClick={handleSelectMessage}>
         <div
           className={cn(
             'flex -translate-x-8 items-center transition-transform duration-150',
@@ -133,7 +118,7 @@ const MessageWrap = ({
         </div>
       </div>
       <AnimatePresence>
-        {editMessage && (
+        {editMessage?._id === message._id && (
           <Modal
             onClose={() => {
               setEditMessage(null)

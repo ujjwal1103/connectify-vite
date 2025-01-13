@@ -150,6 +150,7 @@ const MessageList = () => {
   return (
     <InfiniteScrollC
       loadMore={loadMoreItems}
+      className="flex flex-1 flex-col justify-end overflow-hidden bg-zinc-900"
       id={chatId}
       isAddingContent={isAddingContent}
       setIsAddingContent={setIsAddingContent}

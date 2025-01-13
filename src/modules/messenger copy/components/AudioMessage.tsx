@@ -1,16 +1,19 @@
 import { cn } from '@/lib/utils'
-import { memo } from 'react'
-import MessageImage from './MessageImage'
+
+import { memo, useState } from 'react'
+import { AudioPlayer } from './AudioPlayer'
 import MetaData from './MetaData'
 
-const ImageMessage = ({
-  message,
+const AudioMessage = ({
   currentUserMessage,
+  message,
   allSeen,
   showNotch,
   isLoading = false,
 }: any) => {
- 
+  const [duration, setDuration] = useState<number>(0)
+  const [currentTime, setCurrentTime] = useState<number>(0)
+
   return (
     <div
     className={cn(
@@ -22,7 +25,18 @@ const ImageMessage = ({
   
     )}
     >
-      <MessageImage src={message.attachments[0]} />
+      <div className="h-24 overflow-hidden break-words">
+        <AudioPlayer
+          src={message.attachments[0]}
+          getDurationAndCurrentTime={(
+            duration: number,
+            currentTime: number
+          ) => {
+            setDuration(duration)
+            setCurrentTime(currentTime)
+          }}
+        />
+      </div>
 
       <MetaData
         createdAt={message.createdAt}
@@ -30,7 +44,10 @@ const ImageMessage = ({
         isLoading={isLoading}
         allSeen={allSeen}
         seen={message.seen}
-        className="absolute bottom-3 right-3"
+        className="absolute bottom-3 right-3 "
+        duration={duration}
+        currentTime={currentTime}
+        showTimeStamp={true}
       />
 
       <div
@@ -45,4 +62,4 @@ const ImageMessage = ({
   )
 }
 
-export default memo(ImageMessage)
+export default memo(AudioMessage)

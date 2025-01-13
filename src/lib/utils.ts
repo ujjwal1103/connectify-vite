@@ -20,12 +20,23 @@ export function blobToFile(blob: Blob, fileName: string, fileType: string) {
   const file = new File([blob], fileName, options)
   return file
 }
-
 export const tranformUrl = (url = '', width = 100) => {
-  if (!url) return undefined
-  const newUrl = url.replace('upload/', `upload/dpr_auto/w_${width}/`)
-  return newUrl
-}
+  if (!url) return undefined;
+
+  // Check if the URL starts with 'http://' or 'https://'
+  const isNetworkUrl = /^(http|https):\/\//.test(url);
+  if (!isNetworkUrl) return url; // Return the original URL if it's not a network URL
+
+  // Check if the URL domain is cloudinary.com
+  const domain = new URL(url).hostname;
+  if (!domain.includes('cloudinary.com')) {
+    return url; // Return the original URL if the domain is not cloudinary.com
+  }
+
+  // Transform the URL if it's a Cloudinary URL
+  const newUrl = url.replace('upload/', `upload/dpr_auto/w_${width}/`);
+  return newUrl;
+};
 
 export const formatInstagramDate = (dateString: string) => {
   const date = moment(dateString)
