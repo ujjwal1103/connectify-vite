@@ -7,19 +7,21 @@ interface MenuListItemProps {
     onClick?: (e: MouseEvent<HTMLLIElement>, label?: string) => void
     icon?: LucideIcon
     selected?: boolean
+    className?: string
   }
   
 const DropDownMenuItem = ({
     label,
     onClick,
     icon: Icon,
-    selected = false
+    selected = false,
+    className
   }: MenuListItemProps) => {
     return (
       <li
         tabIndex={0}
         className={cn("flex cursor-pointer items-center justify-between gap-2 rounded px-2 py-2 text-sm hover:bg-background/40 focus-within:bg-background/40",
-          selected && 'bg-background/40'
+          selected && 'bg-background/40', className
         )}
         onClick={(e) => onClick?.(e, label)}
       >

@@ -139,8 +139,8 @@ const AddNewUser = ({ onClose }: any) => {
           )}
 
           {!isLoading && users.length === 0 && (
-            <div className="m-2 flex items-center gap-3 rounded-xl bg-zinc-800 p-4">
-              no user found
+            <div className="m-2 flex items-center gap-3 rounded-md bg-zinc-800 p-3">
+              No user found
             </div>
           )}
 

@@ -2,7 +2,7 @@ import { deleteThisPost } from '@/api'
 import { IPost, IUser } from '@/lib/types'
 import { usePostSlice } from '@/redux/services/postSlice'
 import { AnimatePresence, motion } from 'framer-motion'
-import { Edit2, Loader, MaximizeIcon, MoreHorizontal, Trash2 } from 'lucide-react'
+import { Edit, Edit2, Loader, MaximizeIcon, MoreHorizontal, Pencil, Trash2 } from 'lucide-react'
 import {
   Dispatch,
   SetStateAction,
@@ -21,6 +21,7 @@ import { useAuth } from '@/context/AuthContext'
 import { cn } from '@/lib/utils'
 import { useFeedSlice } from '@/redux/services/feedSlice'
 import DropDownMenuItem from '../shared/dialogs/DropDownMenu/DropDownMenuItem'
+import Modal from '../shared/modal/Modal'
 
 interface ProfilePostProps {
   post: IPost
@@ -91,13 +92,18 @@ export const ProfilePost = ({
           postId={post._id}
         />
       </div>
+      <AnimatePresence>
       {editPost && (
+        <Modal showCloseButton={false} onClose={() => setEditPost(false)}>
         <EditPostModal
+          
           isOpen={editPost}
-          onClose={() => setEditPost(false)}
+         
           post={currentPost}
         />
+        </Modal>
       )}
+      </AnimatePresence>
 
       <AnimatePresence>
         {isModalOpen && (
@@ -154,8 +160,6 @@ const PostMenu = ({
   const [menuPosition, setMenuPosition] = useState({
     top: 0,
     left: 0,
-    bottom: 'auto',
-    right: 'auto',
   })
 
   const menuRef = useRef<HTMLDivElement>(null)
@@ -166,31 +170,13 @@ const PostMenu = ({
     if (isMenuOpen && buttonRef.current) {
       const buttonRect = buttonRef.current.getBoundingClientRect()
       const menuHeight = menuRef.current?.offsetHeight
-      const menuWidth = menuRef.current?.offsetWidth
       let top = buttonRect.bottom + window.scrollY
       let left = buttonRect.left + -(menuRef.current?.clientWidth! - 115)!
-      let bottom = 'auto'
-      let right = 'auto'
 
       if (window.innerHeight - buttonRect.bottom < menuHeight!) {
         top = buttonRect.top + window.scrollY - menuHeight! - 8
       }
-
-      if (window.innerWidth - buttonRect.right < menuWidth!) {
-        left = buttonRect.right + window.scrollX - menuWidth! - 8
-      }
-
-      if (top < 0) {
-        top = 8
-        bottom = 'auto'
-      }
-
-      if (left < 0) {
-        left = 8
-        right = 'auto'
-      }
-
-      setMenuPosition({ top, left, bottom, right })
+      setMenuPosition({ top, left })
     }
   }, [isMenuOpen])
 
@@ -267,11 +253,9 @@ const PostMenu = ({
               style={{
                 top: menuPosition.top,
                 left: menuPosition.left,
-                bottom: menuPosition.bottom,
-                right: menuPosition.right,
               }}
             >
-              <ul className="space-y-1 text-sm md:text-sm">
+              <div className="space-y-1 text-sm md:text-sm">
                 <DropDownMenuItem
                   label="View"
                   icon={MaximizeIcon}
@@ -282,7 +266,7 @@ const PostMenu = ({
                   <>
                     <DropDownMenuItem
                       label="Edit"
-                      icon={Edit2}
+                      icon={Pencil}
                       onClick={handleEditPost}
                    
                     />
@@ -291,11 +275,11 @@ const PostMenu = ({
                       icon={Trash2}
                       onClick={handleOpen}
                       // disabled={deletingPost}
-                   
+                      className='text-red-600'
                     />
                   </>
                 )}
-              </ul>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>,
