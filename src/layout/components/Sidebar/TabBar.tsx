@@ -56,8 +56,9 @@ const TabBar = ({ hideAppBar, show }: any) => {
       <div className="w-full">
         <ul className="flex justify-evenly">
           {sidebarRoutes.map(({ route, label, icon: Icon, modal }) => (
-            <li key={label} className="cursor-pointer">
+            <li  key={label} className="cursor-pointer">
               <NavLink
+                id={label}
                 to={route}
                 className={({ isActive }) =>
                   isActive ? 'text-foreground' : 'text-foreground/50'
@@ -67,10 +68,9 @@ const TabBar = ({ hideAppBar, show }: any) => {
                     e.preventDefault()
 
                     const rect = e.currentTarget.getBoundingClientRect()
-                    console.log(rect)
 
                     const top = rect.top - rect.height - 112.33
-                    const left = rect.left - 112.33
+                    const left = rect.left - 75
 
                     setPostion({
                       top,
@@ -83,7 +83,7 @@ const TabBar = ({ hideAppBar, show }: any) => {
                   }
                 }}
               >
-                <Icon />
+                <Icon className='pointer-events-none' />
               </NavLink>
             </li>
           ))}

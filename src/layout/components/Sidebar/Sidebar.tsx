@@ -1,19 +1,12 @@
 import SidePannel, { Menu } from '@/components/shared/SidePannel/SidePannel'
 import { cn } from '@/lib/utils'
 import Search from '@/modules/search/Search'
-import {
-  memo,
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from 'react'
+import { memo, useCallback, useEffect, useRef, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import CreateNewPost from '../NewPost/CreateNewPost'
 import MoreMenu from '@/components/shared/MoreMenu'
 import Notification from '@/modules/notifications/Notifications'
-import { AnimatePresence } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion'
 import Modal from '@/components/shared/modal/Modal'
 import {
   ModalStateNames,
@@ -27,6 +20,7 @@ import { LIKE_POST, NEW_MESSAGE, NEW_REQUEST } from '@/constants/Events'
 import useSocketEvents from '@/hooks/useSocketEvent'
 import { XIcon } from 'lucide-react'
 import { NewStory } from '@/modules/story/NewStory/NewStory'
+import { useClickOutside } from '@react-hookz/web'
 
 const Sidebar = () => {
   const [counts, setCounts] = useState({
@@ -64,14 +58,17 @@ const Sidebar = () => {
   const handleModalClose = (
     modalName: ModalStateNames,
     id: string,
-    target: EventTarget
+    target: HTMLElement
   ) => {
     if (!sidebarRef.current) return
 
-    const modalElement = sidebarRef.current.querySelector(
-      `#${id.toLowerCase()}`
-    )
-    if (modalElement && modalElement.contains(target as Node)) return
+    console.log(modalName, id, target)
+    if (target.id.toLocaleLowerCase() === id.toLocaleLowerCase()) return
+
+    // const modalElement = sidebarRef.current.querySelector(
+    //   `#${id.toLowerCase()}`
+    // )
+    // if (modalElement && modalElement.contains(target as Node)) return
 
     setModalState(modalName)
   }
@@ -152,11 +149,11 @@ const Sidebar = () => {
 
   const handleOpenNewPost = (e: React.MouseEvent<HTMLAnchorElement>) => {
     handleModalClick(e, 'newPost', true)
-    handleModalClose('openPostModal', 'create', e.target!)
+    handleModalClose('openPostModal', 'create', e.target as HTMLElement)
   }
   const handleOpenNewStory = (e: React.MouseEvent<HTMLAnchorElement>) => {
     handleModalClick(e, 'newStory', true)
-    handleModalClose('openPostModal', 'create', e.target!)
+    handleModalClose('openPostModal', 'create', e.target as HTMLElement)
   }
 
   return (
@@ -180,7 +177,7 @@ const Sidebar = () => {
           <SidePannel
             width={searchSheet ? sidebarRef?.current?.offsetWidth : -400}
             onClose={(e: any) =>
-              handleModalClose('searchSheet', 'search', e.target)
+              handleModalClose('searchSheet', 'search', e.target as HTMLElement)
             }
           >
             <Search />
@@ -191,7 +188,11 @@ const Sidebar = () => {
         {notiSheet && (
           <SidePannel
             onClose={(e: { target: EventTarget }) =>
-              handleModalClose('notiSheet', 'notifications', e.target)
+              handleModalClose(
+                'notiSheet',
+                'notifications',
+                e.target as HTMLElement
+              )
             }
             width={notiSheet ? sidebarRef?.current?.offsetWidth : -400}
           >
@@ -202,6 +203,13 @@ const Sidebar = () => {
       <AnimatePresence>
         {openPostModal && (
           <PostOptions
+            onClose={(e: { target: EventTarget }) =>
+              handleModalClose(
+                'openPostModal',
+                'create',
+                e.target as HTMLElement
+              )
+            }
             handleOpenNewPost={handleOpenNewPost}
             handleOpenNewStory={handleOpenNewStory}
           />
@@ -213,7 +221,7 @@ const Sidebar = () => {
             shouldCloseOutsideClick={false}
             showCloseButton={false}
             onClose={(e) => {
-              handleModalClose('newPost', 'newpost', e?.target)
+              handleModalClose('newPost', 'newpost', e?.target as HTMLElement)
             }}
           >
             <CreateNewPost />
@@ -226,7 +234,7 @@ const Sidebar = () => {
             left={sidebarRef?.current?.offsetWidth}
             onClose={(e: React.MouseEvent<HTMLButtonElement>) => {
               if (e.target) {
-                handleModalClose('moreOptions', 'more', e.target)
+                handleModalClose('moreOptions', 'more', e.target as HTMLElement)
               }
             }}
           >
@@ -239,7 +247,11 @@ const Sidebar = () => {
           <StoryModal
             onClose={(e: React.MouseEvent<HTMLButtonElement>) => {
               if (e.target) {
-                handleModalClose('newStory', 'New Story', e.target)
+                handleModalClose(
+                  'newStory',
+                  'New Story',
+                  e.target as HTMLElement
+                )
               }
             }}
           />
@@ -266,21 +278,24 @@ const StoryModal = ({
   )
 }
 
-const PostOptions = ({ handleOpenNewPost, handleOpenNewStory }: any) => {
+const PostOptions = ({
+  handleOpenNewPost,
+  handleOpenNewStory,
+  onClose,
+}: any) => {
   const { postMenuPosition } = useModalStateSlice()
+  const menuRef = useRef<HTMLUListElement>(null)
 
-  useLayoutEffect(() => {
-    const createButton = document.getElementById('create')
-
-    const rect = createButton?.getBoundingClientRect()
-    console.log(rect)
-    if (rect?.top) {
-    }
-  }, [])
+  useClickOutside(menuRef, onClose)
 
   return (
-    <ul
-      className="absolute z-[200] w-60 rounded-md border border-border bg-background"
+    <motion.ul
+      initial={{ opacity: 0, y: -10, height: 0 }}
+      animate={{ opacity: 1, y: 0, height: 'auto' }}
+      exit={{ opacity: 0, y: 10, height: 0 }}
+      transition={{ duration: 0.3, ease: 'easeInOut' }}
+      ref={menuRef}
+      className="absolute z-[200] md:w-60 w-44  rounded-md border overflow-hidden border-border bg-background origin-bottom"
       style={postMenuPosition}
     >
       <li className="p-2 hover:bg-secondary" onClick={handleOpenNewPost}>
@@ -292,6 +307,6 @@ const PostOptions = ({ handleOpenNewPost, handleOpenNewStory }: any) => {
       <li onClick={handleOpenNewStory} className="p-2 hover:bg-secondary">
         Story
       </li>
-    </ul>
+    </motion.ul>
   )
 }

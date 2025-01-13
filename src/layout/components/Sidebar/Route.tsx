@@ -28,8 +28,9 @@ const Route = ({
   isHidden
 }: Props) => {
   return (
-    <li key={route} className="relative last:mt-auto" id={label.toLowerCase()}>
+    <li key={route} className="relative last:mt-auto" >
       <NavLink
+        id={label.toLowerCase()}
         to={route}
         className={({ isActive }) =>
           cn(
@@ -43,15 +44,15 @@ const Route = ({
         }
         onClick={(e) => handleModalClick(e, modalName!, modal)}
       >
-        <div className="mx-2">
+        <div className="mx-2 pointer-events-none">
           <Icon />
         </div>
-        <div className={cn('hidden lg:inline-block', isHidden && 'lg:hidden transition-all duration-300')}>
+        <div className={cn('hidden lg:inline-block pointer-events-none', isHidden && 'lg:hidden transition-all duration-300')}>
           <span className="text-lg">{label}</span>
         </div>
       </NavLink>
       {badge && count !== 0 && (
-        <span className="absolute right-3 top-1/2 z-50 hidden -translate-y-1/2 sm:inline">
+        <span className="absolute pointer-events-none right-3 top-1/2 z-50 hidden -translate-y-1/2 sm:inline">
           {count}
         </span>
       )}
