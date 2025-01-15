@@ -31,14 +31,15 @@ export function Google({ className }: { className: string }) {
 
 export function GoogleButton() {
   return (
-    <div className="flex justify-center rounded-full ">
-      <a href={getGoogleUrl()} className="p-3 text-white">
+    <button className="rounded-lg border border-gray-300 p-2 flex items-center w-full justify-center hover:bg-gray-50 transition-colors">
+      <a href={getGoogleUrl()} target='_blank' className='flex items-center justify-center gap-3'>
         <Google
           className={
-            'rounded-full size-10 bg-white shadow-xl border text-xl hover:shadow-2xl hover:shadow-slate-950'
+            'rounded-full size-5 bg-white text-xl hover:shadow-2xl hover:shadow-slate-950'
           }
         />
+        <span>Continue with Google</span>
       </a>
-    </div>
+    </button>
   )
 }

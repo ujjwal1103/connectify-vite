@@ -36,6 +36,10 @@ const registerWithEmailAndPassword = async (data: any) => {
   return await makeRequest.post('/register', data)
 }
 
+const registerWithGoogle = async (data: any): Promise<LoginResponse> => {
+  return await makeRequest.post('/register?provider=GOOGLE', data)
+}
+
 interface GETCURRENTUSER {
   isSuccess: boolean
   user: IUser
@@ -411,4 +415,5 @@ export {
   updateUserAvatar,
   uploadPosts,
   getSelfReels,
+  registerWithGoogle,
 }

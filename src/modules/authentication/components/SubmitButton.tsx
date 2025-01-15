@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button'
-import { Loader2 } from 'lucide-react'
+import { ArrowRight, Loader2 } from 'lucide-react'
 
 type SubmitButtonProps = {
   disabled: boolean
@@ -16,15 +16,18 @@ export const SubmitButton = ({
     <Button
       type="submit"
       disabled={disabled}
-      className="relative w-full h-10 sm:!h-9 bg-black disabled:bg-black/90 disabled:opacity-90 text-lg text-zinc-50 hover:bg-black/80"
+      size={'lg'}
+      className="relative w-full group  flex items-center justify-center gap-2  transition-colors bg-purple-600 text-base text-zinc-50 hover:bg-purple-700 disabled:opacity-90"
     >
       {isSubmitting ? (
         <span className="flex justify-center">
-          <Loader2 className="animate-spin" />
+          <Loader2 className="animate-spin size-5" />
         </span>
       ) : (
         title
       )}
+
+      <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
     </Button>
   )
 }

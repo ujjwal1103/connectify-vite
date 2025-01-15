@@ -5,10 +5,10 @@ import { EyeIcon, EyeOffIcon } from 'lucide-react'
 
 const ShowPassword = ({ showPassword, setShowPassword }: any) => {
   if (showPassword) {
-    return <EyeOffIcon onClick={() => setShowPassword(false)} className="cursor-pointer"/>
+    return <EyeOffIcon size={16} onClick={() => setShowPassword(false)} className="cursor-pointer text-gray-400"/>
   }
 
-  return <EyeIcon onClick={() => setShowPassword(true)} className="cursor-pointer"/>
+  return <EyeIcon size={16} onClick={() => setShowPassword(true)} className="cursor-pointer text-gray-400"/>
 }
 
 type InputProps = {
@@ -48,7 +48,7 @@ const Input = (props: InputProps, ref: ForwardedRef<HTMLInputElement>) => {
           {...props}
           type={showPassword ? 'text' : type}
           className={cn(
-            'peer w-full rounded border-[1px] border-background-secondary bg-transparent p-2 px-10 placeholder:text-black/80 hover:outline-none',
+            'peer w-full rounded border border-gray-300 bg-transparent p-2 px-10 placeholder:text-gray-400 hover:outline-none',
             className
           )}
           placeholder={placeholder}

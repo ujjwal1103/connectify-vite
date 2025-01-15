@@ -3,7 +3,7 @@ import { GOOGLE_CLIENT_ID, GOOGLE_OAUTH_REDIRECT_URI } from "./constant";
 export const getGoogleUrl = () => {
   const rootUrl = "https://accounts.google.com/o/oauth2/v2/auth";
 
-  const options   = {
+  const options: Record<string, string>    = {
     redirect_uri: GOOGLE_OAUTH_REDIRECT_URI ,
     client_id: GOOGLE_CLIENT_ID ,
     response_type: "code",
@@ -14,7 +14,7 @@ export const getGoogleUrl = () => {
     ].join(" "),
   };
 
-  const qs = new URLSearchParams(options as any);
+  const qs = new URLSearchParams(options);
   
  
 
