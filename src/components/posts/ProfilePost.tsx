@@ -2,7 +2,7 @@ import { deleteThisPost } from '@/api'
 import { IPost, IUser } from '@/lib/types'
 import { usePostSlice } from '@/redux/services/postSlice'
 import { AnimatePresence, motion } from 'framer-motion'
-import { Edit, Edit2, Loader, MaximizeIcon, MoreHorizontal, Pencil, Trash2 } from 'lucide-react'
+import { Loader, MaximizeIcon, MoreHorizontal, Pencil, Trash2 } from 'lucide-react'
 import {
   Dispatch,
   SetStateAction,

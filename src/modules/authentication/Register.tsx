@@ -44,7 +44,7 @@ const Register = () => {
         <form
           noValidate
           onSubmit={handleSubmit(onSubmit)}
-          className="flex flex-col items-center justify-center gap-3 rounded-md bg-white p-5"
+          className="flex flex-col items-center w-96 justify-center gap-3 rounded-md bg-white p-5"
         >
           {/* <h1 className="text-bold flex items-center justify-center lg:hidden">
             <ConnectifyLogoText />
@@ -117,6 +117,12 @@ const Register = () => {
             isSubmitting={isSubmitting}
             disabled={!isValid || isSubmitting || isSubmitSuccessful}
           />
+
+          {errors.root && (
+            <div className="rounded bg-red-200 px-2 py-1 font-semibold text-[red] border border-[red]">
+              {errors.root.message}
+            </div>
+          )}
 
           <p className="">
             Already have an account

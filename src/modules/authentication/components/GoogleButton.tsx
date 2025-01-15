@@ -31,7 +31,7 @@ export function Google({ className }: { className: string }) {
 
 export function GoogleButton() {
   return (
-    <button className="rounded-lg border border-gray-300 p-2 flex items-center w-full justify-center hover:bg-gray-50 transition-colors">
+    <button type='button' className="rounded-lg border border-gray-300 p-2 flex items-center w-full justify-center hover:bg-gray-50 transition-colors">
       <a href={getGoogleUrl()} target='_blank' className='flex items-center justify-center gap-3'>
         <Google
           className={

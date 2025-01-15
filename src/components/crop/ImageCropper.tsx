@@ -21,7 +21,6 @@ import Avatar from '../shared/Avatar'
 import { getCurrentUser } from '@/lib/localStorage'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ChevronLeft, ChevronRight, MapPin, Smile } from 'lucide-react'
-import { faker } from '@faker-js/faker'
 import { usePostSlice } from '@/redux/services/postSlice'
 import { useFeedSlice } from '@/redux/services/feedSlice'
 import { useAuth } from '@/context/AuthContext'
@@ -289,7 +288,7 @@ const CaptionComponent = ({ croppedUrls }: CaptionComponentProps) => {
             {Array(20)
               .fill({})
               .map(() => {
-                const name = faker.location.street()
+                const name ='name'
                 return (
                   <div
                     onClick={() => handleSelectLocation(name)}
@@ -306,7 +305,7 @@ const CaptionComponent = ({ croppedUrls }: CaptionComponentProps) => {
             {Array(20)
               .fill({})
               .map(() => {
-                const name = faker.internet.userName()
+                const name ='name'
                 return (
                   <div
                     onClick={() => handleSelect(name)}
@@ -314,7 +313,7 @@ const CaptionComponent = ({ croppedUrls }: CaptionComponentProps) => {
                   >
                     <span>
                       <Avatar
-                        src={faker.image.urlLoremFlickr()}
+                        src={'image'}
                         className="size-7"
                       />
                     </span>

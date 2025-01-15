@@ -60,7 +60,7 @@ const Feeds = () => {
     <>
       <main
         ref={containerRef}
-        className="relative h-dvh pt-14 md:mt-0 w-screen overflow-y-scroll scrollbar-thin md:w-auto md:translate-y-0 md:bg-inherit md:p-4"
+        className="relative h-dvh bg-background pt-14 md:mt-0 md:p-4 w-screen overflow-y-scroll scrollbar-thin md:w-auto md:translate-y-0 md:bg-inherit"
         id="scrollableDiv"
       >
         <div className="flex h-full w-full gap-0 md:gap-10">
@@ -71,7 +71,7 @@ const Feeds = () => {
               hasMore={hasNextPage}
               loader={<LoadingFeed />}
               scrollableTarget={'scrollableDiv'}
-              className="w-auto md:w-144"
+              className="w-screen md:w-128"
             >
               {/* <StoryComponent /> */}
               {isLoading && <div>Loading</div>}

@@ -4,7 +4,6 @@ import Suggetion from './suggetion'
 import { Link } from 'react-router-dom'
 import useGetSuggestedUsers from '@/hooks/useGetSuggestedUsers'
 import { IUser } from '@/lib/types'
-import { faker } from '@faker-js/faker'
 
 const Suggetions = () => {
   const { suggetions, loading } = useGetSuggestedUsers() as any
@@ -13,7 +12,7 @@ const Suggetions = () => {
     <div className="hidden divide-y-[0.5px] divide-y-reverse divide-solid divide-secondary text-foreground md:block">
       {suggetions?.length > 0 && (
         <div className="flex items-center justify-between py-2 text-xl text-foreground">
-          <span>Suggested for you {faker.person.firstName()}</span>
+          <span>Suggested for you</span>
           <Link
             to="/explore"
             className="text-link text-sm text-blue-500 hover:underline hover:underline-offset-2"

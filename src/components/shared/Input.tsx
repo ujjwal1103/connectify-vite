@@ -48,7 +48,7 @@ const Input = (props: InputProps, ref: ForwardedRef<HTMLInputElement>) => {
           {...props}
           type={showPassword ? 'text' : type}
           className={cn(
-            'peer w-full rounded border border-gray-300 bg-transparent p-2 px-10 placeholder:text-gray-400 hover:outline-none',
+            'peer w-full rounded border border-gray-300 bg-transparent p-2 px-10 placeholder:text-gray-400 focus-visible:ring-purple-700 focus-visible:ring-2 ring-offset-2 outline-none',
             className
           )}
           placeholder={placeholder}

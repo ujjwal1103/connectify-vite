@@ -8,7 +8,7 @@ import ConnectifyLogoText from '@/components/icons/ConnectifyLogoText'
 import { useAuth } from '@/context/AuthContext'
 import { GoogleButton } from './components/GoogleButton'
 import { SubmitButton } from './components/SubmitButton'
-import { AtSign, Lock } from 'lucide-react'
+import { AtSign, Lock, UserPlus } from 'lucide-react'
 import { useCallback, useEffect, useState } from 'react'
 import { makeRequest } from '@/config/api.config'
 import { IUser } from '@/lib/types'
@@ -100,20 +100,23 @@ const Login = () => {
       <div className="absolute bottom-0 hidden h-[400px] w-full lg:block" />
       <Connectify />
 
-      <div className="flex h-screen w-screen flex-1 items-center justify-center border-violet-950 bg-appcolor font-semibold text-black backdrop-blur-sm sm:p-8 lg:rounded-tl-[200px]">
+      <div className="flex h-screen w-screen flex-1 items-center justify-center border-violet-950 bg-gradient-to-br from-appcolor to-purple-600  text-black backdrop-blur-sm sm:p-8">
         {!usernamePopup && !code && (
           <form
             onSubmit={handleSubmit(onSubmit)}
-            className="z-10 flex h-dvh w-screen flex-col items-center justify-center gap-5 overflow-hidden border bg-gray-50 p-5 shadow-md sm:mx-10 sm:h-auto sm:w-auto"
+            className="z-10 flex h-dvh w-screen flex-col items-center justify-center gap-5 overflow-hidden rounded-md border bg-gray-50 p-5 shadow-md sm:mx-10 sm:h-auto sm:w-auto"
           >
             <div className="z-10 flex flex-col items-center justify-center gap-5">
-              <div className="text-bold mb-3 flex items-center justify-center lg:hidden">
+              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-purple-100">
+                <UserPlus className="h-8 w-8 text-purple-600" />
+              </div>
+              <div className="mb-3 flex items-center justify-center lg:hidden">
                 <ConnectifyLogoText />
               </div>
-              <div className="4 flex flex-col gap-5 text-2xl font-bold md:text-5xl">
+              {/* <div className="4 flex flex-col gap-5 text-2xl font-bold md:text-5xl">
                 Welcome!
-              </div>
-              <div className="flex flex-col gap-5 text-xl">
+              </div> */}
+              <div className="flex flex-col gap-2 text-xl">
                 Sign In to Connectify
               </div>
 
@@ -121,7 +124,7 @@ const Login = () => {
                 autoFocus={true}
                 type="text"
                 placeholder="Enter you username"
-                prefix={<AtSign size={24} />}
+                prefix={<AtSign size={16} className="text-gray-400" />}
                 className="p-4 px-10 sm:py-2"
                 error={errors?.username}
                 {...register('username', {
@@ -145,7 +148,7 @@ const Login = () => {
                 type={'password'}
                 className="p-4 px-10 sm:py-2"
                 placeholder="Enter you password"
-                prefix={<Lock size={24} />}
+                prefix={<Lock size={16} className="text-gray-400" />}
                 error={errors?.password}
               />
 
@@ -161,7 +164,10 @@ const Login = () => {
 
               <p className="">
                 Dont have an account?
-                <Link to={'/new-account'} className="cursor-pointer px-2">
+                <Link
+                  to={'/new-account'}
+                  className="cursor-pointer px-2 text-blue-700"
+                >
                   Register
                 </Link>
               </p>
