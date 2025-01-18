@@ -105,112 +105,139 @@ const SendPost = ({ onClose, post }: SendPostProps) => {
     >
       <div className="flex w-full items-center justify-between border-b-[0.5px] border-border p-2 text-xl text-foreground">
         <div className="flex items-center gap-3">
-          <Button onClick={onClose} size={'icon'} className="md:hidden p-0 hover:bg-background">
+          <Button
+            onClick={onClose}
+            size={'icon'}
+            className="p-0 hover:bg-background md:hidden"
+          >
             <ChevronLeft />
           </Button>
           <h1 className="text-xl font-semibold">Share</h1>
         </div>
-        <Button variant={'ghost'} size="icon" onClick={onClose} className="hidden md:flex">
+        <Button
+          variant={'ghost'}
+          size="icon"
+          onClick={onClose}
+          className="hidden md:flex"
+        >
           <X />
         </Button>
       </div>
-      <hr className="border-secondary" />
-      <motion.div className="flex items-center p-2 px-3">
-        <span>To:</span>
+      <div className="">
+        <hr className="border-secondary" />
+        <motion.div className="flex items-center p-2 px-3">
+          <span>To:</span>
 
-        <motion.div className="ml-2 flex w-full flex-wrap gap-1 rounded bg-secondary p-2">
-          <AnimatePresence>
-            {selectedUser.map((user) => (
-              <AnimatePresence>
-                <motion.span
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.8 }}
-                  transition={{ duration: 0.2 }}
-                  className="flex items-center gap-2 rounded-sm bg-background p-1 px-2"
-                >
-                  {user.username}
-                  <span
-                    className="cursor-pointer"
-                    onClick={() =>
-                      setSelectedUser((prev) =>
-                        prev.filter(
-                          (selectedUser) =>
-                            selectedUser.username !== user.username
-                        )
-                      )
-                    }
+          <motion.div className="ml-2 flex max-h-20 w-full flex-wrap gap-1 overflow-auto rounded bg-secondary p-2">
+            <AnimatePresence>
+              {selectedUser.map((user) => (
+                <AnimatePresence>
+                  <motion.span
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.8 }}
+                    transition={{ duration: 0.2 }}
+                    className="flex items-center gap-2 rounded-sm bg-background p-1 px-2"
                   >
-                    <X size={12} />
-                  </span>
-                </motion.span>
-              </AnimatePresence>
-            ))}
-          </AnimatePresence>
+                    {user.username}
+                    <span
+                      className="cursor-pointer"
+                      onClick={() =>
+                        setSelectedUser((prev) =>
+                          prev.filter(
+                            (selectedUser) =>
+                              selectedUser.username !== user.username
+                          )
+                        )
+                      }
+                    >
+                      <X size={12} />
+                    </span>
+                  </motion.span>
+                </AnimatePresence>
+              ))}
+            </AnimatePresence>
 
-          <input
-            type="text"
-            className="bg-transparent pl-2 focus-visible:outline-none"
-            value={search}
-            onChange={handleChange}
-            onKeyDown={handleKeyDown}
-            placeholder="search"
-          />
+            <input
+              type="text"
+              className="bg-transparent pl-2 focus-visible:outline-none"
+              value={search}
+              onChange={handleChange}
+              onKeyDown={handleKeyDown}
+              placeholder="search"
+            />
+          </motion.div>
         </motion.div>
-      </motion.div>
 
-      <hr className="border-secondary" />
-      <div className="h-[calc(100dvh_-_150px)] overflow-y-scroll py-2 scrollbar-none md:h-[350px]">
-        <h1 className="px-3 pb-2">Suggested</h1>
-        <ul className="">
-          {users?.map((user) => {
-            const isSelected = selectedUser.some(
-              (u) => u.username === user.username
-            )
-            return (
-              <motion.li
-                key={user?._id}
-                initial={{ opacity: 0, y: '-20%' }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.2 }}
-                exit={{
-                  opacity: 0,
-                  y: '-20%',
-                  animationDirection: 'forward',
-                  transition: { duration: 0.3, delay: 0 },
-                }}
-                className="flex cursor-pointer items-center gap-3 px-3 py-2 hover:bg-secondary"
-                onClick={() => toggleUserSelection(user)}
-              >
-                <Avatar
-                  src={user.avatar?.url}
-                  className={'size-10 rounded-full'}
+        <hr className="border-secondary" />
+        <div className="h-[calc(100dvh_-_160px)] overflow-y-scroll py-2 scrollbar-none md:h-[350px]">
+          <h1 className="px-3 pb-2">Suggested</h1>
+          <ul className="">
+            {users?.map((user) => {
+              const isSelected = selectedUser.some(
+                (u) => u.username === user.username
+              )
+              return (
+                <People
+                  key={user._id}
+                  user={user}
+                  isSelected={isSelected}
+                  toggleUserSelection={toggleUserSelection}
                 />
-                <span>{user.username}</span>
-                <motion.span className="ml-auto flex">
-                  {isSelected ? (
-                    <CircleCheck className="rounded-full bg-green-600" />
-                  ) : (
-                    <Circle />
-                  )}
-                </motion.span>
-              </motion.li>
-            )
-          })}
-        </ul>
-      </div>
+              )
+            })}
+          </ul>
+        </div>
 
-      <div className="w-full bg-transparent px-2 pb-3">
-        <button
-          onClick={handleSendPost}
-          disabled={!selectedUser.length}
-          className="w-full rounded bg-blue-600 py-2 text-base disabled:opacity-55"
-        >
-          Send
-        </button>
+        <div className="fixed bottom-2 w-full bg-transparent px-2">
+          <Button
+            onClick={handleSendPost}
+            disabled={!selectedUser.length}
+            className="w-full"
+            variant={'follow'}
+            size={'lg'}
+          >
+            Send
+          </Button>
+        </div>
       </div>
     </motion.div>
   )
 }
 
 export default SendPost
+
+interface PeopleProps {
+  user: IUser
+  isSelected: boolean
+  toggleUserSelection: (user: IUser) => void
+}
+
+const People = ({ user, isSelected, toggleUserSelection }: PeopleProps) => {
+  return (
+    <motion.li
+      key={user?._id}
+      initial={{ opacity: 0, y: '-20%' }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.2 }}
+      exit={{
+        opacity: 0,
+        y: '-20%',
+        animationDirection: 'forward',
+        transition: { duration: 0.3, delay: 0 },
+      }}
+      className="flex cursor-pointer items-center gap-3 px-3 py-2 hover:bg-secondary"
+      onClick={() => toggleUserSelection(user)}
+    >
+      <Avatar src={user.avatar?.url} className={'size-10 rounded-full'} />
+      <span>{user.username}</span>
+      <motion.span className="ml-auto flex">
+        {isSelected ? (
+          <CircleCheck className="rounded-full bg-green-600" />
+        ) : (
+          <Circle />
+        )}
+      </motion.span>
+    </motion.li>
+  )
+}
