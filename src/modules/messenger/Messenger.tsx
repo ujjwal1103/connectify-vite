@@ -51,7 +51,7 @@ const Messenger = () => {
     <div className="flex flex-1">
         <ChatList />
       {chatId ? (
-        <Suspense fallback={<div>Loading messenger</div>}>
+        <Suspense fallback={<LoadingMessanger/>}>
           <Outlet />
         </Suspense>
       ) : (
@@ -63,3 +63,8 @@ const Messenger = () => {
   )
 }
 export default Messenger
+
+
+const LoadingMessanger = ()=> {
+  return <div className="relative flex h-dvh max-h-dvh min-h-dvh w-full min-w-80 flex-1 bg-chat-background md:flex-1">Loading messenger</div>
+}
