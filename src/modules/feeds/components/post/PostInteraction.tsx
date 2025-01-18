@@ -21,6 +21,7 @@ const PostInteraction = ({ post: { _id, user, like, caption } }: any) => {
             onClose={() => {
               setOpenLikes(false)
             }}
+            showCloseButton={false}
           >
             <Likes like={like} postId={_id} />
           </Modal>

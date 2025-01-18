@@ -1,7 +1,7 @@
 import { memo, useCallback, useState } from 'react'
 import { AnimatePresence } from 'framer-motion'
 
-import { CommentIcon } from '@/components/icons'
+// import { CommentIcon } from '@/components/icons'
 import { LikeButton } from '@/components/shared/LikeButton'
 import { IPost } from '@/lib/types'
 import { BookmarkButton } from '@/components/shared/BookmarkButton'
@@ -9,7 +9,7 @@ import { useFeedSlice } from '@/redux/services/feedSlice'
 import Modal from '@/components/shared/modal/Modal'
 import SendPost from './SendPost'
 import CommentPage from './CommentPage'
-import { Send } from 'lucide-react'
+import { MessageCircle, Send } from 'lucide-react'
 
 type PostActionsProps = {
   post: IPost
@@ -51,8 +51,9 @@ const PostActions = ({
           postUserId={post?.user?._id}
         />
         {showCommentButton && (
-          <CommentIcon
-            className="size-5 cursor-pointer hover:text-muted-foreground"
+          <MessageCircle
+            size={size}
+            className="cursor-pointer hover:text-muted-foreground"
             onClick={() => setShowComments(true)}
           />
         )}
@@ -77,7 +78,7 @@ const PostActions = ({
             showCloseButton={false}
             animate={false}
           >
-            <SendPost post={post}  onClose={() => setSendPost(false)}/>
+            <SendPost post={post} onClose={() => setSendPost(false)} />
           </Modal>
         )}
       </AnimatePresence>

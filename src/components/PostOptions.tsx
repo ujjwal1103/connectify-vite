@@ -46,13 +46,13 @@ const PostOptions = ({ onClose, post, handleDelete }: Props) => {
   useClickOutside(ref, onClose)
 
   return createPortal(
-    <div className="fixed inset-0 z-[999] flex h-screen w-screen justify-center">
+    <div className="fixed inset-0 z-[999] flex h-dvh w-screen justify-center">
       <motion.div
         onClick={onClose}
         initial={{ opacity: 0 }}
         exit={{ opacity: 0 }}
         animate={{ opacity: 0.8 }}
-        className="h-screen w-screen bg-black md:hidden"
+        className="h-dvh w-screen bg-black md:hidden"
       ></motion.div>
       <motion.div
         ref={ref}

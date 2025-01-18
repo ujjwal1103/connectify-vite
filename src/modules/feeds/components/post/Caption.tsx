@@ -45,7 +45,7 @@ const Caption = ({
   const [showMore, setShowMore] = useState(false)
   const shouldShowMoreButton = caption && caption.length > 100
   return (
-    <div className='p-2'>
+    <div>
       <div
         className={cn(
           'w-full overflow-hidden text-ellipsis break-words text-sm',

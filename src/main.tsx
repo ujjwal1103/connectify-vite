@@ -21,19 +21,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
           <AuthProvider>
             <App />
           </AuthProvider>
-          <Toaster
-            toastOptions={{
-              unstyled: true,
-              classNames: {
-                toast: 'bg-background p-3 rounded-md text-foreground',
-                title: 'text-red-400',
-                description: 'text-red-400',
-                actionButton: 'bg-zinc-400',
-                cancelButton: 'bg-orange-400',
-                closeButton: 'bg-lime-400',
-              },
-            }}
-          />
+          <Toaster/>
         </ThemeProvider>
       </QueryClientProvider>
     </Provider>

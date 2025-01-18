@@ -1,23 +1,24 @@
-import { useState } from 'react'
-import { Button } from '@/components/ui/button'
-import { AnimatePresence, motion } from 'framer-motion'
+// import { useState } from 'react'
+// import { Button } from '@/components/ui/button'
+// import { AnimatePresence, motion } from 'framer-motion'
 import { toast } from 'sonner'
+import ImageGallary from '../gallery/ImageGallary'
 
-const variants = {
-  initial: {
-    x: '100%', // Start off-screen to the right
-  },
-  animate: {
-    x: 0, // Slide into view
-    transition: { duration: 0.5, ease: 'easeInOut' },
-  },
-  exit: {
-    x: '100%', // Slide out to the left
-    transition: { duration: 0.5, ease: 'easeInOut' },
-  },
-}
+// const variants = {
+//   initial: {
+//     x: '100%', // Start off-screen to the right
+//   },
+//   animate: {
+//     x: 0, // Slide into view
+//     transition: { duration: 0.5, ease: 'easeInOut' },
+//   },
+//   exit: {
+//     x: '100%', // Slide out to the left
+//     transition: { duration: 0.5, ease: 'easeInOut' },
+//   },
+// }
 const Reels = () => {
-  const [show, setShow] = useState(false)
+  // const [show, setShow] = useState(false)
 
   const handleClick = () => {
     toast(<div>A custom toast with default styling</div>)
@@ -40,6 +41,7 @@ const Reels = () => {
           )}
         </AnimatePresence>
       </div> */}
+      <ImageGallary/>
 
       <button onClick={handleClick}>Click</button>
     </div>

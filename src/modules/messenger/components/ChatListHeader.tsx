@@ -9,10 +9,12 @@ import { useChatSlice } from '@/redux/services/chatSlice'
 import Modal from '@/components/shared/modal/Modal'
 import AddNewUser from './NewChat'
 import useModalStore from '@/zustand/newChatStore'
+import Tooltip from '@/components/shared/Tooltip'
+import { Button } from '@/components/ui/button'
 
 const ChatListHeader = () => {
   const [open, setOpen] = useState(false)
-  const {isModalOpen, closeModal, openModal } = useModalStore();
+  const { isModalOpen, closeModal, openModal } = useModalStore()
   const user = getCurrentUser()
   const { selectChats, setSelectChats } = useChatSlice()
   const menuRef = useRef<HTMLDivElement>(null)
@@ -44,28 +46,26 @@ const ChatListHeader = () => {
           </UsernameLink>
         </div>
         <div className="flex">
-          <div  className="tooltip tooltip-bottom" data-tip="New Chat">
-            <button
-              className="mr-2"
-              onClick={openModal}
-            >
+          <Tooltip text="New Chat">
+            <Button size={'icon'}
+                variant="ghost" className="" onClick={openModal}>
               <Edit />
-            </button>
-          </div>
+            </Button>
+          </Tooltip>
           <div className="relative inline-block">
-            <div
-              className="tooltip tooltip-bottom cursor-pointer"
-              data-tip="Menu"
-            >
-              <button
+            <Tooltip text="Menu">
+              <Button
+                size={'icon'}
+                variant="ghost"
                 ref={buttonRef}
                 onClick={() => {
                   setOpen(!open)
                 }}
               >
                 <EllipsisVertical />
-              </button>
-            </div>
+              </Button>
+            </Tooltip>
+
             <AnimatePresence>
               {open && (
                 <motion.div

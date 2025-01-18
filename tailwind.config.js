@@ -83,10 +83,6 @@ module.exports = {
           background: "hsl(var(--message-background))",
         },
       },
-      borderRadius: {
-        lg: "var(--radius)",
-        sm: "calc(var(--radius) - 4px)",
-      },
       keyframes: {
         "accordion-down": {
           from: { height: "0" },
@@ -132,6 +128,8 @@ module.exports = {
         80: "80",
         90: "90",
         100: "100",
+        200: "200",
+        1000: "1000"
       },
       opacity: {
         15: "0.15",

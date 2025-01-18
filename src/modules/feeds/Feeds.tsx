@@ -60,18 +60,18 @@ const Feeds = () => {
     <>
       <main
         ref={containerRef}
-        className="relative h-dvh bg-background pt-14 md:mt-0 md:p-4 w-screen overflow-y-scroll scrollbar-thin md:w-auto md:translate-y-0 md:bg-inherit"
+        className="relative h-dvh bg-secondary flex overflow-y-auto scrollbar-thin"
         id="scrollableDiv"
       >
-        <div className="flex h-full w-full gap-0 md:gap-10">
-          <section className="flex- flex flex-1 flex-col md:w-auto md:flex-[0.5]">
+        <div className="h-full w-full md:p-4 p-0 pt-14  m-auto flex-[0.7]">
+          <section className="flex flex-col">
             <InfiniteScroll
               dataLength={feeds?.length}
               next={handleLoadMore}
               hasMore={hasNextPage}
               loader={<LoadingFeed />}
               scrollableTarget={'scrollableDiv'}
-              className="w-screen md:w-128"
+              className="w-screen md:w-full max-w-lg m-auto"
             >
               {/* <StoryComponent /> */}
               {isLoading && <div>Loading</div>}
@@ -79,9 +79,8 @@ const Feeds = () => {
               {feeds?.map((feed: any) => <Post key={feed._id} post={feed} />)}
             </InfiniteScroll>
           </section>
-
-          <RightSideContainer />
         </div>
+        <RightSideContainer />
       </main>
       <Wrapper shouldRender={showScrollToTop}>
         <motion.div

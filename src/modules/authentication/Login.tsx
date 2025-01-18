@@ -4,7 +4,7 @@ import { Link, useSearchParams } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import Connectify from './components/Connectify'
 import { loginWithEmailAndPassword, registerWithGoogle } from '@/api'
-import ConnectifyLogoText from '@/components/icons/ConnectifyLogoText'
+// import ConnectifyLogoText from '@/components/icons/ConnectifyLogoText'
 import { useAuth } from '@/context/AuthContext'
 import { GoogleButton } from './components/GoogleButton'
 import { SubmitButton } from './components/SubmitButton'
@@ -110,9 +110,9 @@ const Login = () => {
               <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-purple-100">
                 <UserPlus className="h-8 w-8 text-purple-600" />
               </div>
-              <div className="mb-3 flex items-center justify-center lg:hidden">
+              {/* <div className="mb-3 flex items-center justify-center lg:hidden">
                 <ConnectifyLogoText />
-              </div>
+              </div> */}
               {/* <div className="4 flex flex-col gap-5 text-2xl font-bold md:text-5xl">
                 Welcome!
               </div> */}

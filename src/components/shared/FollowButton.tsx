@@ -102,7 +102,7 @@ const FollowButton = ({
 
   if (follow) {
     return (
-      <Button variant="following" onClick={handleUnfollow} size={size === 'follow' ? 'default': null}>
+      <Button variant="following" onClick={handleUnfollow} size={size}>
         Following
       </Button>
     )

@@ -1,18 +1,14 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import data from '@emoji-mart/data'
-import Picker from '@emoji-mart/react'
 import { makeRequest } from '@/config/api.config'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
+
 import MentionInput from '@/components/shared/MentionInput'
 import { cn } from '@/lib/utils'
-import { SmileIcon, X } from 'lucide-react'
-import { toast } from 'react-toastify'
+import { Send, X } from 'lucide-react'
 import { commentExpand } from '@/components/Events/CommentExpand'
 import { ReplyType } from '@/hooks/useComments'
+import EmojiPicker from '@/components/shared/modal/EmojiPicker'
+import { Button } from '@/components/ui/button'
+import { toast } from 'sonner'
 
 interface CommentInputProps {
   postId: string
@@ -61,7 +57,9 @@ const CommentInput = ({
           commentId: null,
           repliedTo: null,
         })
-        commentExpand.dispatchEvent(new CustomEvent('expand', { detail: reply.commentId }))
+        commentExpand.dispatchEvent(
+          new CustomEvent('expand', { detail: reply.commentId })
+        )
       }
     } catch (error) {
       console.log(error)
@@ -96,10 +94,13 @@ const CommentInput = ({
   )
 
   return (
-    <div className="relative z-10 flex flex-col items-center justify-between">
+    <div className="relative z-10 flex w-full flex-col items-center justify-between">
       {reply.commentId && (
-        <span className="absolute bottom-9 flex w-full justify-between bg-secondary px-2 py-1 text-sm">
-          <span>replied to {reply.repliedTo}</span>
+        <span className="absolute bottom-9 mb-2 flex w-full justify-between rounded-md bg-secondary px-2 py-1 text-sm">
+          <span>
+            <span className="text-foreground-secondary">Replying to</span>{' '}
+            <span className="text-blue-500">{reply.repliedTo}</span>
+          </span>
           <button
             onClick={() =>
               setReply({
@@ -115,7 +116,7 @@ const CommentInput = ({
       )}
       <div
         className={cn(
-          'flex w-full items-center justify-between gap-3 bg-secondary'
+          'flex w-full items-center justify-between gap-3 rounded-md bg-secondary'
         )}
       >
         <MentionInput
@@ -129,28 +130,20 @@ const CommentInput = ({
           mentionedUsers={mentionedUsers}
           setMentionedUsers={setMentionedUsers}
         />
-        {commentText && (
-          <button className="text-sm text-blue-400" onClick={sendComment}>
-            Post
-          </button>
-        )}
-        <DropdownMenu>
-          <DropdownMenuTrigger className="pr-2">
-            <SmileIcon />
-          </DropdownMenuTrigger>
-          <DropdownMenuContent
-            className="z-[1000] rounded-md border-none"
-            align="start"
-          >
-            <Picker
-              data={data}
-              onEmojiSelect={onEmojiClick}
-              searchPosition="none"
-              previewPosition="none"
-              navPosition="bottom"
-            />
-          </DropdownMenuContent>
-        </DropdownMenu>
+
+        <div className="flex items-center gap-2 px-2">
+          <EmojiPicker onEmojiClick={onEmojiClick} />
+            {commentText && (
+              <Button
+                variant="ghost"
+                size={'sm'}
+                className="size-6 text-sm text-blue-400 hover:bg-background"
+                onClick={sendComment}
+              >
+                <Send size={16} />
+              </Button>
+            )}
+        </div>
       </div>
     </div>
   )

@@ -23,11 +23,11 @@ const buttonVariants = cva(
         following: 'bg-gradient-to-l from-blue-900 to-violet-900 text-sky-100',
       },
       size: {
-        default: 'md:h-8 h-6 px-4 py-2',
+        default: 'md:h-8 h-6 px-6 py-2',
         sm: 'h-5 rounded  px-1 text-xs',
         lg: 'h-10 rounded-md px-8',
         icon: 'h-9 w-9',
-        follow: 'md:h-8 h-6 px-4 py-2 md:w-56'
+        follow: 'md:h-8 h-6 px-4 py-2'
       },
     },
     defaultVariants: {
