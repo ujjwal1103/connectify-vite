@@ -1,9 +1,10 @@
 import Avatar from '@/components/shared/Avatar'
+import { Button } from '@/components/ui/button'
 import { makeRequest } from '@/config/api.config'
 import { useDebounce } from '@/hooks/useDebounce'
 import { IPost, IUser } from '@/lib/types'
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, CircleCheck, Circle } from 'lucide-react'
+import { X, CircleCheck, Circle, ChevronLeft } from 'lucide-react'
 import { useState, useCallback, useEffect } from 'react'
 
 const variants = {
@@ -102,11 +103,16 @@ const SendPost = ({ onClose, post }: SendPostProps) => {
       exit="exit"
       className="relative h-dvh w-screen overflow-hidden bg-background text-foreground md:h-auto md:w-500"
     >
-      <div className="flex items-center justify-between p-3">
-        <h1>Share</h1>
-        <button onClick={onClose}>
-          <X size={24} />
-        </button>
+      <div className="flex w-full items-center justify-between border-b-[0.5px] border-border p-2 text-xl text-foreground">
+        <div className="flex items-center gap-3">
+          <Button onClick={onClose} size={'icon'} className="md:hidden p-0 hover:bg-background">
+            <ChevronLeft />
+          </Button>
+          <h1 className="text-xl font-semibold">Share</h1>
+        </div>
+        <Button variant={'ghost'} size="icon" onClick={onClose} className="hidden md:flex">
+          <X />
+        </Button>
       </div>
       <hr className="border-secondary" />
       <motion.div className="flex items-center p-2 px-3">
