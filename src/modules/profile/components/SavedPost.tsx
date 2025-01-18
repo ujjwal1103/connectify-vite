@@ -21,6 +21,7 @@ const SavedPost = () => {
   const fetchItems = useCallback(async () => {
     try {
       const res = (await fetchPosts(page)) as any
+      console.log(res)
       setSavedPosts(res)
     } catch (error) {}
   }, [page])
@@ -49,6 +50,8 @@ const SavedPost = () => {
       </div>
     )
   }
+
+  console.log({savedPost})
   return (
     <div className="h-full">
       <InfiniteScroll
@@ -67,7 +70,7 @@ const SavedPost = () => {
         scrollableTarget={'scrollableDiv'}
       >
         <div className="grid grid-cols-3 place-content-center gap-px">
-          {savedPost?.map(({ post }: any) => (
+          {savedPost?.map((post : any) => (
             <ProfilePost key={post?._id} post={post} index={0} />
           ))}
         </div>

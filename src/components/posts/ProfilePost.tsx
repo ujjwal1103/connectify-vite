@@ -36,6 +36,7 @@ export const ProfilePost = ({
   onClickPost,
   index,
 }: ProfilePostProps) => {
+  console.log({post})
   const [currentPost, setCurrentPost] = useState(post)
   const [editPost, setEditPost] = useState(false)
   const [deletingPost, setDeletingPost] = useState(false)
@@ -57,10 +58,10 @@ export const ProfilePost = ({
   const handleDeletePost = async () => {
     try {
       setDeletingPost(true)
-      await deleteThisPost(currentPost._id)
+      await deleteThisPost(currentPost?._id)
       toast.success('Post Deleted Successfully')
-      deletePost(currentPost._id)
-      deleteFeed(currentPost._id)
+      deletePost(currentPost?._id)
+      deleteFeed(currentPost?._id)
       const u = { ...user, posts: user!.posts - 1 }
       updateUser(u as IUser)
     } catch (error) {

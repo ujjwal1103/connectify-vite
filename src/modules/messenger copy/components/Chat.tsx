@@ -97,7 +97,7 @@ const Chat = ({ chat, isChatSelected, handleSelect }: ChatProps) => {
   const handleMessage = useCallback((data: any) => {
     if (data.chat) {
       setChatToFirst({
-        message: data.message,
+        message: data,
         shouldSetUnseenMessageCount: chat._id !== data.chat,
       })
     }

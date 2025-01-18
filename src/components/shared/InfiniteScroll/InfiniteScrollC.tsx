@@ -1,4 +1,5 @@
 import { cn } from '@/lib/utils'
+import useNewMessages from '@/zustand/useNewMessages'
 import React, {
   useEffect,
   useRef,
@@ -26,17 +27,8 @@ const InfiniteScrollC: React.FC<InfiniteScrollProps> = ({
 }) => {
   const scrollContainerRef = useRef<HTMLDivElement>(null)
   const prevScrollHeightRef = useRef(0)
-  // const [showScrollBar, setShowScrollBar] = useState(false)
-
-  // useEffect(() => {
-  //   if (scrollContainerRef.current) {
-  //     setShowScrollBar(
-  //       scrollContainerRef.current?.clientHeight ===
-  //         scrollContainerRef.current.scrollHeight
-  //     )
-  //   }
-  // }, [children])
-
+  const {scrollToBottom, setScrollToBottom} =useNewMessages()
+  
   const handleScroll = () => {
     const scrollContainer = scrollContainerRef.current
 
@@ -100,13 +92,27 @@ const InfiniteScrollC: React.FC<InfiniteScrollProps> = ({
     }
   }, [isAddingContent])
 
-  console.dir(scrollContainerRef.current)
+  useEffect(() => {
+    if (scrollToBottom) {
+      const scrollContainer = scrollContainerRef.current;
+      if (scrollContainer) {
+        const distanceFromBottom =
+          scrollContainer.scrollHeight - scrollContainer.scrollTop - scrollContainer.clientHeight;
+  
+        if (distanceFromBottom <= 300) {
+          scrollContainer.scrollTop = scrollContainer.scrollHeight;
+          setScrollToBottom(false);
+        }
+      }
+    }
+  }, [scrollToBottom]);
+  
 
   return (
     <div className="flex flex-1 flex-col justify-end overflow-hidden bg-zinc-900">
       <div
         ref={scrollContainerRef}
-        className={cn('flex flex-col overflow-y-scroll scrollbar-thin')}
+        className={cn('flex flex-col overflow-y-auto scrollbar-guttor scrollbar-thin')}
       >
         {children}
       </div>

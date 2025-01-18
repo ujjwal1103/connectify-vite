@@ -16,6 +16,8 @@ import { useChatSlice } from '@/redux/services/chatSlice'
 import useSendMessage from './useSendMessage'
 import { deleteMessagesByIds } from '@/api'
 import MessageReply from './MessageReply'
+import { useSocket } from '@/context/SocketContext'
+import { getCurrentUserId } from '@/lib/localStorage'
 
 function blobToFile(blob: Blob, filename: string): File {
   const file = new File([blob], filename, {
@@ -44,6 +46,11 @@ const MessageInput = () => {
   const [openDial, setOpenDial] = useState(false)
   const [emoji, setEmoji] = useState(false)
   const [isRecording, setIsRecording] = useState(false)
+  const [typing, setTyping] = useState(true)
+  
+  const typingTimeoutRef = useRef<ReturnType<typeof setTimeout>>()
+
+  const { socket } = useSocket()
 
   const speedDialButtonRef: RefObject<HTMLButtonElement> =
     useRef<HTMLButtonElement>(null)
@@ -61,6 +68,29 @@ const MessageInput = () => {
 
   const handleTextChange = (e: any) => {
     setMessageText(e.target.value)
+
+    const members = selectedChat?.members?.filter(member=>member._id !== getCurrentUserId()).map(u=>u._id)
+
+    if (socket && !typing) {
+      setTyping(true)
+      socket!.emit('TYPING', {
+        chatId: selectedChat?._id,
+        members: members,
+        isTyping: true,
+      })
+    }
+
+    if(typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current)
+
+
+    typingTimeoutRef.current = setTimeout(()=>{
+        setTyping(false)
+        socket!.emit('TYPING', {
+          chatId: selectedChat?._id,
+          members: members,
+          isTyping: false,
+        })
+    },2000)
   }
 
   const handleSend = async () => {
@@ -110,6 +140,7 @@ const MessageInput = () => {
     }
     setOpenDial(false)
   }
+
   const onCloseEmoji = (e: any) => {
     if (emojiButtonRef.current && emojiButtonRef.current.contains(e.target)) {
       return
@@ -178,7 +209,7 @@ const MessageInput = () => {
 
   if (isRecording) {
     return (
-      <div className="flex-[0.05] h-[53px] flex items-center justify-end p-2 bg-secondary">
+      <div className="flex h-[53px] flex-[0.05] items-center justify-end bg-secondary p-2">
         <AudioRecorder
           handleClose={() => setIsRecording(false)}
           handleSendRecording={(recording: any) => {
@@ -202,7 +233,7 @@ const MessageInput = () => {
             transition={{ duration: 0.3 }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            exit={{  opacity: 0  }}
+            exit={{ opacity: 0 }}
             className="flex items-center"
           >
             <div className="flex h-[53px] w-full items-center gap-3 px-4 py-2">
@@ -226,9 +257,9 @@ const MessageInput = () => {
             transition={{ duration: 0.3 }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            exit={{  opacity: 0  }}
+            exit={{ opacity: 0 }}
           >
-            <div className="p-2 flex flex-col gap-2">
+            <div className="flex flex-col gap-2 p-2">
               <MessageReply />
               <div className="flex items-center gap-3">
                 <Input

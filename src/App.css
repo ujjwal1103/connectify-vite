@@ -175,3 +175,8 @@ input:-webkit-autofill:focus {
   mask-image: url('./assets/svg/bubble-end.svg');
   inset-inline-start: 99.9%;
 }
+
+
+.scrollbar-guttor {
+  scrollbar-gutter: stable;
+}

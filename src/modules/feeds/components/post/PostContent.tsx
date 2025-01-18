@@ -37,7 +37,7 @@ const PostContent = ({ images }: PostContentProps) => {
         className="relative block w-full overflow-hidden"
         style={{ display: 'block' }}
       >
-        <div className="block h-full w-full" onDoubleClick={handleDoubleClick}>
+        <div className="block h-full w-full aspect-1" onDoubleClick={handleDoubleClick}>
           <ImageSlider images={images} />
           <AnimatePresence>
             {liked && (

@@ -53,9 +53,6 @@ const MessageImage = ({ src }: Props) => {
             layoutId={src}
             className="h-full w-full rounded-xl object-cover"
             alt={src}
-            onLoad={(e) => {
-              console.log(e)
-            }}
             src={src} // Use imageSrc, which will be base64 initially and then updated to network URL
             onClick={() => setPreviewImage(src)}
           />

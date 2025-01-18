@@ -34,7 +34,8 @@ const MessageWrap = ({
     removeMessage,
     isSelectMessages,
     setSelectedMessage,
-    selectedMessages
+    selectedMessages,
+    selectedChat
   } = useChatSlice()
 
   const isMessageSelected = selectedMessages.some(s=>s === message._id)
@@ -60,7 +61,6 @@ const MessageWrap = ({
 
   return (
     <motion.div
-      key={message._id || message.tempId}
       initial={{
         opacity: 0,
         y: 10,
@@ -82,7 +82,7 @@ const MessageWrap = ({
         message.isCurrentUserMessage && 'origin-right'
       )}
     >
-      {!message.isCurrentUserMessage && showProfile && (
+      {!message.isCurrentUserMessage && showProfile && selectedChat?.isGroup && (
         <div className="ml-3 flex gap-3">
           <UsernameLink username={sender?.username} className="flex gap-3">
             <div className="size-5">

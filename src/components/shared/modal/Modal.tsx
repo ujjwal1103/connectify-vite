@@ -71,7 +71,7 @@ const Modal = ({
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       className={cn(
-        'fixed left-0 top-0 z-[999] h-screen w-screen bg-black bg-opacity-50',
+        'fixed left-0 top-0 z-[999] h-dvh w-screen bg-black bg-opacity-50',
         overlayClasses
       )}
       data-modal="true"

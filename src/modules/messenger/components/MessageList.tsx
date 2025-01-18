@@ -8,13 +8,14 @@ import Message from './Message'
 import { getCurrentUserId, getCurrentUsername } from '@/lib/localStorage'
 import { IMessage } from '@/lib/types'
 import { createNotification, formatDate } from '@/lib/utils'
-import { toast } from 'react-toastify'
 import { useSocket } from '@/context/SocketContext'
 import { SEEN_MESSAGES } from '@/constants/Events'
 import useSocketEvents from '@/hooks/useSocketEvent'
 import ChatProfileCard from './ChatProfileCard'
 import DotLoading from '@/components/shared/Loading/DotLoading'
 import { AnimatePresence } from 'framer-motion'
+import { toast } from 'sonner'
+import useNewMessages from '@/zustand/useNewMessages'
 
 const MessageList = () => {
   const {
@@ -27,14 +28,17 @@ const MessageList = () => {
     setCurrentMessageReply,
     markAllMessagesAsSeen,
     isAddingContent,
+    removeMessage,
     setIsAddingContent,
   } = useChatSlice()
 
+  const {setScrollToBottom} = useNewMessages()
   const [loadingMore, setLoadingMore] = useState(false)
   const { chatId } = useParams()
   const [page, setPage] = useState(1)
   const [hasNext, setHasNext] = useState(true)
   const hasNextRef = useRef(hasNext)
+  const [isTyping, setIsTyping] = useState(false)
   const { socket } = useSocket()
   const navigate = useNavigate()
 
@@ -88,27 +92,42 @@ const MessageList = () => {
     }
   }
 
-  const event = `chat:${chatId}:message`
+  
+  const NEW_MESSAGE = `chat:${chatId}:message`
+  const TYPING = `TYPING:${chatId}`
+  const DELETE_MESSAGE = `delete:${chatId}:message`
 
-  const handleMessage = useCallback(
-    async (data: any) => {
-      createNotification()
-      if (data.chat === chatId) {
-        setIsAddingContent(true)
-        addMessageFromSocket(data.message)
-        if (socket) {
-          socket!.emit(SEEN_MESSAGES, {
-            to: data.from,
-            chat: chatId,
-            from: getCurrentUserId(),
-            message: data.message._id,
-            notification: `${getCurrentUsername()} seen your Messages`,
-          })
+  const handleNewMessage = async (message: IMessage) => {
+      try {
+        createNotification()
+        if (message.chat === chatId) {
+          addMessageFromSocket(message)
+          setScrollToBottom(true)
+          toast(
+            <div>
+              <span>New Message </span>
+              <span>{message?.text}</span>
+            </div>
+            ,{
+              position:'top-right'
+            }
+          )
+          // const audio = new Audio('/src/assets/notification.wav') // Replace with your audio file path
+          // audio.play().catch((err) => console.error('Audio playback error:', err))
+          if (socket) {
+            socket!.emit(SEEN_MESSAGES, {
+              to: message.from,
+              chat: chatId,
+              from: getCurrentUserId(),
+              message: message._id,
+              notification: `${getCurrentUsername()} seen your Messages`,
+            })
+          }
         }
+      } catch (error) {
+        console.log(error)
       }
-    },
-    [chatId, socket]
-  )
+    }
 
   const handleSeenMessage = useCallback(
     async (data: any) => {
@@ -119,9 +138,20 @@ const MessageList = () => {
     [chatId]
   )
 
+  const handleTyping = (data: {isTyping: boolean})=>{
+    setIsTyping(data.isTyping)
+  }
+  const handleDeleteMessage = (message:IMessage)=>{
+    if(message.chat === chatId){
+      removeMessage(message._id)
+    }
+  }
+
   const eventHandlers = {
-    [event]: handleMessage,
+    [NEW_MESSAGE]: handleNewMessage,
     [SEEN_MESSAGES]: handleSeenMessage,
+    [TYPING]: handleTyping,
+    [DELETE_MESSAGE]: handleDeleteMessage,
   }
 
   useSocketEvents(socket, eventHandlers)
@@ -155,13 +185,11 @@ const MessageList = () => {
       isAddingContent={isAddingContent}
       setIsAddingContent={setIsAddingContent}
     >
-      {showProfileCard && (
-        <ChatProfileCard />
-      )}
-      {loadingMore && <LoadMoreIndicator />}
-      <AnimatePresence>
+      {showProfileCard && <ChatProfileCard key='chatProfile' />}
+      {loadingMore && <LoadMoreIndicator key={'upLoader'}/>}
+      <AnimatePresence key={'animatePresence'}>
         {messages?.map((message: IMessage, index) => (
-          <>
+          <div  key={message.tempId || message._id }>
             {shouldDisplayDateSeparator(index) && (
               <div className="mb-2 text-center text-sm text-gray-500">
                 <span className="rounded-md bg-zinc-900 px-2">
@@ -171,7 +199,6 @@ const MessageList = () => {
             )}
             <Message
               seen={false}
-              key={message._id || message.tempId}
               currentUserMessage={message.isCurrentUserMessage!}
               message={message}
               isMessageSelected={selectedMessages?.some(
@@ -183,9 +210,12 @@ const MessageList = () => {
                 messages[index - 1]?.from === message.from
               }
             />
-          </>
+          </div>
         ))}
       </AnimatePresence>
+      {
+       isTyping && <div className='absolute bottom-12 w-full z-100 bg-black/60'><LoadMoreIndicator/></div>
+      }
     </InfiniteScrollC>
   )
 }

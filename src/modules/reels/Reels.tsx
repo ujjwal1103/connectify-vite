@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { AnimatePresence, motion } from 'framer-motion'
+import { toast } from 'sonner'
 
 const variants = {
   initial: {
@@ -17,9 +18,13 @@ const variants = {
 }
 const Reels = () => {
   const [show, setShow] = useState(false)
+
+  const handleClick = () => {
+    toast(<div>A custom toast with default styling</div>)
+  }
   return (
     <div className="flex h-dvh w-full items-center justify-center">
-      <div className="flex h-full w-full items-center justify-center bg-green-950">
+      {/* <div className="flex h-full w-full items-center justify-center bg-green-950">
         <Button onClick={() => setShow(true)}>Click</Button>
         <AnimatePresence>
           {show && (
@@ -34,7 +39,9 @@ const Reels = () => {
             </motion.div>
           )}
         </AnimatePresence>
-      </div>
+      </div> */}
+
+      <button onClick={handleClick}>Click</button>
     </div>
   )
 }

@@ -18,7 +18,6 @@ const messageMapping: { [key: string]: React.ComponentType<any> } = {
 }
 
 const RenderMessage = (props: any) => {
-  console.log({ ins: props.message })
   const Component = messageMapping[props.message.messageType]
   return Component ? <Component {...props} /> : null
 }
@@ -50,11 +49,8 @@ const Message = ({ message, isPreviousMessageIsUrs }: MessageProps) => {
     )
   }
 
-  // console.log({isMessageSelected, text: message.text})
-
   return (
     <MessageWrap
-      key={message.text}
       sender={message.sender}
       messageId={message._id}
       showProfile={!(isPreviousMessageIsUrs || message.isCurrentUserMessage)}

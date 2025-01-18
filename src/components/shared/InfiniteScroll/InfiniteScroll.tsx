@@ -139,7 +139,6 @@ export const InfiniteScroll = (
       return;
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const parentElement = element.parentElement!;
 
     const offset =
@@ -180,7 +179,6 @@ export const InfiniteScroll = (
       ],
       "InfiniteScroll"
     );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useLayoutEffect(() => {

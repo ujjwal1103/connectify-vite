@@ -8,13 +8,14 @@ import { useDebounce } from '@/hooks/useDebounce'
 import { getConversations } from '@/api'
 import { cn } from '@/lib/utils'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
-import { NEW_CHAT } from '@/constants/Events'
+import { NEW_CHAT, REFETCH_CHATS } from '@/constants/Events'
 import useSocketEvents from '@/hooks/useSocketEvent'
 import { useSocket } from '@/context/SocketContext'
-import { IChat } from '@/lib/types'
+import { IChat, IMessage } from '@/lib/types'
 import { Button } from '@/components/ui/button'
 import useModalStore from '@/zustand/newChatStore'
 import Chat from './Chat'
+import { toast } from 'sonner'
 
 const ChatList = () => {
   const [searchTerm, setSearchTerm] = useState('')
@@ -39,7 +40,7 @@ const ChatList = () => {
   } = useChat()
   const { setMessagePage, setMessages } = useMessage()
 
-  const { isLoading, isSuccess } = useGetQuery({
+  const { isLoading, isSuccess, refech } = useGetQuery({
     fn: () => {
       if (debouceSearch) {
         setIsSearching(true)
@@ -62,8 +63,23 @@ const ChatList = () => {
     }
   }, [])
 
+  const handleReftch = useCallback((message: IMessage) => {
+    if(message.chat === chatId) return;
+    toast(
+      <div>
+        <span>New Message </span>
+        <span>{message.text}</span>
+      </div>,
+      {
+        position: 'top-right'
+      }
+    )
+    refech()
+  }, [])
+
   const eventHandlers = {
     [NEW_CHAT]: handleMessage,
+    [REFETCH_CHATS]: handleReftch
   }
 
   useSocketEvents(socket, eventHandlers)
