@@ -100,7 +100,7 @@ const SendPost = ({ onClose, post }: SendPostProps) => {
       initial="initial"
       animate="animate"
       exit="exit"
-      className="relative h-screen w-screen overflow-hidden bg-background text-foreground md:h-auto md:w-500"
+      className="relative h-dvh w-screen overflow-hidden bg-background text-foreground md:h-auto md:w-500"
     >
       <div className="flex items-center justify-between p-3">
         <h1>Share</h1>
