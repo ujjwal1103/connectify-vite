@@ -2,7 +2,7 @@ import Avatar from '@/components/shared/Avatar'
 import UsernameLink from '@/components/shared/UsernameLink'
 import { motion, AnimatePresence } from 'framer-motion'
 import { getCurrentUser } from '@/lib/localStorage'
-import { Edit, EllipsisVertical } from 'lucide-react'
+import { ChevronLeft, Edit, EllipsisVertical } from 'lucide-react'
 import { useRef, useState } from 'react'
 import { useClickOutside } from '@react-hookz/web'
 import { useChatSlice } from '@/redux/services/chatSlice'
@@ -11,6 +11,7 @@ import AddNewUser from './NewChat'
 import useModalStore from '@/zustand/newChatStore'
 import Tooltip from '@/components/shared/Tooltip'
 import { Button } from '@/components/ui/button'
+import { useNavigate } from 'react-router-dom'
 
 const ChatListHeader = () => {
   const [open, setOpen] = useState(false)
@@ -19,6 +20,7 @@ const ChatListHeader = () => {
   const { selectChats, setSelectChats } = useChatSlice()
   const menuRef = useRef<HTMLDivElement>(null)
   const buttonRef = useRef<HTMLButtonElement>(null)
+  const navigate = useNavigate()
 
   useClickOutside(menuRef, (e: Event) => {
     if (buttonRef.current && buttonRef.current.contains(e.target as Node)) {
@@ -30,6 +32,9 @@ const ChatListHeader = () => {
   return (
     <div className="flex flex-[0.1] items-center">
       <div className="flex w-full items-center justify-between gap-2 p-2 md:gap-4">
+        <Button size='icon' className='md:hidden' onClick={()=>navigate(-1)}>
+          <ChevronLeft/>
+        </Button>
         <Avatar
           src={user?.avatar?.url}
           className="inline-block size-9 rounded-full object-cover duration-500 hover:scale-90 lg:size-12"

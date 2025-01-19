@@ -11,7 +11,7 @@ const Suggetions = () => {
   return (
     <div className="hidden w-full rounded-md p-2 bg-background-dark shadow-md shadow-black text-foreground md:block"
     style={{
-      boxShadow: 'box-shadow: 2px 0px 91px -12px rgba(255,255,255,0.75);'
+      boxShadow: '2px 0px 91px -12px rgba(255,255,255,0.75);'
     }}
     >
       {suggetions?.length > 0 && (

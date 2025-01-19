@@ -24,7 +24,7 @@ const Self = () => {
   return (
     <div className="rounded-md bg-background-dark shadow-md p-2 w-full"
     style={{
-      boxShadow: 'box-shadow: 2px 0px 91px -12px black;'
+      boxShadow: '2px 0px 91px -12px black;'
     }}
     >
       <div className="flex items-center justify-between space-x-3 duration-500 rounded-xl ">
