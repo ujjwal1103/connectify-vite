@@ -1,11 +1,10 @@
 import Avatar from '@/components/shared/Avatar'
 import { TabControl } from '@/components/shared/TabControl'
 import { Button } from '@/components/ui/button'
-import { Bookmark, Grid, VideoIcon } from 'lucide-react'
+import { Grid, VideoIcon } from 'lucide-react'
 import { IoIosSettings } from 'react-icons/io'
 import { Link, useSearchParams } from 'react-router-dom'
 import Posts from './components/Posts'
-import SavedPost from './components/SavedPost'
 import Counts from './components/Counts'
 import PageLoading from '@/components/shared/Loading/PageLoading'
 import PageError from '@/components/shared/Error/PageError'
@@ -23,11 +22,11 @@ const tabs = [
     name: 'reels',
     id: 'reels',
   },
-  {
-    icon: <Bookmark />,
-    name: 'saved',
-    id: 'saved',
-  },
+  // {
+  //   icon: <Bookmark />,
+  //   name: 'saved',
+  //   id: 'saved',
+  // },
 ]
 
 const SelfProfile = () => {
@@ -45,10 +44,10 @@ const SelfProfile = () => {
 
   return (
     <div
-      className="relative mb-8 flex h-dvh min-h-dvh w-screen flex-1 overflow-x-hidden overflow-y-scroll pt-16 scrollbar-thin scrollbar-none md:mb-0 md:mt-0 md:w-full md:flex-1 md:pt-0"
+      className="relative mb-8 flex h-dvh min-h-dvh flex-1 overflow-x-hidden overflow-y-scroll pt-16 sm:pt-0 scrollbar-thin scrollbar-none md:mb-0 md:mt-0 md:w-full md:flex-1"
       id="scrollableDiv"
     >
-      <div className="w-screen flex-1 text-sm md:w-full md:text-sm">
+      <div className="flex-1 text-sm md:w-full md:text-sm">
         <div className="flex flex-col justify-center gap-3 px-2 py-3 md:mx-auto md:justify-evenly md:px-10 md:py-5 lg:w-4/5">
           <div className="flex gap-5">
             <div className="flex size-24 flex-col items-center justify-center rounded-full border-zinc-800 p-1 md:size-40 md:flex-row md:border-2">
@@ -138,7 +137,7 @@ const SelfProfile = () => {
         />
         {tab === 'posts' && <Posts />}
         {tab === 'reels' && <Reels />}
-        {tab === 'saved' && <SavedPost />}
+        {/* {tab === 'saved' && <SavedPost />} */}
       </div>
     </div>
   )

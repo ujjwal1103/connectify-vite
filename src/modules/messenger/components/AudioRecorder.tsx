@@ -1,46 +1,54 @@
-import { useEffect } from "react";
-import useAudioRecorder from "@/hooks/useAudioRecorder";
+import { useEffect } from 'react'
+import useAudioRecorder from '@/hooks/useAudioRecorder'
 
-import { PiPauseCircle, PiPlay } from "react-icons/pi";
-import { Send, Trash2 } from "lucide-react";
+import { PiPauseCircle, PiPlay } from 'react-icons/pi'
+import { Send, XIcon } from 'lucide-react'
 
-
-const AudioRecorder = ({ handleClose, handleSendRecording }:any)=> {
+const AudioRecorder = ({ handleClose, handleSendRecording }: any) => {
   const {
-    recording,
     paused,
     waveSurferRef,
     progress,
     handlePause,
     handleRecord,
-  } = useAudioRecorder({handleSendRecording, handleClose});
+    recordPluginRef,
+  } = useAudioRecorder()
 
   useEffect(() => {
-    handleRecord();
-  }, []);
+    handleRecord(false)
+  }, [])
 
   const handleSend = () => {
-    recording && handleRecord()
-  };
+    recordPluginRef.current.stopRecording()
+    recordPluginRef.current?.on(
+      'record-end',
+      (blob: Blob) => {
+        handleSendRecording(blob)
+      },
+      { once: true }
+    )
+  }
 
   return (
-    <div className="p-2 px-4  relative flex gap-3 items-center justify-end">
+    <div className="relative flex w-full items-center gap-3 p-2">
       <button onClick={handleClose}>
-        <Trash2 size={24} />
+        <XIcon size={24} />
       </button>
 
-      <button onClick={handlePause}>
-        {paused ? <PiPlay size={24} /> : <PiPauseCircle size={34} />}
-      </button>
+      <div className="ml-auto flex items-center gap-3">
+        <button onClick={handlePause}>
+          {paused ? <PiPlay size={24} /> : <PiPauseCircle size={34} />}
+        </button>
 
-      <div id="mic" ref={waveSurferRef} className="w-[140px]"/>
+        <div id="mic" ref={waveSurferRef} className="w-[140px]" />
 
-      <div>
-        <div id="progress">{progress}</div>
+        <div>
+          <div id="progress">{progress}</div>
+        </div>
+        <button onClick={handleSend}>{<Send size={24} />}</button>
       </div>
-      <button onClick={handleSend}>{<Send size={24} />}</button>
     </div>
-  );
+  )
 }
 
-export default AudioRecorder;
+export default AudioRecorder

@@ -75,7 +75,7 @@ export const ProfilePost = ({
 
   return (
     <motion.div className="group relative flex aspect-1 items-center bg-black">
-      <div className="w-full">
+      <div className="w-full aspect-1">
         <ImageSlider images={currentPost?.images} aspect={true} />
       </div>
 

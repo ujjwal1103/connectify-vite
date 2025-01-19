@@ -13,19 +13,19 @@ export const useWaveProgress = (audioUrl: string) => {
       const ws = WaveSurfer.create({
         container: containerRef.current,
         height: 50,
-        // width: 00,
-        waveColor: "grey",
+        waveColor: "#b8b8b8",
         progressColor: "white",
         fillParent: true,
-        cursorWidth: 14,
+        cursorWidth:10,
+        cursorColor:'yellow',
+        minPxPerSec:10,
+        barRadius: 5,
         url: audioUrl,
-        cursorColor: "blue",
-        // minPxPerSec:300,
         autoScroll: true,
-        barWidth: 2,
-
+        barWidth: 4,
         dragToSeek: true,
         hideScrollbar: true,
+        width: 150
       });
 
       setWaveSurfer(ws);

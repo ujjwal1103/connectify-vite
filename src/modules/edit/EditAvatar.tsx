@@ -9,7 +9,7 @@ import { readFileAsDataURL } from '@/lib/utils'
 import { AnimatePresence } from 'framer-motion'
 import { Loader } from 'lucide-react'
 import { useState } from 'react'
-import { toast } from 'react-toastify'
+import { toast } from 'sonner'
 
 const EditAvatar = () => {
   const { user, updateUser } = useAuth()

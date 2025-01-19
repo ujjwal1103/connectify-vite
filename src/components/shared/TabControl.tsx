@@ -31,7 +31,7 @@ export const TabControl = ({
             key={tab.id}
             onClick={() => setSelectedTab(tab.id)}
             className={cn(
-              'relative flex h-[40px] w-1/2 flex-1 disabled:pointer-events-none disabled:opacity-45 items-center justify-center gap-2 bg-secondary px-3 py-1.5 text-sm font-medium uppercase text-foreground transition hover:text-white/60 focus-visible:outline-2'
+              'relative flex h-[40px] w-1/2 flex-1 disabled:pointer-events-none disabled:opacity-45 items-center justify-center gap-2 bg-background 3 py-1.5 text-sm font-medium uppercase text-foreground transition hover:text-white/60 focus-visible:outline-2'
             )}
             style={{
               WebkitTapHighlightColor: 'transparent',

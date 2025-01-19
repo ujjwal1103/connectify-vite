@@ -8,7 +8,6 @@ const AudioMessage = ({
   currentUserMessage,
   message,
   allSeen,
-  showNotch,
   isLoading = false,
 }: any) => {
   const [duration, setDuration] = useState<number>(0)
@@ -16,27 +15,20 @@ const AudioMessage = ({
 
   return (
     <div
-    className={cn(
-      'relative z-10  flex w-fit max-w-md flex-col rounded-xl bg-chat-bubble-user p-2 text-foreground  transition-all duration-700',
-      {
-        'bg-chat-bubble-self text-white ': currentUserMessage,
-        "chat-bubble":showNotch
-      },
-  
-    )}
+      className={cn(
+        'relative z-10 flex flex-col rounded-xl bg-chat-bubble-user p-2 text-foreground transition-all duration-700',
+        {
+          'text-white': currentUserMessage,
+        }
+      )}
     >
-      <div className="h-24 overflow-hidden break-words">
-        <AudioPlayer
-          src={message.attachments[0]}
-          getDurationAndCurrentTime={(
-            duration: number,
-            currentTime: number
-          ) => {
-            setDuration(duration)
-            setCurrentTime(currentTime)
-          }}
-        />
-      </div>
+      <AudioPlayer
+        src={message.attachments[0]}
+        getDurationAndCurrentTime={(duration: number, currentTime: number) => {
+          setDuration(duration)
+          setCurrentTime(currentTime)
+        }}
+      />
 
       <MetaData
         createdAt={message.createdAt}
@@ -44,7 +36,7 @@ const AudioMessage = ({
         isLoading={isLoading}
         allSeen={allSeen}
         seen={message.seen}
-        className="absolute bottom-3 right-3 "
+        className="absolute bottom-3 right-3"
         duration={duration}
         currentTime={currentTime}
         showTimeStamp={true}

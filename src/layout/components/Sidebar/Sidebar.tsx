@@ -162,7 +162,7 @@ const Sidebar = () => {
         ref={sidebarRef}
         id="sidebar"
         className={cn(
-          'z-[120] hidden h-dvh w-64 flex-col border-r-[0.2px] border-zinc-800 bg-background p-2 font-semibold text-foreground sm:flex',
+          'z-[120] hidden h-dvh w-auto flex-col border-r-[0.2px] border-zinc-800 bg-background p-2 font-semibold text-foreground sm:flex',
           isInboxOpen && 'hidden w-auto transition-all duration-300 sm:flex'
         )}
       >

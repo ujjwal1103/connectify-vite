@@ -1,5 +1,5 @@
 import { useWaveProgress } from "@/hooks/useWaveProgress"
-import { Headphones, Pause, Play } from "lucide-react"
+import { Headphones, PauseCircle, PlayCircle } from "lucide-react"
 import { memo, useEffect } from "react"
 
 const AudioPlayer = memo(({ src, getDurationAndCurrentTime }: any) => {
@@ -22,10 +22,10 @@ const AudioPlayer = memo(({ src, getDurationAndCurrentTime }: any) => {
       <div className="w-44 p-2 md:w-64">
         <div className="flex items-center gap-4">
           <button onClick={onPlayPause} className="rounded font-bold text-white">
-            {isPlaying ? <Pause /> : <Play />}
+            {isPlaying ? <PauseCircle /> : <PlayCircle />}
           </button>
-          <div className="relative flex w-96 flex-col">
-            <div ref={containerRef} id="waveform" />
+          <div className="relative flex w-96 overflow-hidden max-w-96 flex-col">
+            <div ref={containerRef} id="waveform" className="w-96" />
           </div>
   
           <div className="rounded-full bg-yellow-500 p-2">

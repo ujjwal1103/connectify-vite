@@ -43,7 +43,7 @@ const Edit = () => {
         </h1>
       </div>
       <div className="sticky top-0 w-full">
-        <div className="mx-auto w-screen rounded-sm md:w-1/2 md:pt-3">
+        <div className="mx-auto rounded-sm md:w-1/2 md:pt-3">
           <div className="overflow-clip md:rounded-md">
             <TabControl
               selectedTab={tab}

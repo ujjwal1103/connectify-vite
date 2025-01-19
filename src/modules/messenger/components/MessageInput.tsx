@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion'
-import { RefObject, useRef, useState } from 'react'
+import { RefObject, useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
 
 import { PlusIcon, Send, Smile, Trash2 } from 'lucide-react'
@@ -7,7 +7,6 @@ import { BiMicrophone } from 'react-icons/bi'
 import { IoClose } from 'react-icons/io5'
 
 import MessageAttachmentInput from './MessageAttachmentInput'
-import Input from '@/components/shared/Input'
 import AudioRecorder from './AudioRecorder'
 import EmojiInput from './EmojiInput'
 
@@ -40,14 +39,30 @@ export const Loader = () => {
   )
 }
 
+type TypeProps = 'Input' | 'Recording' | 'Menu'
+
+const variants = {
+  show: {
+    opacity: 1,
+  },
+  hide: {
+    opacity: 0,
+  },
+}
+
 const MessageInput = () => {
   const [messageText, setMessageText] = useState('')
   const { chatId } = useParams<{ chatId: string }>()
   const [openDial, setOpenDial] = useState(false)
   const [emoji, setEmoji] = useState(false)
-  const [isRecording, setIsRecording] = useState(false)
   const [typing, setTyping] = useState(true)
-  
+
+  const [type, setType] = useState<TypeProps>('Input')
+
+  const handleClick = (type: TypeProps) => {
+    setType(type)
+  }
+
   const typingTimeoutRef = useRef<ReturnType<typeof setTimeout>>()
 
   const { socket } = useSocket()
@@ -66,10 +81,18 @@ const MessageInput = () => {
     currentMessageReply,
   } = useChatSlice()
 
+  useEffect(()=>{
+    if(isSelectMessages){
+      handleClick('Menu')
+    }
+  },[isSelectMessages])
+
   const handleTextChange = (e: any) => {
     setMessageText(e.target.value)
 
-    const members = selectedChat?.members?.filter(member=>member._id !== getCurrentUserId()).map(u=>u._id)
+    const members = selectedChat?.members
+      ?.filter((member) => member._id !== getCurrentUserId())
+      .map((u) => u._id)
 
     if (socket && !typing) {
       setTyping(true)
@@ -80,17 +103,16 @@ const MessageInput = () => {
       })
     }
 
-    if(typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current)
+    if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current)
 
-
-    typingTimeoutRef.current = setTimeout(()=>{
-        setTyping(false)
-        socket!.emit('TYPING', {
-          chatId: selectedChat?._id,
-          members: members,
-          isTyping: false,
-        })
-    },2000)
+    typingTimeoutRef.current = setTimeout(() => {
+      setTyping(false)
+      socket!.emit('TYPING', {
+        chatId: selectedChat?._id,
+        members: members,
+        isTyping: false,
+      })
+    }, 2000)
   }
 
   const handleSend = async () => {
@@ -150,6 +172,7 @@ const MessageInput = () => {
 
   const handleClose = () => {
     setIsSelectMessages(false)
+    handleClick('Input')
   }
 
   const handleDeleteMessages = async () => {
@@ -164,76 +187,21 @@ const MessageInput = () => {
       handleSend()
     }
   }
+
   const onEmojiSelect = (e: any) => {
     setMessageText((prev) => prev + e.native)
   }
 
-  const inputPrefix = () => (
-    <div className="flex items-center gap-2">
-      <motion.button
-        ref={emojiButtonRef}
-        className={cn(
-          'flex cursor-pointer items-center justify-center transition-transform ease-linear',
-          {
-            'text-blue-700': emoji,
-          }
-        )}
-        onClick={() => setEmoji((prev) => !prev)}
-      >
-        <Smile className="fill-white" />
-      </motion.button>
-      <motion.button
-        ref={speedDialButtonRef}
-        className={cn(
-          'flex cursor-pointer items-center justify-center transition-transform ease-linear',
-          {
-            'rotate-45 text-blue-700': openDial,
-          }
-        )}
-        onClick={() => setOpenDial((prev) => !prev)}
-      >
-        <PlusIcon className="fill-white text-white" />
-      </motion.button>
-    </div>
-  )
-
-  const inputSufix = () => (
-    <button
-      disabled={!messageText}
-      onClick={handleSend}
-      className="cursor-pointer px-1 disabled:pointer-events-none disabled:opacity-80"
-    >
-      <Send size={20} className="" />
-    </button>
-  )
-
-  if (isRecording) {
-    return (
-      <div className="flex h-[53px] flex-[0.05] items-center justify-end bg-secondary p-2">
-        <AudioRecorder
-          handleClose={() => setIsRecording(false)}
-          handleSendRecording={(recording: any) => {
-            const file = blobToFile(recording, `${Date.now() + 'webm'}`)
-            handleSendAttachement(
-              { target: { files: [file] } },
-              'VOICE_MESSAGE'
-            )
-          }}
-        />
-      </div>
-    )
-  }
-
   return (
     <div className="relative bg-secondary">
-      <AnimatePresence mode="wait" initial={false}>
-        {isSelectMessages ? (
+      <AnimatePresence mode="popLayout" initial={false}>
+        {type === 'Menu' && (
           <motion.div
-            key={`${isSelectMessages}`}
-            transition={{ duration: 0.3 }}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+            key="Menu"
+            variants={variants}
+            initial="hide"
+            animate="show"
+            exit="hide"
             className="flex items-center"
           >
             <div className="flex h-[53px] w-full items-center gap-3 px-4 py-2">
@@ -251,32 +219,72 @@ const MessageInput = () => {
               </button>
             </div>
           </motion.div>
-        ) : (
+        )}
+        {type === 'Input' && (
           <motion.div
-            key={`${isSelectMessages}`}
-            transition={{ duration: 0.3 }}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+            key="Input"
+            variants={variants}
+            initial="hide"
+            animate="show"
+            exit="hide"
           >
             <div className="flex flex-col gap-2 p-2">
               <MessageReply />
               <div className="flex items-center gap-3">
-                <Input
-                  className="w-full rounded-md border-none bg-background px-12 pl-20 text-gray-200 placeholder:text-gray-300 focus:outline-none"
-                  value={messageText}
-                  onChange={handleTextChange}
-                  placeholder="Type..."
-                  onKeyDown={onKeyDown}
-                  prefix={inputPrefix()}
-                  sufix={inputSufix()}
-                  autoFocus={true}
-                />
+                <div className="flex w-full items-center gap-3">
+                  <div className="flex items-center gap-2">
+                    <motion.button
+                      ref={emojiButtonRef}
+                      className={cn(
+                        'flex cursor-pointer items-center justify-center transition-transform ease-linear',
+                        {
+                          'text-blue-700': emoji,
+                        }
+                      )}
+                      onClick={() => setEmoji((prev) => !prev)}
+                    >
+                      <Smile />
+                    </motion.button>
+                    <motion.button
+                      ref={speedDialButtonRef}
+                      className={cn(
+                        'flex cursor-pointer items-center justify-center transition-transform ease-linear',
+                        {
+                          'rotate-45 text-blue-700': openDial,
+                        }
+                      )}
+                      onClick={() => setOpenDial((prev) => !prev)}
+                    >
+                      <PlusIcon className="fill-white text-white" />
+                    </motion.button>
+                  </div>
+                  <div className="flex-1">
+                    <input
+                      className="w-full rounded-md border-2 border-transparent p-1 px-3 focus:outline-none focus-visible:border-blue-800"
+                      value={messageText}
+                      onChange={handleTextChange}
+                      placeholder="Type..."
+                      onKeyDown={onKeyDown}
+                      autoFocus={true}
+                    />
+                  </div>
+
+                  {messageText && (
+                    <button
+                      disabled={!messageText}
+                      onClick={handleSend}
+                      className="cursor-pointer px-1 disabled:pointer-events-none disabled:opacity-80"
+                    >
+                      <Send size={20} className="" />
+                    </button>
+                  )}
+                </div>
+
                 <div>
                   <button
                     type="button"
                     className=""
-                    onClick={() => setIsRecording(true)}
+                    onClick={() => handleClick('Recording')}
                   >
                     <BiMicrophone size={24} />
                   </button>
@@ -299,6 +307,28 @@ const MessageInput = () => {
                 </AnimatePresence>
               </div>
             </div>
+          </motion.div>
+        )}
+        {type === 'Recording' && (
+          <motion.div
+            key="Recording"
+            variants={variants}
+            initial="hide"
+            animate="show"
+            exit="hide"
+            className="flex h-[53px] flex-[0.05] items-center justify-end bg-secondary p-2"
+          >
+            <AudioRecorder
+              handleClose={() => handleClick('Input')}
+              handleSendRecording={(recording: Blob) => {
+                const file = blobToFile(recording, `${Date.now() + 'webm'}`)
+                handleSendAttachement(
+                  { target: { files: [file] } },
+                  'VOICE_MESSAGE'
+                )
+                handleClick('Input')
+              }}
+            />
           </motion.div>
         )}
       </AnimatePresence>

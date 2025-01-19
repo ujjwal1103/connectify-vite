@@ -26,7 +26,7 @@ const ImageComponent = ({
   return (
     <>
       {loading && (
-        <div className="flex h-96 w-full items-center justify-center">
+        <div className="flex aspect-1 w-full items-center justify-center">
           <Loader className="animate-spin" />
         </div>
       )}

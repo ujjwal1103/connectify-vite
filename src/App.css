@@ -54,9 +54,11 @@ body {
 #waveform ::part(cursor) {
   height: 14px !important;
   top: 35%;
-  border-radius: 7px;
-  background-color: black;
-}
+  box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+}         
 
 * {
   transition: background-color 0.1s ease-in;

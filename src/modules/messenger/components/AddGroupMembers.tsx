@@ -12,7 +12,7 @@ import { PlusIcon, X } from 'lucide-react'
 import { useState, useCallback, useEffect, ReactNode } from 'react'
 import { BiLoader } from 'react-icons/bi'
 import { IoClose } from 'react-icons/io5'
-import { toast } from 'react-toastify' // Assuming you're using react-toastify for toast messages
+import { toast } from 'sonner' // Assuming you're using react-toastify for toast messages
 
 const AddGroupMembers = ({
   chatId,
