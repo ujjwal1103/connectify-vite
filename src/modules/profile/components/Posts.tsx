@@ -106,8 +106,8 @@ const Posts = ({ isSelfPosts = true, userId }: PostsProps) => {
 
 export default Posts
 
-const NoPosts: React.FC = () => (
-  <div className="w-full py-10">
+export const NoPosts: React.FC = () => (
+  <div className="w-full py-10 container">
     <EmptyPost message="" />
     <SuggetionsSlider />
   </div>

@@ -6,7 +6,8 @@ import { HeartIcon, MessageCircle } from 'lucide-react'
 import Modal from '@/components/shared/modal/Modal'
 import PostSliderModal from '@/components/shared/imageSwiper'
 import { useLocation } from 'react-router-dom'
-
+import { LoadingPosts } from './LoadingPosts'
+import { NoPosts } from './Posts'
 
 const fetchReels = async (page: number) => {
   const res = (await getSelfReels(page)) as any
@@ -15,11 +16,12 @@ const fetchReels = async (page: number) => {
     pagination: res.pagination,
   }
 }
+type Status = 'IDEAL' | 'SUCCESS' | 'LOADING' | 'ERROR'
 
 const Reels = () => {
   const [reels, setReels] = useState<IPost[]>([])
+  const [status, setStatus] = useState<Status>('IDEAL')
   const [page, setPage] = useState(1)
-  const [loadingPost, setLoadingPost] = useState(false)
   const [hasNext, setHasNext] = useState(true)
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [openSlider, setOpenSlider] = useState(false)
@@ -27,14 +29,14 @@ const Reels = () => {
 
   const fetchItems = useCallback(async () => {
     try {
-      setLoadingPost(true)
+      setStatus('LOADING')
       const res = await fetchReels(page)
       setHasNext(true)
       setReels(res.data)
+      setStatus('SUCCESS')
     } catch (error) {
       alert('Something went wrong')
-    } finally {
-      setLoadingPost(false)
+      setStatus('ERROR')
     }
   }, [page])
 
@@ -54,17 +56,32 @@ const Reels = () => {
     window.history.replaceState(null, '', location.pathname)
   }
 
+  const isLoading = status === 'LOADING'
+  const isError = status === 'ERROR'
+  const isSuccess = status === 'SUCCESS'
+  const isEmpty = reels.length === 0 && isSuccess
+
+  if (isLoading) {
+    return <LoadingPosts />
+  }
+  if (isEmpty) {
+    return <NoPosts />
+  }
+
+  if (isError) {
+    return <div>Something went wrong...</div>
+  }
+
   return (
-    <div className="overflow-hidden ">
+    <div className="overflow-hidden">
       <InfiniteScroll
         dataLength={reels?.length}
         hasMore={hasNext}
         loader={<div />}
         scrollableTarget={'scrollableDiv'}
         next={function () {
-          setPage(prev=>prev+1)
+          setPage((prev) => prev + 1)
         }}
-        
       >
         <div className="grid grid-cols-3 gap-[1px] md:grid-cols-4 md:px-20">
           {reels?.map((reel: IPost, index: number) => (
@@ -85,7 +102,6 @@ const Reels = () => {
               </div>
             </div>
           ))}
-          {loadingPost && <></>}
         </div>
       </InfiniteScroll>
 
