@@ -17,7 +17,7 @@ const SuggestionsSlider = ({ username }: { username?: string }) => {
   const scrollRef = useRef<HTMLDivElement>(null)
   const scrollContainerRef = useRef<HTMLDivElement>(null)
 
-  const { suggetions, loading } = useGetSuggestedUsers() as any
+  const { suggestedUsers, loading, remove } = useGetSuggestedUsers() as any
 
   // Update scroll buttons visibility
   useEffect(() => {
@@ -33,12 +33,12 @@ const SuggestionsSlider = ({ username }: { username?: string }) => {
     scrollRef.current?.addEventListener('scroll', updateScrollButtons)
     return () =>
       scrollRef.current?.removeEventListener('scroll', updateScrollButtons)
-  }, [suggetions, loading])
+  }, [suggestedUsers, loading])
 
-  // Filter suggestions excluding the current user
+  // Filter suggestedUsers excluding the current user
   const filteredSuggestions = useMemo(
-    () => suggetions.filter((person: IUser) => person.username !== username),
-    [suggetions, username]
+    () => suggestedUsers.filter((person: IUser) => person.username !== username),
+    [suggestedUsers, username]
   )
 
   const handleScrollLeft = () => {
@@ -81,12 +81,12 @@ const SuggestionsSlider = ({ username }: { username?: string }) => {
         </Link>
       </div>
       <div className="relative w-screen px-3 sm:w-128 sm:px-0 md:w-160 lg:w-192 xl:w-240 2xl:w-256">
-        <div className="absolute top-1/2 z-10 flex w-full -translate-y-1/2 justify-between group">
+        <div className="group absolute top-1/2 z-10 flex w-full -translate-y-1/2 justify-between">
           <button
             onClick={handleScrollLeft}
             disabled={!canScrollLeft}
             aria-label="Scroll Left"
-            className="rounded-full bg-gray-700 p-2 text-white group-hover:disabled:opacity-0 opacity-0 group-hover:opacity-100"
+            className="rounded-full bg-gray-700 p-2 text-white opacity-0 group-hover:opacity-100 group-hover:disabled:opacity-0"
           >
             <ChevronLeft />
           </button>
@@ -94,7 +94,7 @@ const SuggestionsSlider = ({ username }: { username?: string }) => {
             onClick={handleScrollRight}
             disabled={!canScrollRight}
             aria-label="Scroll Right"
-            className="mr-5 rounded-full bg-gray-700 p-2 text-white group-hover:disabled:opacity-0 opacity-0 group-hover:opacity-100 sm:mr-0"
+            className="mr-5 rounded-full bg-gray-700 p-2 text-white opacity-0 group-hover:opacity-100 group-hover:disabled:opacity-0 sm:mr-0"
           >
             <ChevronRight />
           </button>
@@ -105,7 +105,7 @@ const SuggestionsSlider = ({ username }: { username?: string }) => {
         >
           <div className="flex max-h-44 min-h-44 gap-3">
             {filteredSuggestions.map((person: IUser) => (
-              <People {...person} />
+              <People {...person} remove={() => remove(person._id)} />
             ))}
           </div>
         </div>
@@ -116,8 +116,8 @@ const SuggestionsSlider = ({ username }: { username?: string }) => {
 
 export default SuggestionsSlider
 
-const People = ({ avatar, username, name, _id }: any) => (
-  <div className="flex w-36 flex-col items-center justify-between rounded-lg border transition-colors duration-300 border-background/50 hover:bg-background p-2">
+const People = ({ avatar, username, name, _id, remove }: any) => (
+  <div className="flex w-36 flex-col items-center justify-between rounded-lg border border-background/50 p-2 transition-colors duration-300 hover:bg-background">
     <Avatar src={avatar?.url} className={'h-14 w-14 rounded-full'} />
     <div className="flex flex-col justify-center">
       <span className="text-center text-sm">{name}</span>
@@ -136,6 +136,7 @@ const People = ({ avatar, username, name, _id }: any) => (
         showRemoveFollowerBtn={false}
         isRequested={false}
         isPrivate={false}
+        callBack={remove}
       />
     </div>
   </div>

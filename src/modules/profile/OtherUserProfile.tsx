@@ -59,7 +59,7 @@ const OtherUserProfile = () => {
       id="scrollableDiv"
     >
       <div className="w-full text-sm">
-        <div className='flex p-2 items-center gap-3 border-b border-background/35'>
+        <div className='flex p-2 items-center gap-3 border-b border-background/35 sm:hidden'>
           <button onClick={()=>navigate(-1)}><ChevronLeft/></button>
           <span>{user?.username}</span>
         </div>

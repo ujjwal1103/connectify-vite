@@ -8,16 +8,18 @@ import {
   sentFriendRequest,
   unFollowUsers,
 } from '@/api'
-import { toast } from 'react-toastify'
+import { toast } from 'sonner'
+import { useAuth } from '@/context/AuthContext'
+import { IUser } from '@/lib/types'
 
 type FollowButtonProps = {
   userId: string
-  callBack?: (data: any) => void
+  callBack?: (data: any, error?: any) => void
   isFollow?: boolean
   showRemoveFollowerBtn: boolean
   isRequested?: boolean
   isPrivate?: boolean
-  size?: 'default' | 'sm' | 'lg' | 'icon' | 'follow' | null | undefined 
+  size?: 'default' | 'sm' | 'lg' | 'icon' | 'follow' | null | undefined
 }
 
 const FollowButton = ({
@@ -31,6 +33,7 @@ const FollowButton = ({
 }: FollowButtonProps) => {
   const [follow, setFollow] = useState(isFollow)
   const [isRequestSent, setIsRequestSent] = useState(false)
+  const { updateUser } = useAuth()
 
   useEffect(() => {
     setIsRequestSent(isRequested)
@@ -43,16 +46,23 @@ const FollowButton = ({
         setIsRequestSent(true)
         await sentFriendRequest(userId)
       } else {
+        setFollow(true)
+        callBack({ isFollow: true })
+        updateUser((prev: IUser | null) =>
+          prev ? { ...prev, following: prev.following + 1 } : null
+        )
         const data = await followUsers(userId)
         if (data.follow) {
-          setFollow(data.follow)
-          callBack(data)
           toast.success('Started Following')
         }
       }
     } catch (error: any) {
       if ((error.message = 'ALREADY_FOLLOWING')) {
-        setFollow(true)
+        setFollow(false)
+        updateUser((prev: IUser | null) =>
+          prev ? { ...prev, following: prev.following - 1 } : null
+        )
+        callBack(null, error)
       }
       toast.error('Already Follow This User')
     }
@@ -107,7 +117,7 @@ const FollowButton = ({
       </Button>
     )
   }
-  
+
   return (
     <Button onClick={handleFollowRequest} size={size} variant={'follow'}>
       Follow

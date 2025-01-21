@@ -1,34 +1,35 @@
-import { createSlice } from "@reduxjs/toolkit";
-import { useCallback } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../store";
+import { createSlice } from '@reduxjs/toolkit'
+import { useCallback } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { RootState } from '../store'
+import { IUser } from '@/lib/types'
 
 const initialState = {
   suggestedusers: [],
   loading: true,
-};
+}
 
 const suggetionSlice = createSlice({
-  name: "suggestion",
+  name: 'suggestion',
   initialState,
   reducers: {
     setSuggetions: (state, action) => {
-      state.loading = false;
-      state.suggestedusers = action.payload;
+      state.loading = false
+      state.suggestedusers = action.payload
     },
     reset: () => initialState,
   },
-});
+})
 
 export const useSuggetionsSlice = () => {
-  const dispatch = useDispatch();
-  const state = useSelector((state: RootState) => state[suggetionSlice.name]);
-  const { actions } = suggetionSlice;
-  const setSuggetions = useCallback((suggetions: any[]) => {
-    dispatch(actions.setSuggetions(suggetions));
-  }, []);
+  const dispatch = useDispatch()
+  const state = useSelector((state: RootState) => state[suggetionSlice.name])
+  const { actions } = suggetionSlice
+  const setSuggetions = useCallback((suggetions: IUser[]) => {
+    dispatch(actions.setSuggetions(suggetions))
+  }, [])
 
-  return { ...state, setSuggetions };
-};
+  return { ...state, setSuggetions }
+}
 
-export default suggetionSlice;
+export default suggetionSlice

@@ -6,16 +6,17 @@ import useGetSuggestedUsers from '@/hooks/useGetSuggestedUsers'
 import { IUser } from '@/lib/types'
 
 const Suggetions = () => {
-  const { suggetions, loading } = useGetSuggestedUsers() as any
+  const { suggestedUsers, loading, remove } = useGetSuggestedUsers() as any
 
   return (
-    <div className="hidden w-full rounded-md p-2 bg-background-dark shadow-md shadow-black text-foreground md:block"
-    style={{
-      boxShadow: '2px 0px 91px -12px rgba(255,255,255,0.75);'
-    }}
+    <div
+      className="hidden w-full rounded-md bg-background-dark p-2 text-foreground shadow-md shadow-black md:block"
+      style={{
+        boxShadow: '2px 0px 91px -12px rgba(255,255,255,0.75);',
+      }}
     >
-      {suggetions?.length > 0 && (
-        <div className="flex items-center mb-2 justify-between text-lg text-foreground">
+      {suggestedUsers?.length > 0 && (
+        <div className="mb-2 flex items-center justify-between text-lg text-foreground">
           <span>Suggested for you</span>
           <Link
             to="/explore"
@@ -27,9 +28,11 @@ const Suggetions = () => {
       )}
       <div className="rounded px-2">
         {!loading &&
-          suggetions
+          suggestedUsers
             ?.slice(0, 10)
-            ?.map((u: IUser) => <Suggetion key={u?._id} user={u} />)}
+            ?.map((u: IUser) => (
+              <Suggetion key={u?._id} user={u} remove={remove} />
+            ))}
       </div>
     </div>
   )
