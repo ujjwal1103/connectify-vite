@@ -28,7 +28,7 @@ const Explore = () => {
 
   return (
     <div
-      className="h-full  overflow-y-scroll w-1/2 mx-auto my-10 border border-border rounded scrollbar-none"
+      className="md:h-full h-dvh bg-background overflow-y-scroll md:w-1/2 w-full mx-auto md:my-10 border border-border rounded scrollbar-none"
       id="scrollableDiv"
     >
       <InfiniteScroll
@@ -36,10 +36,10 @@ const Explore = () => {
         next={handleLoadMore}
         hasMore={hasNextPage}
         loader={[12].map(() => (
-          <li className="flex py-2  gap-3 w-full items-center px-4">
+          <li className="flex py-2 gap-3 w-full items-center px-4">
             <Avatar
               src="people"
-              className={"w-8 h-8 bg-gray-600 rounded-full"}
+              className={"w-8 h-8 bg-background rounded-full"}
             />
             <div className="flex flex-col gap-2">
               <span className="h-4 rounded-md w-24 bg-zinc-800"></span>

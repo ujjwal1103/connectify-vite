@@ -1,4 +1,5 @@
 /** @type {import('tailwindcss').Config} */
+
 module.exports = {
   content: [
     "./pages/**/*.{ts,tsx}",
@@ -20,6 +21,9 @@ module.exports = {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
+        'chat-bubble-self': "hsl(var(--chat-bubble-self))",
+        'chat-bubble-user': "hsl(var(--chat-bubble-user))",
+        'chat-background': "hsl(var(--chat-background))",
         background: {
           DEFAULT: "hsl(var(--background))",
           light: "hsl(var(--background-light))",
@@ -75,10 +79,9 @@ module.exports = {
           DEFAULT: "hsl(var(--success))",
           foreground: "hsl(var(--success-foreground))",
         },
-      },
-      borderRadius: {
-        lg: "var(--radius)",
-        sm: "calc(var(--radius) - 4px)",
+        message: {
+          background: "hsl(var(--message-background))",
+        },
       },
       keyframes: {
         "accordion-down": {
@@ -125,6 +128,8 @@ module.exports = {
         80: "80",
         90: "90",
         100: "100",
+        200: "200",
+        1000: "1000"
       },
       opacity: {
         15: "0.15",
@@ -139,12 +144,12 @@ module.exports = {
         "16/9": [16, 9],
         "21/9": [21, 9],
       },
-      backgroundImage: {
-        appgrade:
-          "linear-gradient(250deg, rgba(34,193,195,1) 0%, rgba(253,187,45,1) 100%)",
-        "gradient-to-r": "linear-gradient(to right, var(--tw-gradient-stops))",
-        "gradient-to-b": "linear-gradient(to bottom, var(--tw-gradient-stops))",
-      },
+      // backgroundImage: {
+      //   appgrade:
+      //     "linear-gradient(250deg, rgba(34,193,195,1) 0%, rgba(253,187,45,1) 100%)",
+      //   "gradient-to-r": "linear-gradient(to right, var(--tw-gradient-stops))",
+      //   "gradient-to-b": "linear-gradient(to bottom, var(--tw-gradient-stops))",
+      // },
       boxShadow: {
         "custom-light": "0 4px 6px rgba(0, 0, 0, 0.1)",
         "custom-dark": "0 4px 6px rgba(0, 0, 0, 0.6)",
@@ -155,5 +160,6 @@ module.exports = {
     require("tailwindcss-animate"),
     require("tailwind-scrollbar"),
     require("daisyui"),
+    require("@tailwindcss/aspect-ratio")
   ],
 };

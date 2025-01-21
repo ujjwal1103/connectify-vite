@@ -1,62 +1,70 @@
-import { Outlet, useParams } from "react-router-dom";
-import ChatList from "./components/ChatList";
-import { MessengerLine } from "@/components/icons";
-import { useChatSlice } from "@/redux/services/chatSlice";
-import { useEffect } from "react";
-import { getChatByChatId } from "@/api";
+import { Suspense, useEffect } from 'react'
+import { Outlet, useParams } from 'react-router-dom'
+import { MessagesSquare } from 'lucide-react'
+
+import { useChatSlice } from '@/redux/services/chatSlice'
+import { getChatByChatId } from '@/api'
+import { IChat } from '@/lib/types'
+import ChatList from './components/ChatList'
+
 const NoSelectedChat = () => {
   return (
-    <div className="flex-1  hidden  dark:text-gray-50 t h-screen lg:flex md:flex justify-center items-center">
-      <div className="flex flex-col justify-center items-center ">
-        <div className="w-10 h-10 p-2 border border-white rounded-full flex justify-center items-center dark:text-gray-50 ">
-          <MessengerLine size={40} />
+    <div className="t hidden h-screen flex-1 items-center justify-center md:flex lg:flex dark:text-gray-50">
+      <div className="flex flex-col items-center justify-center">
+        <div className="flex h-10 w-10 items-center justify-center rounded-full border border-white p-2 dark:text-gray-50">
+          <MessagesSquare size={40} />
         </div>
         <h1 className="dark:text-gray-50">Your Messages</h1>
         <p>Send private photos and messages to a friend or group</p>
       </div>
     </div>
-  );
-};
+  )
+}
 
 const Messenger = () => {
-  const { chatId } = useParams();
+  const { chatId } = useParams()
   const { selectedChat, setSelectedChat, setMessagePage, setMessages } =
-    useChatSlice();
+    useChatSlice()
 
-  const selectThisChat = (chat: any) => {
-    setMessagePage(1);
-    setMessages([]);
-    setSelectedChat(chat);
-  };
+  const selectThisChat = (chat: IChat) => {
+    setMessagePage(1)
+    setMessages([])
+    setSelectedChat(chat)
+  }
 
   const fetchChat = async () => {
     try {
-      const res = (await getChatByChatId(chatId)) as any;
+      const res = (await getChatByChatId(chatId)) as any
       if (res.isSuccess) {
-        selectThisChat(res.chat);
+        selectThisChat(res.chat)
       }
     } catch (error) {}
-  };
+  }
 
   useEffect(() => {
     if (!selectedChat && chatId) {
-      fetchChat();
+      fetchChat()
     }
-  }, []);
-
-  
+  }, [])
 
   return (
-    <div className="flex-1 flex">
-      <ChatList />
+    <div className="flex flex-1">
+        <ChatList />
       {chatId ? (
-        <Outlet />
+        <Suspense fallback={<LoadingMessanger/>}>
+          <Outlet />
+        </Suspense>
       ) : (
-        <div className="md:flex-1 md:block hidden flex-1 w-full">
+        <div className="hidden w-full flex-1 md:block md:flex-1">
           <NoSelectedChat />
         </div>
       )}
     </div>
-  );
-};
-export default Messenger;
+  )
+}
+export default Messenger
+
+
+const LoadingMessanger = ()=> {
+  return <div className="relative flex h-dvh max-h-dvh min-h-dvh w-full min-w-80 flex-1 bg-chat-background md:flex-1">Loading messenger</div>
+}

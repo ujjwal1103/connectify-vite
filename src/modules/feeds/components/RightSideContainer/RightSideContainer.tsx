@@ -3,10 +3,10 @@ import Suggetions from "./Suggetions";
 
 const RightSideContainer = () => {
   return (
-    <div className="w-full h-full p-2">
+    <section className="p-4 sticky top-0 hidden md:flex flex-col gap-2 flex-[0.3] bg-background">
       <Self />
       <Suggetions />
-    </div>
+    </section>
   );
 };
 export default RightSideContainer;

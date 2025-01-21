@@ -1,55 +1,49 @@
-import { ThreeDots } from "@/components/icons";
-import UsernameLink from "@/components/shared/UsernameLink";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import UsernameLink from '@/components/shared/UsernameLink'
+import Avatar from '@/components/shared/Avatar'
+import { IPost } from '@/lib/types'
+import { memo, } from 'react'
+import PostHeaderMenu from '@/components/shared/modal/PostHeaderMenu'
 
-import { Link } from "react-router-dom";
-import Avatar from "@/components/shared/Avatar";
-import { IPost } from "@/lib/types";
 
 type PostHeaderProps = {
-  post: IPost;
-};
+  postId: string
+  userId: string
+  userAvatar?: string
+  name: string
+  username: string
+  location?: string
+  post: IPost
+}
 
-const PostHeader = ({ post }: PostHeaderProps) => {
+const PostHeader = ({
+  postId,
+  userId,
+  userAvatar,
+  name,
+  username,
+  location,
+  post,
+}: PostHeaderProps) => {
   return (
-    <div className="w-full p-2 flex gap-6 items-center text-secondary-foregroun justify-between">
-      <div className="flex gap-3 items-center flex-1">
+    <div className="text-secondary-foregroun flex w-full items-center justify-between gap-6 p-2">
+      <div className="flex flex-1 items-center gap-3">
         <Avatar
-          src={post?.user?.avatar?.url}
-          className="rounded-full size-8 md:size-10"
-          name={post?.user?.name}
+          src={userAvatar}
+          className="size-8 rounded-full md:size-10"
+          name={name}
         />
-        <div className="flex flex-col ">
-          <UsernameLink username={post?.user?.username} onClick={() => {}}>
-            <span className="text-sm">{post?.user?.username}</span>
+        <div className="flex flex-col">
+          <UsernameLink username={username} onClick={() => {}}>
+            <span className="text-sm">{username}</span>
           </UsernameLink>
-          <span>{post?.location}</span>
+          <span>{location}</span>
         </div>
       </div>
-      <div className="relative text-secondary-foreground">
-        <DropdownMenu>
-          <DropdownMenuTrigger>
-            <ThreeDots className=" cursor-pointer" />
-          </DropdownMenuTrigger>
-          <DropdownMenuContent
-            className="bg-background-secondary border-none rounded-md"
-            align="end"
-          >
-            <DropdownMenuLabel>
-              <Link to={`p/${post._id}`} className="hover:text-primary">
-                Open Post
-              </Link>
-            </DropdownMenuLabel>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
-    </div>
-  );
-};
 
-export default PostHeader;
+      <PostHeaderMenu post={post} postId={postId} userId={userId} />
+    </div>
+  )
+}
+
+export default memo(PostHeader)
+

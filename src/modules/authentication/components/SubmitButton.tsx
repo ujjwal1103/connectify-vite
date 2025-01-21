@@ -1,21 +1,33 @@
-import { OutlineLoading } from "@/components/icons";
+import { Button } from '@/components/ui/button'
+import { ArrowRight, Loader2 } from 'lucide-react'
 
-export const SubmitButton=({ isValid, loading, title = "Login" }:any)=> {
-    return (
-      <div className="flex justify-between w-full items-center">
-        <button
-          type="submit"
-          disabled={!isValid}
-          className="w-full disabled:bg-slate-500 h-10 disabled:text-gray-400 disabled:cursor-not-allowed bg-zinc-950 rounded-xl  text-white  hover:bg-black"
-        >
-          {loading ? (
-            <span className="flex justify-center">
-              <OutlineLoading className="animate-spin" />
-            </span>
-          ) : (
-            title
-          )}
-        </button>
-      </div>
-    );
-  }
+type SubmitButtonProps = {
+  disabled: boolean
+  isSubmitting: boolean
+  title?: string
+}
+
+export const SubmitButton = ({
+  disabled,
+  isSubmitting,
+  title = 'Login',
+}: SubmitButtonProps) => {
+  return (
+    <Button
+      type="submit"
+      disabled={disabled}
+      size={'lg'}
+      className="relative w-full group  flex items-center justify-center gap-2  transition-colors bg-purple-600 text-base text-zinc-50 hover:bg-purple-700 disabled:opacity-90"
+    >
+      {isSubmitting ? (
+        <span className="flex justify-center">
+          <Loader2 className="animate-spin size-5" />
+        </span>
+      ) : (
+        title
+      )}
+
+      <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
+    </Button>
+  )
+}

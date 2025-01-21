@@ -1,110 +1,121 @@
-import { getSelfPosts, getUserPosts } from "@/api";
-import { ProfilePost } from "@/components/posts/ProfilePost";
-import { usePostSlice } from "@/redux/services/postSlice";
-import { useCallback, useEffect } from "react";
-import InfiniteScroll from "react-infinite-scroll-component";
-import { EmptyPost } from "./EmptyPost";
-import SuggetionsSlider from "@/components/shared/suggetionsSliders/SuggetionsSlider";
-import { Loader } from "lucide-react";
 
-const fetchPosts = (page: number) =>
-  getSelfPosts(page).then((res: any) => ({
-    data: res.posts,
-    pagination: res.pagination,
-  }));
-const fetchOtherPosts = (page: number, userId: string) =>
-  getUserPosts(page, userId).then((res: any) => ({
-    data: res.posts,
-    pagination: res.pagination,
-  }));
+import { ProfilePost } from '@/components/posts/ProfilePost'
 
-const Posts = ({ isSelfPosts = true, userId }: any) => {
-  const { page, setPage, setPosts, posts, hasNext, loadingPost, reset } =
-    usePostSlice();
+import { useEffect, useState } from 'react'
+import InfiniteScroll from 'react-infinite-scroll-component'
+import { EmptyPost } from './EmptyPost'
+import SuggetionsSlider from '@/components/shared/suggetionsSliders/SuggetionsSlider'
+import { Loader } from 'lucide-react'
+import { LoadingPosts } from './LoadingPosts'
+import PostSliderModal from '@/components/shared/imageSwiper'
+import Modal from '@/components/shared/modal/Modal'
+import { IPost } from '@/lib/types'
+import { useLocation } from 'react-router-dom'
+import usePostStore from '@/stores/posts'
 
-  const fetchItems = useCallback(async () => {
-    try {
-      let res;
-      if (isSelfPosts) {
-        res = (await fetchPosts(page)) as any;
-      } else {
-        res = (await fetchOtherPosts(page, userId)) as any;
-      }
-      setPosts(res);
-    } catch (error) {
-      console.log(error);
-      alert("something went wrong");
-    }
-  }, [page, userId]);
+interface PostsProps {
+  isSelfPosts?: boolean
+  userId?: string
+}
+
+const Posts = ({ isSelfPosts = true, userId }: PostsProps) => {
+  const {
+    fetchSelfPosts,
+    fetchUserPosts,
+    posts,
+    loadingPost,
+    page,
+    setPage,
+    hasNext,
+    reset,
+  } = usePostStore()
+
+  const [selectedIndex, setSelectedIndex] = useState(0)
+  const [openSlider, setOpenSlider] = useState(false)
+  const location = useLocation()
 
   useEffect(() => {
-    fetchItems();
-  }, [fetchItems]);
+    if (isSelfPosts) {
+      fetchSelfPosts()
+    } else {
+      if(!userId) return;
+      fetchUserPosts(userId)
+    }
+  }, [fetchSelfPosts, fetchUserPosts, page, isSelfPosts, userId])
 
   useEffect(() => {
     return () => {
-      reset();
-    };
-  }, [userId]);
+      reset()
+    }
+  }, [reset, userId])
 
   const handleLoadMore = () => {
-    setPage(page + 1);
-  };
+    setPage(page + 1)
+  }
+
+  const handleOpenSlider = (index: number) => {
+    setOpenSlider(true)
+    setSelectedIndex(index)
+    window.history.replaceState(null, '', `p/${posts[selectedIndex]._id}`)
+  }
+
+  const handleClose = () => {
+    setOpenSlider(false)
+    setSelectedIndex(0)
+    window.history.replaceState(null, '', location.pathname)
+  }
 
   if (loadingPost) {
-    return (
-      <div
-        className=" md:w-full w-screen flex flex-wrap overflow-hidden"
-        id="postLoader"
-      >
-        {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((i) => {
-          return (
-            <div
-              key={i}
-              className="border w-1/3 border-background animate-pulse aspect-square grid grid-cols-3 gap-[2px] place-content-center bg-secondary"
-            ></div>
-          );
-        })}
-      </div>
-    );
+    return <LoadingPosts />
   }
 
   if (!loadingPost && !posts.length) {
-    return (
-      <div className="py-10">
-        <EmptyPost message="" />
-        <div className="lg:max-w-[834px] xl:max-w-[1000px] md:max-w-[750px] max-w-[1000px] mx-auto">
-          <SuggetionsSlider />
-        </div>
-      </div>
-    );
+    return <NoPosts />
   }
 
   return (
-    <div className="scrollbar-thin">
+    <div className="overflow-hidden">
       <InfiniteScroll
         className="flex flex-col"
         dataLength={posts?.length}
         next={handleLoadMore}
         hasMore={hasNext}
-        loader={[12].map(() => (
-          <div
-            className="w-full py-3 flex items-center justify-center"
-            role="status"
-          >
-            <Loader className="animate-spin" />
-          </div>
-        ))}
-        scrollableTarget={"scrollableDiv"}
+        loader={<LoaderComponent />}
+        scrollableTarget={'scrollableDiv'}
       >
-        <div className=" grid grid-cols-3 gap-[1px] place-content-center ">
-          {posts?.map((feed: any) => (
-            <ProfilePost key={feed._id} post={feed} isSelfPosts={isSelfPosts} />
+        <div className="grid grid-cols-3 place-content-center gap-[1px]">
+          {posts?.map((feed: IPost, index: number) => (
+            <ProfilePost
+              index={index}
+              onClickPost={handleOpenSlider}
+              key={feed._id}
+              post={feed}
+              isSelfPosts={isSelfPosts}
+            />
           ))}
         </div>
       </InfiniteScroll>
-    </div>
-  );
-};
 
-export default Posts;
+      {openSlider && (
+        <Modal onClose={handleClose} showCloseButton={false}>
+          <PostSliderModal posts={posts} index={selectedIndex} />
+        </Modal>
+      )}
+    </div>
+  )
+}
+
+export default Posts
+
+export const NoPosts: React.FC = () => (
+  <div className="w-full py-10">
+    <EmptyPost message="" />
+    <SuggetionsSlider />
+  </div>
+)
+
+const LoaderComponent: React.FC = () => (
+  <div className="flex w-full items-center justify-center py-3" role="status">
+    <Loader className="animate-spin" />
+  </div>
+)

@@ -38,11 +38,11 @@ const SidePannel = ({ width, children, onClose }: any) => {
   return ReactDOM.createPortal(
     <motion.div
       ref={ref}
-      initial={{ x: -500 }}
+      initial={{ x: -400 }}
       animate={{ opacity: 1, x: 0 }}
-      exit={{ x: -500 }}
-      transition={{ duration: 0.2, ease: "linear" }}
-      className="w-80 h-full z-20 fixed top-0 transition-all duration-300 focus-visible:outline-0"
+      exit={{ x: -400 }}
+      transition={{ duration: 0.3, ease: "linear" }}
+      className="h-full z-100 fixed top-0 focus-visible:outline-0"
       style={{ left: width }}
       tabIndex={-1}
     >
@@ -146,7 +146,7 @@ export const Menu = ({
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: 400 }}
       transition={{ duration: 0.2 }}
-      className="z-50 fixed h-fit focus-visible:outline-0 "
+      className="z-[121] fixed h-fit focus-visible:outline-0 "
       tabIndex={-1}
       style={{
         top: menuPosition?.top,

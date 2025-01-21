@@ -1,221 +1,87 @@
-import { IoChevronBackCircle, IoChevronForwardCircle } from "react-icons/io5";
-import Avatar from "@/components/shared/Avatar";
-import { useRef, useState } from "react";
-import "slick-carousel/slick/slick-theme.css";
-import "slick-carousel/slick/slick.css";
+import Avatar from '@/components/shared/Avatar'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import {
+  ChevronLeftCircleIcon,
+  ChevronRightCircle,
+  X,
+} from 'lucide-react'
+import { getAllStories } from '@/api'
 
-const storyImages = [
-  {
-    story_id: "1",
-    user_id: "1001",
-    user_name: "john_doe",
-    user_profile_picture:
-      "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d",
-    story_image_url:
-      "https://images.unsplash.com/photo-1534126511673-b6899657816a",
-    timestamp: "2024-05-27T10:00:00Z",
-  },
-  {
-    story_id: "2",
-    user_id: "1002",
-    user_name: "jane_smith",
-    user_profile_picture:
-      "https://images.unsplash.com/photo-1508672019048-805c876b67e2",
-    story_image_url:
-      "https://images.unsplash.com/photo-1534081333815-ae5019106622",
-    timestamp: "2024-05-27T10:05:00Z",
-  },
-  {
-    story_id: "3",
-    user_id: "1003",
-    user_name: "alice_jones",
-    user_profile_picture:
-      "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e",
-    story_image_url:
-      "https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0",
-    timestamp: "2024-05-27T10:10:00Z",
-  },
-  {
-    story_id: "4",
-    user_id: "1004",
-    user_name: "bob_martin",
-    user_profile_picture:
-      "https://images.unsplash.com/photo-1494790108377-be9c29b29330",
-    story_image_url:
-      "https://images.unsplash.com/photo-1511765224389-37f0e77cf0eb",
-    timestamp: "2024-05-27T10:15:00Z",
-  },
-  {
-    story_id: "5",
-    user_id: "1005",
-    user_name: "charlie_clark",
-    user_profile_picture:
-      "https://images.unsplash.com/photo-1507537509458-b8312d35a233",
-    story_image_url:
-      "https://images.unsplash.com/photo-1503676260728-1c00da094a0b",
-    timestamp: "2024-05-27T10:20:00Z",
-  },
-  {
-    story_id: "6",
-    user_id: "1006",
-    user_name: "diana_wright",
-    user_profile_picture:
-      "https://images.unsplash.com/photo-1544005313-94ddf0286df2",
-    story_image_url:
-      "https://images.unsplash.com/photo-1515376721779-7db6951da88d",
-    timestamp: "2024-05-27T10:25:00Z",
-  },
-  {
-    story_id: "7",
-    user_id: "1007",
-    user_name: "edward_hall",
-    user_profile_picture:
-      "https://images.unsplash.com/photo-1522364723953-452d3431c267",
-    story_image_url:
-      "https://images.unsplash.com/photo-1519882175379-fb77aaff82d0",
-    timestamp: "2024-05-27T10:30:00Z",
-  },
-  {
-    story_id: "8",
-    user_id: "1008",
-    user_name: "fiona_lee",
-    user_profile_picture:
-      "https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d",
-    story_image_url:
-      "https://images.unsplash.com/photo-1517841905240-472988babdf9",
-    timestamp: "2024-05-27T10:35:00Z",
-  },
-  {
-    story_id: "9",
-    user_id: "1009",
-    user_name: "george_scott",
-    user_profile_picture:
-      "https://images.unsplash.com/photo-1544723795-3fb6469f5b39",
-    story_image_url:
-      "https://images.unsplash.com/photo-1516117172878-fd2c41f4a759",
-    timestamp: "2024-05-27T10:40:00Z",
-  },
-  {
-    story_id: "10",
-    user_id: "1010",
-    user_name: "hannah_walker",
-    user_profile_picture:
-      "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e",
-    story_image_url:
-      "https://images.unsplash.com/photo-1498050108023-c5249f4df085",
-    timestamp: "2024-05-27T10:45:00Z",
-  },
-  {
-    story_id: "11",
-    user_id: "1011",
-    user_name: "ian_adams",
-    user_profile_picture:
-      "https://images.unsplash.com/photo-1494790108377-be9c29b29330",
-    story_image_url:
-      "https://images.unsplash.com/photo-1519337265831-281ec6cc8514",
-    timestamp: "2024-05-27T10:50:00Z",
-  },
-  {
-    story_id: "12",
-    user_id: "1012",
-    user_name: "jessica_brown",
-    user_profile_picture:
-      "https://images.unsplash.com/photo-1508672019048-805c876b67e2",
-    story_image_url:
-      "https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0",
-    timestamp: "2024-05-27T10:55:00Z",
-  },
-  {
-    story_id: "13",
-    user_id: "1013",
-    user_name: "kevin_white",
-    user_profile_picture:
-      "https://images.unsplash.com/photo-1519337265831-281ec6cc8514",
-    story_image_url:
-      "https://images.unsplash.com/photo-1519882175379-fb77aaff82d0",
-    timestamp: "2024-05-27T11:00:00Z",
-  },
+import Modal from '@/components/shared/modal/Modal'
+import UserStory from './UserStory'
+import { AnimatePresence } from 'framer-motion'
+import ConnectifyLogoText from '@/components/icons/ConnectifyLogoText'
 
-  {
-    story_id: "16",
-    user_id: "1016",
-    user_name: "nina_martinez",
-    user_profile_picture:
-      "https://images.unsplash.com/photo-1522364723953-452d3431c267",
-    story_image_url:
-      "https://images.unsplash.com/photo-1498050108023-c5249f4df085",
-    timestamp: "2024-05-27T11:15:00Z",
-  },
-  {
-    story_id: "17",
-    user_id: "1017",
-    user_name: "oliver_james",
-    user_profile_picture:
-      "https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d",
-    story_image_url:
-      "https://images.unsplash.com/photo-1534081333815-ae5019106622",
-    timestamp: "2024-05-27T11:20:00Z",
-  },
-  {
-    story_id: "18",
-    user_id: "1018",
-    user_name: "peter_clark",
-    user_profile_picture:
-      "https://images.unsplash.com/photo-1507537509458-b8312d35a233",
-    story_image_url:
-      "https://images.unsplash.com/photo-1534126511673-b6899657816a",
-    timestamp: "2024-05-27T11:25:00Z",
-  },
-
-  {
-    story_id: "20",
-    user_id: "1020",
-    user_name: "rachel_hall",
-    user_profile_picture:
-      "https://images.unsplash.com/photo-1494790108377-be9c29b29330",
-    story_image_url:
-      "https://images.unsplash.com/photo-1515376721779-7db6951da88d",
-    timestamp: "2024-05-27T11:35:00Z",
-  },
-];
+const storyImages: any[] = []
 
 const Stories = () => {
-  const [stories, _] = useState(storyImages);
-  const scrollContainerRef = useRef<any>(null);
+  const [stories, setStories] = useState<any[]>(storyImages)
+  const [openStoryView, setOpenStoryView] = useState(false)
+  const scrollContainerRef = useRef<any>(null)
+  const [openStories, setOpenStories] = useState([])
+  const [currentIndex, setCurrentIndex] = useState<number>(-1)
+
+  const getStories = useCallback(async () => {
+    const res = (await getAllStories()) as any
+    setStories(res.stories)
+  }, [])
+
+  useEffect(() => {
+    getStories()
+  }, [])
 
   const scrollLeft = () => {
     if (scrollContainerRef.current) {
       scrollContainerRef?.current?.scrollBy({
         left: -625 - 10,
-        behavior: "smooth",
-      });
+        behavior: 'smooth',
+      })
     }
-  };
+  }
 
   const scrollRight = () => {
     if (scrollContainerRef.current) {
       scrollContainerRef.current.scrollBy({
         left: 625 + 10,
-        behavior: "smooth",
-      });
+        behavior: 'smooth',
+      })
     }
-  };
+  }
+
   return (
-    <div className="md:max-w-[625px] w-full flex items-center z-0 min-h-16 overflow-hidden relative ">
+    <div className="relative z-0 flex min-h-16 w-full items-center overflow-hidden md:max-w-[625px]">
       <div
         className="flex max-h-20 overflow-x-scroll scrollbar-none"
         ref={scrollContainerRef}
       >
         {stories.map((story, index) => (
           <div
-            key={index}
-            className="flex basis-4 mr-2 first:ml-2 items-center justify-center"
+            key={index + Date.now()}
+            onClick={() => {
+              if (!story.stories.length) return
+              setCurrentIndex(index)
+              const user = story.user
+              const allStories = story.stories.map((st: any) => {
+                return {
+                  url: st?.content?.url,
+                  duration: 5500,
+                  header: {
+                    heading: user?.username,
+                    subheading: 'Posted 30m ago',
+                    profileImage: user?.avatar?.url,
+                  },
+                }
+              })
+              setOpenStories(allStories)
+              setOpenStoryView(true)
+            }}
+            className="mr-2 flex basis-4 items-center justify-center first:ml-2"
           >
-            <div className="  bg-gradient-to-r from-amber-500 to-pink-500 rounded-full  flex items-center justify-center">
-              <div className="p-[2px] flex  items-center justify-center rounded-full">
+            <div className="flex items-center justify-center rounded-full bg-gradient-to-r from-amber-500 to-pink-500">
+              <div className="flex items-center justify-center rounded-full p-[2px]">
                 <Avatar
-                  className="w-12 h-12 rounded-full object-cover"
-                  src={story.user_profile_picture}
+                  className="h-12 w-12 rounded-full object-cover"
+                  src={story.user?.avatar?.url}
                 />
               </div>
             </div>
@@ -223,23 +89,80 @@ const Stories = () => {
         ))}
       </div>
 
-      {/* Scroll buttons */}
-      <div className="flex justify-between mt-2 absolute top-6 -translate-y-1/2 w-full">
+      <div className="absolute top-6 mt-2 hidden w-full -translate-y-1/2 justify-between">
         <button
           onClick={scrollLeft}
-          className="bg-transparent  text-sm ml-2 p-1  absoulute right-0  rounded-full disabled:opacity-50"
+          className="absoulute right-0 ml-2 rounded-full bg-transparent p-1 text-sm disabled:opacity-50"
         >
-          <IoChevronBackCircle size={24} />
+          <ChevronLeftCircleIcon size={24} />
         </button>
         <button
           onClick={scrollRight}
-          className="bg-transparent text-sm mr-2 p-1 text-white absoulute right-0 rounded-full disabled:opacity-50"
+          className="absoulute right-0 mr-2 rounded-full bg-transparent p-1 text-sm text-white disabled:opacity-50"
         >
-          <IoChevronForwardCircle size={24} />
+          <ChevronRightCircle size={24} />
         </button>
       </div>
+      <AnimatePresence>
+        {openStoryView && (
+          <Modal
+            onClose={() => {
+              setOpenStoryView(false)
+            }}
+            showCloseButton={false}
+          >
+            <div className="relative flex h-dvh w-screen items-center justify-center bg-black">
+              <div className="absolute left-3 top-3">
+                <ConnectifyLogoText w="200" h="44" />
+              </div>
+              <div className="absolute right-10 top-10">
+                <button
+                  onClick={() => {
+                    setOpenStoryView(false)
+                  }}
+                >
+                  <X size={44} />
+                </button>
+              </div>
+              <div className="flex w-96 items-center justify-center">
+                {openStories.length && (
+                  <UserStory
+                    stories={openStories}
+                    onClose={() => {
+                      setOpenStoryView(false)
+                    }}
+                    setNextStory={() => {
+                      const user = stories[currentIndex! + 1]?.user
+                      const allStories = stories[
+                        currentIndex! + 1
+                      ]?.stories.map((st: any) => {
+                        return {
+                          url: st?.content?.url,
+                          duration: 5500,
+                          header: {
+                            heading: user?.username,
+                            subheading: 'Posted 30m ago',
+                            profileImage: user?.avatar?.url,
+                          },
+                        }
+                      })
+                      if (!allStories) {
+                        setOpenStoryView(false)
+                        return
+                      }
+                      setCurrentIndex((prev) => prev + 1)
+                      setOpenStories(allStories)
+                    }}
+                  />
+                )}
+              </div>
+            </div>
+          </Modal>
+        )}
+      </AnimatePresence>
     </div>
-  );
-};
+  )
+}
 
-export default Stories;
+export default Stories
+

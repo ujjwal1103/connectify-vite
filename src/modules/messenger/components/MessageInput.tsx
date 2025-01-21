@@ -1,165 +1,212 @@
-import {
-  ImageFill,
-  MusicLibrary,
-  Send,
-  VideoLibrary,
-} from "@/components/icons";
-import { RefObject, useRef, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
-import { useClickOutside } from "@react-hookz/web";
-import { IoClose } from "react-icons/io5";
+import { AnimatePresence, motion } from 'framer-motion'
+import { RefObject, useEffect, useRef, useState } from 'react'
+import { useParams } from 'react-router-dom'
 
-import { BiMicrophone } from "react-icons/bi";
+import { PlusIcon, Send, Smile, Trash2 } from 'lucide-react'
+import { BiMicrophone } from 'react-icons/bi'
+import { IoClose } from 'react-icons/io5'
 
-import { FaTrash } from "react-icons/fa";
-import Input from "@/components/shared/Input";
-import { useParams } from "react-router-dom";
-import { useChatSlice } from "@/redux/services/chatSlice";
-import AudioRecorder from "./AudioRecorder";
-import { deleteMessagesByIds } from "@/api";
-import useSendMessage from "./useSendMessage";
-import { cn, readFileAsDataURL } from "@/lib/utils";
-import { PlusIcon, Smile } from "lucide-react";
-import EmojiPicker from "@emoji-mart/react";
+import MessageAttachmentInput from './MessageAttachmentInput'
+import AudioRecorder from './AudioRecorder'
+import EmojiInput from './EmojiInput'
+
+import { cn, readFileAsDataURL } from '@/lib/utils'
+import { useChatSlice } from '@/redux/services/chatSlice'
+import useSendMessage from './useSendMessage'
+import { deleteMessagesByIds } from '@/api'
+import MessageReply from './MessageReply'
+import { useSocket } from '@/context/SocketContext'
+import { getCurrentUserId } from '@/lib/localStorage'
 
 function blobToFile(blob: Blob, filename: string): File {
   const file = new File([blob], filename, {
     type: blob.type,
     lastModified: new Date().getTime(),
-  });
+  })
 
-  return file;
+  return file
 }
 
 export const Loader = () => {
   return (
     <div className="flex-center">
       <motion.div
-        className="w-24 h-4 bg-zinc-800 rounded-full"
-        animate={{ width: "100%" }}
-        transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+        className="h-4 w-24 rounded-full bg-zinc-800"
+        animate={{ width: '100%' }}
+        transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
       ></motion.div>
     </div>
-  );
-};
+  )
+}
+
+type TypeProps = 'Input' | 'Recording' | 'Menu'
+
+const variants = {
+  show: {
+    opacity: 1,
+  },
+  hide: {
+    opacity: 0,
+  },
+}
 
 const MessageInput = () => {
-  const [messageText, setMessageText] = useState("");
-  const { chatId } = useParams<{ chatId: string }>();
-  const [openDial, setOpenDial] = useState(false);
-  const [emoji, setEmoji] = useState(false);
-  const [isRecording, setIsRecording] = useState(false);
-  const speedDialRef: RefObject<HTMLDivElement> = useRef<HTMLDivElement>(null);
-  const emojiRef: RefObject<HTMLDivElement> = useRef<HTMLDivElement>(null);
+  const [messageText, setMessageText] = useState('')
+  const { chatId } = useParams<{ chatId: string }>()
+  const [openDial, setOpenDial] = useState(false)
+  const [emoji, setEmoji] = useState(false)
+  const [typing, setTyping] = useState(true)
+
+  const [type, setType] = useState<TypeProps>('Input')
+
+  const handleClick = (type: TypeProps) => {
+    setType(type)
+  }
+
+  const typingTimeoutRef = useRef<ReturnType<typeof setTimeout>>()
+
+  const { socket } = useSocket()
+
   const speedDialButtonRef: RefObject<HTMLButtonElement> =
-    useRef<HTMLButtonElement>(null);
+    useRef<HTMLButtonElement>(null)
   const emojiButtonRef: RefObject<HTMLButtonElement> =
-    useRef<HTMLButtonElement>(null);
-  const { send, sendAttachment } = useSendMessage();
+    useRef<HTMLButtonElement>(null)
+  const { send, sendAttachment } = useSendMessage()
   const {
     isSelectMessages,
     selectedMessages,
     setIsSelectMessages,
     deleteAllMessagesByIds,
     selectedChat,
-  } = useChatSlice();
+    currentMessageReply,
+    setCurrentMessageReply
+  } = useChatSlice()
 
-  //   const { socket } = useSocket();
+  useEffect(() => {
+    if (isSelectMessages) {
+      handleClick('Menu')
+    }
+  }, [isSelectMessages])
+
   const handleTextChange = (e: any) => {
-    setMessageText(e.target.value);
-  };
+    setMessageText(e.target.value)
+
+    const members = selectedChat?.members
+      ?.filter((member) => member._id !== getCurrentUserId())
+      .map((u) => u._id)
+
+    if (socket && !typing) {
+      setTyping(true)
+      socket!.emit('TYPING', {
+        chatId: selectedChat?._id,
+        members: members,
+        isTyping: true,
+      })
+    }
+
+    if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current)
+
+    typingTimeoutRef.current = setTimeout(() => {
+      setTyping(false)
+      socket!.emit('TYPING', {
+        chatId: selectedChat?._id,
+        members: members,
+        isTyping: false,
+      })
+    }, 2000)
+  }
 
   const handleSend = async () => {
-    if (!messageText) return;
+    if (!messageText) return
 
     const newMessage = {
       text: messageText,
-      messageType: "TEXT_MESSAGE",
+      messageType: 'TEXT_MESSAGE',
       to: selectedChat?.friend?._id!,
-    };
-    setMessageText("");
-    await send(newMessage, chatId!);
-  };
+      reply: currentMessageReply?.message,
+    }
+    setCurrentMessageReply(null)
+    setMessageText('')
+    await send(newMessage, chatId!)
+  }
 
   const handleSendAttachement = async (e: any, messageType: string) => {
-    setOpenDial(false);
-    const files = e.target.files;
-    const formData = new FormData();
-    const dataUrl: string[] = [];
+    setOpenDial(false)
+    const files = e.target.files
+    const formData = new FormData()
+    const dataUrl: string[] = []
 
     for (let i = 0; i < files.length; i++) {
-      formData.append("messageAttachement", files[i]);
+      formData.append('messageAttachement', files[i])
     }
-    formData.append("messageType", messageType);
-    formData.append("to", selectedChat?.friend?._id!);
+    formData.append('messageType', messageType)
+    formData.append('to', selectedChat?.friend?._id!)
 
     for (let i = 0; i < files.length; i++) {
-      const dataURL: string = (await readFileAsDataURL(files[i])) as any;
-      dataUrl.push(dataURL);
+      const dataURL: string = (await readFileAsDataURL(files[i])) as any
+      dataUrl.push(dataURL)
     }
 
-    await sendAttachment(formData, chatId!, dataUrl);
-  };
+    await sendAttachment(
+      formData,
+      chatId!,
+      dataUrl,
+      currentMessageReply?.message
+    )
+  }
 
   const onCloseSpeedDial = (e: any) => {
     if (
       speedDialButtonRef.current &&
       speedDialButtonRef.current.contains(e.target)
     ) {
-      return;
+      return
     }
-    setOpenDial(false);
-  };
+    setOpenDial(false)
+  }
+
   const onCloseEmoji = (e: any) => {
     if (emojiButtonRef.current && emojiButtonRef.current.contains(e.target)) {
-      return;
+      return
     }
-    setEmoji(false);
-  };
-
-  useClickOutside(speedDialRef, onCloseSpeedDial);
-  useClickOutside(emojiRef, onCloseEmoji);
+    setEmoji(false)
+  }
 
   const handleClose = () => {
-    setIsSelectMessages(false);
-  };
+    setIsSelectMessages(false)
+    handleClick('Input')
+  }
 
   const handleDeleteMessages = async () => {
-    const res = await deleteMessagesByIds(selectedMessages);
+    const res = await deleteMessagesByIds(selectedMessages)
     if (res.isSuccess) {
-      deleteAllMessagesByIds(selectedMessages);
+      deleteAllMessagesByIds(selectedMessages)
     }
-  };
+  }
 
-  if (isRecording) {
-    return (
-      <div className="flex-[0.05] bg-secondary">
-        <AudioRecorder
-          handleClose={() => setIsRecording(false)}
-          handleSendRecording={(recording: any) => {
-            const file = blobToFile(recording, `${Date.now() + "webm"}`);
-            handleSendAttachement(
-              { target: { files: [file] } },
-              "VOICE_MESSAGE"
-            );
-          }}
-        />
-      </div>
-    );
+  const onKeyDown = (e: any) => {
+    if (e.key === 'Enter' && messageText && e.target.value) {
+      handleSend()
+    }
+  }
+
+  const onEmojiSelect = (e: any) => {
+    setMessageText((prev: string) => prev + e.native)
   }
 
   return (
-    <div className="flex-[0.05] relative">
-      <AnimatePresence mode="sync">
-        {isSelectMessages ? (
+    <div className="relative bg-secondary">
+      <AnimatePresence mode="popLayout" initial={false}>
+        {type === 'Menu' && (
           <motion.div
-            transition={{ duration: 0.2 }}
-            initial={{ y: "100%" }}
-            animate={{ y: "0%" }}
-            exit={{ y: "100%" }}
-            className=" bg-secondary  "
+            key="Menu"
+            variants={variants}
+            initial="hide"
+            animate="show"
+            exit="hide"
+            className="flex items-center"
           >
-            <div className="px-4 py-2 flex gap-3 items-center">
+            <div className="flex h-[53px] w-full items-center gap-3 px-4 py-2">
               <button onClick={handleClose}>
                 <IoClose size={24} />
               </button>
@@ -168,165 +215,127 @@ const MessageInput = () => {
               <button
                 onClick={handleDeleteMessages}
                 disabled={!selectedMessages.length}
-                className="ml-auto text-gray-400 disabled:text-gray-400 hover:text-white"
+                className="ml-auto text-gray-400 hover:text-white disabled:text-gray-400"
               >
-                <FaTrash size={24} className="" />
+                <Trash2 size={20} className="" />
               </button>
             </div>
           </motion.div>
-        ) : (
-          <motion.div className="flex items-center gap-3 p-2 bg-secondary">
-            <Input
-              className="w-full  text-gray-200 border-none bg-background focus:outline-none rounded-md px-12 pl-20"
-              value={messageText}
-              onChange={handleTextChange}
-              placeholder="Type..."
-              onKeyDown={(e: any) => {
-                if (e.key === "Enter" && messageText && e.target.value) {
-                  handleSend();
-                }
-              }}
-              prefix={
-                <div className="flex items-center gap-2">
-                  <motion.button
-                    ref={emojiButtonRef}
-                    className={cn(
-                      "cursor-pointer flex items-center transition-transform  ease-linear justify-center",
-                      {
-                        "text-blue-700": emoji,
-                      }
-                    )}
-                    onClick={() => setEmoji((prev) => !prev)}
-                  >
-                    <Smile className=" fill-black" />
-                  </motion.button>
-                  <motion.button
-                    ref={speedDialButtonRef}
-                    className={cn(
-                      "cursor-pointer flex items-center transition-transform  ease-linear justify-center",
-                      {
-                        "rotate-45 text-blue-700": openDial,
-                      }
-                    )}
-                    onClick={() => setOpenDial((prev) => !prev)}
-                  >
-                    <PlusIcon className="dark:fill-white fill-black" />
-                  </motion.button>
+        )}
+        {type === 'Input' && (
+          <motion.div
+            key="Input"
+            variants={variants}
+            initial="hide"
+            animate="show"
+            exit="hide"
+          >
+            <div className="flex flex-col gap-2 p-2">
+              <MessageReply />
+              <div className="flex items-center gap-3">
+                <div className="flex w-full items-center gap-3">
+                  <div className="flex items-center gap-2">
+                    <motion.button
+                      ref={emojiButtonRef}
+                      className={cn(
+                        'flex cursor-pointer items-center justify-center transition-transform ease-linear',
+                        {
+                          'text-blue-700': emoji,
+                        }
+                      )}
+                      onClick={() => setEmoji((prev) => !prev)}
+                    >
+                      <Smile />
+                    </motion.button>
+                    <motion.button
+                      ref={speedDialButtonRef}
+                      className={cn(
+                        'flex cursor-pointer items-center justify-center transition-transform ease-linear',
+                        {
+                          'rotate-45 text-blue-700': openDial,
+                        }
+                      )}
+                      onClick={() => setOpenDial((prev) => !prev)}
+                    >
+                      <PlusIcon className="fill-white text-white" />
+                    </motion.button>
+                  </div>
+                  <div className="flex-1">
+                    <input
+                      className="w-full rounded-md border-2 border-transparent p-1 px-3 focus:outline-none focus-visible:border-blue-800"
+                      value={messageText}
+                      onChange={handleTextChange}
+                      placeholder="Type..."
+                      onKeyDown={onKeyDown}
+                      autoFocus={true}
+                    />
+                  </div>
+
+                  {messageText && (
+                    <button
+                      disabled={!messageText}
+                      onClick={handleSend}
+                      className="cursor-pointer px-1 disabled:pointer-events-none disabled:opacity-80"
+                    >
+                      <Send size={20} className="" />
+                    </button>
+                  )}
                 </div>
-              }
-              sufix={
-                <button
-                  disabled={!messageText}
-                  onClick={handleSend}
-                  className="cursor-pointer px-3 disabled:pointer-events-none"
-                >
-                  <Send />
-                </button>
-              }
-              type={""}
-              error={undefined}
-              autoFocus={false}
-              sufixClassname={""}
-              disabled={false} // disabled={sending}
-            />
-            <div>
-              <button
-                type="button"
-                className=""
-                onClick={() => setIsRecording(true)}
-              >
-                <BiMicrophone size={24} />
-              </button>
+
+                <div>
+                  <button
+                    type="button"
+                    className=""
+                    onClick={() => handleClick('Recording')}
+                  >
+                    <BiMicrophone size={24} />
+                  </button>
+                </div>
+                <AnimatePresence>
+                  {emoji && (
+                    <EmojiInput
+                      onCloseEmoji={onCloseEmoji}
+                      onEmojiSelect={onEmojiSelect}
+                    />
+                  )}
+                </AnimatePresence>
+                <AnimatePresence>
+                  {openDial && (
+                    <MessageAttachmentInput
+                      handleSendAttachement={handleSendAttachement}
+                      onCloseSpeedDial={onCloseSpeedDial}
+                    />
+                  )}
+                </AnimatePresence>
+              </div>
             </div>
-            <AnimatePresence>
-              {emoji && (
-                <motion.div
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: "auto", opacity: 1 }}
-                  exit={{ height: 0 }}
-                  transition={{ duration: 0.2 }}
-                  ref={emojiRef}
-                  className="absolute  bottom-16 overflow-hidden shadow-xl origin-bottom-left rounded-md left-4 z-[999] flex items-center"
-                >
-                  <div className="">
-                    <motion.div className="flex gap-3">
-                      <EmojiPicker
-                        searchPosition="none"
-                        previewPosition="none"
-                        navPosition="bottom"
-                      />
-                    </motion.div>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-            <AnimatePresence>
-              {openDial && (
-                <motion.div
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: "auto", opacity: 1 }}
-                  exit={{ height: 0, opacity: 0 }}
-                  transition={{ duration: 0.2 }}
-                  layoutId="test1"
-                  ref={speedDialRef}
-                  layout
-                  className="absolute overflow-hidden bottom-16 shadow-xl origin-bottom-left bg-secondary rounded-md left-4 z-[999] flex items-center  gap-2  "
-                >
-                  <div className="p-3 flex gap-3">
-                    <motion.label
-                      layout
-                      htmlFor="imageFile"
-                      className="bg-black w-10  flex justify-center items-center cursor-pointer ring-2 ring-zinc-700 h-10 rounded-md  "
-                    >
-                      <ImageFill className="dark:fill-white fill-black size-5" />
-                      <input
-                        type="file"
-                        id="imageFile"
-                        hidden
-                        multiple
-                        onChange={(e) => handleSendAttachement(e, "IMAGE")}
-                        accept="image/*, webp"
-                      />
-                    </motion.label>
-                    <motion.label
-                      layout
-                      htmlFor="audioFile"
-                      className="bg-black w-10  flex justify-center items-center cursor-pointer ring-2 ring-zinc-700 h-10 rounded-md  "
-                    >
-                      <MusicLibrary className="dark:fill-white fill-black size-5" />
-                      <input
-                        type="file"
-                        id="audioFile"
-                        hidden
-                        multiple
-                        onChange={(e) => handleSendAttachement(e, "AUDIO")}
-                        accept="audio/*"
-                      />
-                    </motion.label>
-                    <motion.label
-                      layout
-                      htmlFor="videoFile"
-                      className="bg-black w-10  flex justify-center items-center cursor-pointer ring-2 ring-zinc-700 h-10 rounded-md  "
-                    >
-                      <VideoLibrary className="dark:fill-white fill-black size-5" />
-                      <input
-                        type="file"
-                        id="videoFile"
-                        hidden
-                        multiple
-                        onChange={(e) => handleSendAttachement(e, "VIDEO")}
-                        accept="video/*"
-                      />
-                    </motion.label>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
+          </motion.div>
+        )}
+        {type === 'Recording' && (
+          <motion.div
+            key="Recording"
+            variants={variants}
+            initial="hide"
+            animate="show"
+            exit="hide"
+            className="flex h-[53px] flex-[0.05] items-center justify-end bg-secondary p-2"
+          >
+            <AudioRecorder
+              handleClose={() => handleClick('Input')}
+              handleSendRecording={(recording: Blob) => {
+                const file = blobToFile(recording, `${Date.now() + 'webm'}`)
+                handleSendAttachement(
+                  { target: { files: [file] } },
+                  'VOICE_MESSAGE'
+                )
+                handleClick('Input')
+              }}
+            />
           </motion.div>
         )}
       </AnimatePresence>
     </div>
-  );
-};
+  )
+}
 
-export default MessageInput;
+export default MessageInput

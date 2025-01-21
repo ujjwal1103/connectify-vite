@@ -1,17 +1,34 @@
-import React, { PropsWithChildren, useEffect, useRef } from "react";
-import ReactDOM from "react-dom";
-import FocusTrap from "./FocusTrap";
-import { useClickOutside } from "@react-hookz/web";
-import { motion } from "framer-motion";
-import { cn } from "@/lib/utils";
+import React, { useEffect, useRef } from 'react'
+import ReactDOM from 'react-dom'
+import FocusTrap from './FocusTrap'
+import { useClickOutside } from '@react-hookz/web'
+import { motion } from 'framer-motion'
+import { cn } from '@/lib/utils'
 
 type ModalProps = {
-  onClose: (e: any) => void;
-  shouldCloseOutsideClick?: boolean;
-  showCloseButton?: boolean;
-  animate?: boolean;
-  overlayClasses?: string;
-};
+  onClose?: (e: any) => void
+  shouldCloseOutsideClick?: boolean
+  showCloseButton?: boolean
+  animate?: boolean
+  overlayClasses?: string
+  children: React.ReactElement
+}
+
+const variantsSlide = {
+  initial: {
+    x: 'var(--x-from)',
+    scale: 'var(--scale-from)',
+  },
+  animate: {
+    x: 'var(--x-to)',
+    scale: 'var(--scale-to)',
+  },
+  exit: {
+    x: 'var(--x-from)',
+    scale: 'var(--scale-from)',
+  },
+}
+
 const Modal = ({
   onClose,
   children,
@@ -19,50 +36,50 @@ const Modal = ({
   showCloseButton = true,
   animate = true,
   overlayClasses,
-}: PropsWithChildren<ModalProps>) => {
-  const elRef = useRef<any>(null);
-  const modalRef = useRef<any>(null);
+}: ModalProps) => {
+  const elRef = useRef<any>(null)
+  const modalRef = useRef<any>(null)
 
   if (!elRef.current) {
-    elRef.current = document.createElement("div");
+    elRef.current = document.createElement('div')
   }
 
   useEffect(() => {
-    const modalRoot = document.body;
-    modalRoot.appendChild(elRef.current);
-    document.body.classList.add("overflow-hidden");
+    const modalRoot = document.body
+    modalRoot.appendChild(elRef.current)
+    document.body.classList.add('overflow-hidden')
 
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        onClose(event);
+      if (event.key === 'Escape') {
+        onClose?.(event)
       }
-    };
+    }
 
-    modalRef.current?.focus();
+    modalRef.current?.focus()
 
-    document.body.addEventListener("keydown", handleKeyDown);
+    document.body.addEventListener('keydown', handleKeyDown)
 
     return () => {
-      modalRoot.removeChild(elRef.current!);
-      document.body.classList.remove("overflow-hidden");
-      modalRef.current?.blur();
-      document.body.removeEventListener("keydown", handleKeyDown);
-    };
-  }, []);
+      modalRoot.removeChild(elRef.current!)
+      document.body.classList.remove('overflow-hidden')
+      modalRef.current?.blur()
+      document.body.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [])
 
   const handleChildClick = (e: any) => {
-    e.stopPropagation();
-  };
+    e.stopPropagation()
+  }
 
   useClickOutside(modalRef, (e) => {
     if (shouldCloseOutsideClick) {
-      onClose(e);
+      onClose?.(e)
     }
-  });
+  })
 
-  const childrenWithProps = React.Children.map(children, (child: any) => {
-    return React.cloneElement(child, { onClose: onClose });
-  });
+  const childrenWithProps = React.cloneElement(children, {
+    onClose,
+  })
 
   return ReactDOM.createPortal(
     <motion.div
@@ -70,22 +87,24 @@ const Modal = ({
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       className={cn(
-        "z-[999] fixed top-0 left-0 w-screen h-screen bg-black bg-opacity-50",
+        'fixed left-0 top-0 z-[999] h-dvh w-screen bg-black bg-opacity-50',
         overlayClasses
       )}
+      data-modal="true"
     >
       <FocusTrap>
-        <div className="flex justify-center items-center w-screen h-dvh">
+        <div className="flex h-dvh w-screen items-center justify-center">
           {animate ? (
             <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              exit={{ scale: 0 }}
-              transition={{ type: "tween" }}
+              variants={variantsSlide}
+              initial={'initial'}
+              animate={'animate'}
+              exit={'exit'}
+              transition={{ type: 'tween' }}
               onClick={handleChildClick}
               tabIndex={-1}
               ref={modalRef}
-              className="focus-visible:outline-0"
+              className="[--scale-from:1] [--scale-to:1] [--x-from:100%] [--x-to:0%] focus-visible:outline-0 md:[--x-from:0%] md:[--scale-from:0.8]"
             >
               {childrenWithProps}
             </motion.div>
@@ -98,7 +117,7 @@ const Modal = ({
           {showCloseButton && (
             <button
               onClick={onClose}
-              className="absolute hover:bg-white hover:text-black transition-colors duration-300 ease-linear lg:right-10 right-3 top-3 lg:top-10 lg:p-2 p-1 rounded-md border lg:text-base text-sm text-white"
+              className="absolute right-3 top-3 rounded-md border p-1 text-sm text-white transition-colors duration-300 ease-linear hover:bg-white hover:text-black lg:right-10 lg:top-10 lg:p-2 lg:text-base"
             >
               Close
             </button>
@@ -107,7 +126,7 @@ const Modal = ({
       </FocusTrap>
     </motion.div>,
     elRef.current
-  );
-};
+  )
+}
 
-export default Modal;
+export default Modal

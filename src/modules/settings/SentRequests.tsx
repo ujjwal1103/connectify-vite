@@ -1,86 +1,112 @@
-import { getSentRequest } from "@/api";
-import Avatar from "@/components/shared/Avatar";
-import UsernameLink from "@/components/shared/UsernameLink";
-import { motion } from "framer-motion";
-import { Trash } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
+import { getSentRequest } from '@/api'
+import Avatar from '@/components/shared/Avatar'
+import UsernameLink from '@/components/shared/UsernameLink'
+import { Button } from '@/components/ui/button'
+import { AnimatePresence, motion } from 'framer-motion'
+import { ChevronDown, ChevronUp } from 'lucide-react'
+import { useCallback, useEffect, useState } from 'react'
 
 const SentRequests: React.FC = () => {
-  const [sentRequests, setSentRequests] = useState<any[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+  const [sentRequests, setSentRequests] = useState<any[]>([])
+  const [loading, setLoading] = useState<boolean>(true)
+  const [error, setError] = useState<string | null>(null)
+  const [expanded, setExpanded] = useState(false)
 
   const fetchSentFollowRequests = useCallback(async () => {
-    setLoading(true);
-    const res = await getSentRequest();
-    console.log(res.isSuccess);
+    setLoading(true)
+    const res = await getSentRequest()
     if (res.isSuccess) {
-      setSentRequests(res.sentRequests);
+      setSentRequests(res.sentRequests)
     } else {
-      setError("Failed to fetch sent requests.");
+      setError('Failed to fetch sent requests.')
     }
-    setLoading(false);
-  }, []);
+    setLoading(false)
+  }, [])
 
   const handleCancelRequest = async (requestId: string) => {
-    const res = { isSuccess: true };
+    const res = { isSuccess: true }
     if (res.isSuccess) {
       setSentRequests(
         sentRequests.filter((request) => request._id !== requestId)
-      );
+      )
     } else {
-      setError("Failed to cancel request.");
+      setError('Failed to cancel request.')
     }
-  };
+  }
 
   useEffect(() => {
-    fetchSentFollowRequests();
-  }, [fetchSentFollowRequests]);
-
-  if (loading) return <div className="p-2">Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
+    fetchSentFollowRequests()
+  }, [fetchSentFollowRequests])
 
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="pt-4"
+      className="rounded-md bg-background"
     >
-      <h2 className="text-xl font-semibold mb-4">Sent Follow Requests</h2>
-      {sentRequests.length === 0 ? (
-        <p>No sent requests found.</p>
-      ) : (
-        <ul className="space-y-4">
-          {sentRequests.map((request) => (
-            <li
-              key={request._id}
-              className="flex items-center p-4 group gap-3 rounded-lg bg-secondary"
-            >
-              <UsernameLink
-                username={request.username}
-                className="flex items-center gap-3"
-              >
-                <div>
-                  <Avatar src={request?.avatar?.url} className="size-10" />
-                </div>
-                <div>
-                  <p className="font-medium">
-                    {request.name} (@{request.username})
-                  </p>
-                </div>
-              </UsernameLink>
-              <button
-                className="bg-red-500 ml-auto group-hover:bg-red-700  px-2 py-1.5 rounded-lg  transition"
-                onClick={() => handleCancelRequest(request._id)}
-              >
-                <Trash></Trash>
-              </button>
-            </li>
-          ))}
-        </ul>
-      )}
-    </motion.div>
-  );
-};
+      <div className="flex items-center p-2">
+        <h2 className="text-semibold text-base">Sent Follow Requests</h2>
 
-export default SentRequests;
+        <button className="ml-auto" onClick={() => setExpanded(!expanded)}>
+          {expanded ? <ChevronUp /> : <ChevronDown />}
+        </button>
+      </div>
+      <AnimatePresence>
+        {expanded && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.3, ease: 'easeInOut' }}
+            className="overflow-hidden"
+          >
+            {loading && <div className="p-2">Loading...</div>}
+            {error && <div>Error: {error}</div>}
+            {sentRequests.length === 0 && !loading ? (
+              <p className="p-2">No sent requests found.</p>
+            ) : (
+              <ul className="">
+                {sentRequests.map((request) => (
+                  <motion.li
+                    animate={{ opacity: 1, y: 0 }}
+                    layout
+                    initial={{opacity:0, y:-20}}
+                    transition={{ duration: 0.3 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    key={request._id}
+                    className="group flex items-center gap-3 p-2"
+                  >
+                    <UsernameLink
+                      username={request.username}
+                      className="flex items-center gap-2"
+                    >
+                      <div>
+                        <Avatar src={request?.avatar?.url} className="size-6" />
+                      </div>
+                      <div className="flex flex-col justify-center">
+                        <p className="text-xs font-medium">{request.name}</p>
+                        <p className="text-xs text-white/70">
+                          {request.username}
+                        </p>
+                      </div>
+                    </UsernameLink>
+                    <Button
+                      variant={'secondary'}
+                      size={'sm'}
+                      className="ml-auto transition"
+                      onClick={() => handleCancelRequest(request._id)}
+                    >
+                      Cancel
+                    </Button>
+                  </motion.li>
+                ))}
+              </ul>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
+  )
+}
+
+export default SentRequests

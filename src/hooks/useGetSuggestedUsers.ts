@@ -1,34 +1,48 @@
-import { getUsersSuggetions } from "@/api";
-import { useSuggetionsSlice } from "@/redux/services/suggetionSlice";
-import { useState, useCallback, useEffect } from "react";
+import { getUsersSuggetions } from '@/api'
+import useSuggestionStore from '@/stores/suggestions'
+import { useState, useCallback, useEffect } from 'react'
+
+//  suggestedUsers: IUser[]
+//   loading: boolean
+//   setSuggestions: (suggestions: IUser[]) => void
+//   removeSuggestion: (id: string) => void
+//   reset: () => void
 
 const fetchUsers = (page: number) =>
   getUsersSuggetions(page, 20).then((res: any) => ({
     data: res.users,
     pagination: res.pagination,
-  }));
+  }))
 
 const useGetSuggestedUsers = () => {
-  const { suggestedusers: suggetions, setSuggetions } = useSuggetionsSlice();
-  const [loading, setLoading] = useState(false);
-  const [page, setPage] = useState(1);
-  const [hasNextPage, setHasNextPage] = useState(true);
+  const {
+    suggestedUsers,
+    setSuggestions,
+    removeSuggestion,
+  } = useSuggestionStore()
+  const [loading, setLoading] = useState(false)
+  const [page, setPage] = useState(1)
+  const [hasNextPage, setHasNextPage] = useState(true)
 
   const fetchItems = useCallback(async () => {
-    if (!suggetions.length || page !== 1) {
-      page === 1 && setLoading(true);
-      const res = await fetchUsers(page);
-      setSuggetions([...suggetions, ...res.data]);
-      setHasNextPage(res.pagination.hasNext);
-      setLoading(false);
+    if (!suggestedUsers.length || page !== 1) {
+      page === 1 && setLoading(true)
+      const res = await fetchUsers(page)
+      setSuggestions([...suggestedUsers, ...res.data])
+      setHasNextPage(res.pagination.hasNext)
+      setLoading(false)
     }
-  }, [page]);
+  }, [page])
+
+  const remove = (id: string) => {
+    removeSuggestion(id)
+  }
 
   useEffect(() => {
-    fetchItems();
-  }, [fetchItems]);
+    fetchItems()
+  }, [fetchItems])
 
-  return { suggetions, loading, setPage, hasNextPage, page };
-};
+  return { suggestedUsers, loading, setPage, hasNextPage, page, remove }
+}
 
-export default useGetSuggestedUsers;
+export default useGetSuggestedUsers

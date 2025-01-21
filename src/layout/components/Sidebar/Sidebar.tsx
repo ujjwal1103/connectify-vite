@@ -1,166 +1,163 @@
-import ConnectifyIcon from "@/components/icons/Connectify";
-import ConnectifyLogoText from "@/components/icons/ConnectifyLogoText";
-import SidePannel, { Menu } from "@/components/shared/SidePannel/SidePannel";
-import { cn } from "@/lib/utils";
-import Search from "@/modules/search/Search";
+import SidePannel, { Menu } from '@/components/shared/SidePannel/SidePannel'
+import { cn } from '@/lib/utils'
+import Search from '@/modules/search/Search'
+import { memo, useCallback, useEffect, useRef, useState } from 'react'
+import { useLocation } from 'react-router-dom'
+import CreateNewPost from '../NewPost/CreateNewPost'
+import MoreMenu from '@/components/shared/MoreMenu'
+import Notification from '@/modules/notifications/Notifications'
+import { AnimatePresence, motion } from 'framer-motion'
+import Modal from '@/components/shared/modal/Modal'
 import {
-  Compass,
-  Heart,
-  Home,
-  Menu as MenuIcon,
-  Search as SearchIcon,
-  Send,
-  SquarePlay,
-  SquarePlus,
-  User2,
-} from "lucide-react";
-
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Link, NavLink, useLocation } from "react-router-dom";
-import CreateNewPost from "../NewPost/CreateNewPost";
-import MoreMenu from "@/components/shared/MoreMenu";
-import Notification from "@/modules/notifications/Notifications";
-import { AnimatePresence } from "framer-motion";
-import Modal from "@/components/shared/modal/Modal";
-
-const sidebarRoutes: SidebarRoute[] = [
-  { route: "/", label: "Home", icon: <Home /> },
-  {
-    route: "/search",
-    label: "Search",
-    icon: <SearchIcon />,
-    modal: true,
-    modalName: "searchSheet",
-  },
-  { route: "/explore", label: "Explore", icon: <Compass /> },
-  { route: "/reels", label: "Reels", icon: <SquarePlay /> },
-  { route: "/inbox", label: "Messages", icon: <Send /> },
-  {
-    route: "/notifications",
-    label: "Notifications",
-    icon: <Heart />,
-    modal: true,
-    modalName: "notiSheet",
-  },
-  {
-    route: "/create",
-    label: "Create",
-    icon: <SquarePlus />,
-    modal: true,
-    modalName: "openPostModal",
-  },
-  { route: "/profile", label: "Profile", icon: <User2 /> },
-  {
-    route: "/more",
-    label: "More",
-    icon: <MenuIcon />,
-    modal: true,
-    modalName: "moreOptions",
-  },
-];
-
-interface SidebarRoute {
-  route: string;
-  label: string;
-  icon: JSX.Element;
-  modal?: boolean;
-  modalName?: string;
-}
+  ModalStateNames,
+  useModalStateSlice,
+} from '@/redux/services/modalStateSlice'
+import { SidebarRoute, sidebarRoutes } from './sidebarRoutes'
+import SidebarHeader from './SidebarHeader'
+import Route from './Route'
+import { useSocket } from '@/context/SocketContext'
+import { LIKE_POST, NEW_MESSAGE, NEW_REQUEST } from '@/constants/Events'
+import useSocketEvents from '@/hooks/useSocketEvent'
+import { XIcon } from 'lucide-react'
+import { NewStory } from '@/modules/story/NewStory/NewStory'
+import { useClickOutside } from '@react-hookz/web'
 
 const Sidebar = () => {
-  const [modalStates, setModalStates] = useState({
-    searchSheet: false,
-    moreOptions: false,
-    notiSheet: false,
-    openPostModal: false,
-  });
+  const [counts, setCounts] = useState({
+    messenger: 0,
+    notification: 0,
+  })
+  const { socket } = useSocket()
+  const {
+    setModalState,
+    notiSheet,
+    searchSheet,
+    moreOptions,
+    openPostModal,
+    newStory,
+    newPost,
+    resetModalState,
+    setPostion,
+  } = useModalStateSlice()
 
-  const sidebarRef = useRef<any>();
-  const location = useLocation();
-
-  const isMessenger = useMemo(
-    () => location.pathname.includes("inbox"),
-    [location.pathname]
-  );
+  const sidebarRef = useRef<any>()
+  const location = useLocation()
 
   const handleResize = useCallback(() => {
-    setModalStates((prev) => ({
-      ...prev,
-      searchSheet: false,
-      moreOptions: false,
-      notiSheet: false,
-    }));
-  }, []);
-
-  // useEffect(() => {
-  //   window.addEventListener("resize", handleResize);
-  //   return () => {
-  //     window.removeEventListener("resize", handleResize);
-  //   };
-  // }, [handleResize]);
+    resetModalState()
+  }, [])
 
   useEffect(() => {
-    handleResize();
-  }, [location.pathname]);
+    handleResize()
+  }, [location.pathname])
 
-  const handleModalToggle = (modalName: keyof typeof modalStates) => {
-    setModalStates((prev) => ({ ...prev, [modalName]: !prev[modalName] }));
-  };
+  const handleModalToggle = (modalName: ModalStateNames) => {
+    setModalState(modalName)
+  }
 
   const handleModalClose = (
-    modalName: string,
+    modalName: ModalStateNames,
     id: string,
-    target: EventTarget
+    target: HTMLElement
   ) => {
-    if (!sidebarRef.current) return;
+    if (!sidebarRef.current) return
+    console.log({ modalName })
+    if (modalName === 'newPost') {
+      setModalState(modalName)
+      return
+    }
+    if (target.id.toLocaleLowerCase() === id.toLocaleLowerCase()) return
 
-    const modalElement = sidebarRef.current.querySelector(
-      `#${id.toLowerCase()}`
-    );
-    if (modalElement && modalElement.contains(target as Node)) return;
+    // const modalElement = sidebarRef.current.querySelector(
+    //   `#${id.toLowerCase()}`
+    // )
+    // if (modalElement && modalElement.contains(target as Node)) return
 
-    setModalStates((prev) => ({ ...prev, [modalName]: false }));
-  };
+    setModalState(modalName)
+  }
+  const handleNewMessage = () => {
+    setCounts((prev) => ({ ...prev, messenger: prev.messenger + 1 }))
+  }
+  const handleNewNotification = () => {
+    setCounts((prev) => ({ ...prev, notification: prev.notification + 1 }))
+  }
+
+  const eventHandlers = {
+    [NEW_MESSAGE]: handleNewMessage,
+    [LIKE_POST]: handleNewNotification,
+    [NEW_REQUEST]: handleNewNotification,
+  }
+
+  useSocketEvents(socket, eventHandlers)
+
+  const handleModalClick = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    modalName: ModalStateNames,
+    modal?: boolean
+  ) => {
+    if (modal) {
+      e.preventDefault()
+      if (modalName === 'openPostModal') {
+        const rect = e.currentTarget.getBoundingClientRect()
+
+        const top = rect.top + rect.height + 10
+        const left = rect.left
+
+        setPostion({
+          top,
+          left,
+          bottom: 'auto',
+          right: 'auto',
+        })
+      }
+
+      handleModalToggle(modalName!)
+    }
+  }
+
+  const isInboxOpen = location.pathname.includes('/inbox')
 
   const renderRouteItem = useCallback(
-    ({ route, label, icon, modal, modalName }: SidebarRoute) => {
-      const isDisabled = modal
-        ? modalStates[modalName as keyof typeof modalStates]
-        : false;
+    (route: SidebarRoute) => {
+      const isDisabled = route.modal
+        ? notiSheet || searchSheet || moreOptions || openPostModal
+        : false
+      const count = route.badge
+        ? route.label === 'Messages'
+          ? counts.messenger
+          : counts.notification
+        : null
       return (
-        <li key={route} className="last:mt-auto" id={label.toLowerCase()}>
-          <NavLink
-            to={route}
-            className={({ isActive }) =>
-              cn(
-                "inline-block lg:flex items-center lg:gap-2 hover:bg-primary-foreground p-2 transition-all  duration-200 ease-linear rounded",
-                {
-                  "bg-primary-foreground shadow-lg": isActive,
-                  "ring ring-background shadow-inner": isDisabled,
-                }
-              )
-            }
-            onClick={(e) => {
-              if (modal) {
-                e.preventDefault();
-                handleModalToggle(modalName as keyof typeof modalStates);
-              }
-            }}
-          >
-            <div className="mx-2">{icon}</div>
-            <div
-              className={cn("hidden sm:hidden lg:inline-block", {
-                "lg:hidden": isMessenger,
-              })}
-            >
-              <span className="text-lg">{label}</span>
-            </div>
-          </NavLink>
-        </li>
-      );
+        <Route
+          {...route}
+          key={route.label}
+          handleModalClick={handleModalClick}
+          isDisabled={isDisabled}
+          count={count}
+          isHidden={isInboxOpen}
+        />
+      )
     },
-    [modalStates]
-  );
+    [
+      counts.messenger,
+      counts.notification,
+      isInboxOpen,
+      handleModalClick,
+      moreOptions,
+      notiSheet,
+      openPostModal,
+      searchSheet,
+    ]
+  )
+
+  const handleOpenNewPost = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    handleModalClick(e, 'newPost', true)
+    handleModalClose('openPostModal', 'create', e.target as HTMLElement)
+  }
+  const handleOpenNewStory = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    handleModalClick(e, 'newStory', true)
+    handleModalClose('openPostModal', 'create', e.target as HTMLElement)
+  }
 
   return (
     <>
@@ -168,34 +165,22 @@ const Sidebar = () => {
         ref={sidebarRef}
         id="sidebar"
         className={cn(
-          "lg:flex-[0.1] max-w-[300px] md:flex flex-col h-full bg-background text-foreground font-semibold  p-2 hidden z-30",
-          { " lg:flex-[0.001]": isMessenger }
+          'z-[120] hidden h-dvh w-auto flex-col border-r-[0.2px] border-zinc-800 bg-background p-2 font-semibold text-foreground sm:flex',
+          isInboxOpen && 'hidden w-auto transition-all duration-300 sm:flex'
         )}
       >
-        <div className="w-full h-10 gap-2 flex items-center justify-around z-20">
-          <Link to={"/"}>
-            <ConnectifyIcon size={42} />
-          </Link>
-          <Link
-            to={"/"}
-            className={cn("sm:hidden lg:block", { "lg:hidden": isMessenger })}
-          >
-            <ConnectifyLogoText w="200" h="44" />
-          </Link>
-        </div>
-        <ul className="flex-[1] py-3 flex flex-col gap-2">
+        <SidebarHeader hide={isInboxOpen} />
+        <ul className={cn('flex flex-[1] flex-col gap-2 py-3')}>
           {sidebarRoutes.map(renderRouteItem)}
         </ul>
       </aside>
 
       <AnimatePresence>
-        {modalStates.searchSheet && (
+        {searchSheet && (
           <SidePannel
-            width={
-              modalStates.searchSheet ? sidebarRef?.current?.offsetWidth : -400
-            }
+            width={searchSheet ? sidebarRef?.current?.offsetWidth : -400}
             onClose={(e: any) =>
-              handleModalClose("searchSheet", "search", e.target)
+              handleModalClose('searchSheet', 'search', e.target as HTMLElement)
             }
           >
             <Search />
@@ -203,45 +188,136 @@ const Sidebar = () => {
         )}
       </AnimatePresence>
       <AnimatePresence>
-        {modalStates.notiSheet && (
+        {notiSheet && (
           <SidePannel
-            onClose={(e: any) =>
-              handleModalClose("notiSheet", "notifications", e.target)
+            onClose={(e: { target: EventTarget }) =>
+              handleModalClose(
+                'notiSheet',
+                'notifications',
+                e.target as HTMLElement
+              )
             }
-            width={
-              modalStates.notiSheet ? sidebarRef?.current?.offsetWidth : -400
-            }
+            width={notiSheet ? sidebarRef?.current?.offsetWidth : -400}
           >
             <Notification />
           </SidePannel>
         )}
       </AnimatePresence>
       <AnimatePresence>
-        {modalStates.openPostModal && (
+        {openPostModal && (
+          <PostOptions
+            onClose={(e: { target: EventTarget }) =>
+              handleModalClose(
+                'openPostModal',
+                'create',
+                e.target as HTMLElement
+              )
+            }
+            handleOpenNewPost={handleOpenNewPost}
+            handleOpenNewStory={handleOpenNewStory}
+          />
+        )}
+      </AnimatePresence>
+      <AnimatePresence>
+        {newPost && (
           <Modal
             shouldCloseOutsideClick={false}
-            onClose={(e: any) =>
-              handleModalClose("openPostModal", "create", e?.target)
-            }
+            showCloseButton={false}
+            onClose={(e) => {
+              handleModalClose('newPost', 'newpost', e?.target as HTMLElement)
+            }}
           >
             <CreateNewPost />
           </Modal>
         )}
       </AnimatePresence>
       <AnimatePresence>
-        {modalStates.moreOptions && (
+        {moreOptions && (
           <Menu
             left={sidebarRef?.current?.offsetWidth}
-            onClose={(e: any) =>
-              handleModalClose("moreOptions", "more", e?.target)
-            }
+            onClose={(e: React.MouseEvent<HTMLButtonElement>) => {
+              if (e.target) {
+                handleModalClose('moreOptions', 'more', e.target as HTMLElement)
+              }
+            }}
           >
             <MoreMenu />
           </Menu>
         )}
       </AnimatePresence>
+      <AnimatePresence>
+        {newStory && (
+          <Modal
+            shouldCloseOutsideClick={false}
+            showCloseButton={false}
+            onClose={(e) => {
+              handleModalClose('newStory', 'New Story', e.target as HTMLElement)
+            }}
+          >
+            <StoryModal
+              onClose={(e: React.MouseEvent<HTMLButtonElement>) => {
+                if (e.target) {
+                  handleModalClose(
+                    'newStory',
+                    'New Story',
+                    e.target as HTMLElement
+                  )
+                }
+              }}
+            />
+          </Modal>
+        )}
+      </AnimatePresence>
     </>
-  );
-};
+  )
+}
 
-export default memo(Sidebar);
+export default memo(Sidebar)
+
+const StoryModal = ({
+  onClose,
+}: {
+  onClose: (e: React.MouseEvent<HTMLButtonElement>) => void
+}) => {
+  return (
+    <div className="relative h-96 w-screen bg-black md:w-96">
+      <button className="absolute right-3 top-3" onClick={onClose}>
+        <XIcon />
+      </button>
+      <NewStory />
+    </div>
+  )
+}
+
+const PostOptions = ({
+  handleOpenNewPost,
+  handleOpenNewStory,
+  onClose,
+}: any) => {
+  const { postMenuPosition } = useModalStateSlice()
+  const menuRef = useRef<HTMLUListElement>(null)
+
+  useClickOutside(menuRef, onClose)
+
+  return (
+    <motion.ul
+      initial={{ opacity: 0, y: -10, height: 0 }}
+      animate={{ opacity: 1, y: 0, height: 'auto' }}
+      exit={{ opacity: 0, y: 10, height: 0 }}
+      transition={{ duration: 0.3, ease: 'easeInOut' }}
+      ref={menuRef}
+      className="absolute z-[200] w-44 origin-bottom overflow-hidden rounded-md border border-border bg-background md:w-60"
+      style={postMenuPosition}
+    >
+      <li className="p-2 hover:bg-secondary" onClick={handleOpenNewPost}>
+        Post
+      </li>
+      <li onClick={handleOpenNewStory} className="p-2 hover:bg-secondary">
+        Reel
+      </li>
+      <li onClick={handleOpenNewStory} className="p-2 hover:bg-secondary">
+        Story
+      </li>
+    </motion.ul>
+  )
+}

@@ -22,13 +22,17 @@ const Self = () => {
   };
 
   return (
-    <div className="bg-card p-2 rounded">
-      <div className="flex items-center  justify-between space-x-2 duration-500 rounded-xl ">
-        <div className="flex items-center space-x-2">
+    <div className="rounded-md bg-background-dark shadow-md p-2 w-full"
+    style={{
+      boxShadow: '2px 0px 91px -12px black;'
+    }}
+    >
+      <div className="flex items-center justify-between space-x-3 duration-500 rounded-xl ">
+        <div className="flex items-center space-x-3">
           <Avatar
             src={user?.avatar?.url}
             name={"name"}
-            className="inline-block h-12  w-12 rounded-full hover:scale-90 duration-500 object-cover"
+            className="inline-block size-10 rounded-full hover:scale-90 duration-500 object-cover"
           />
           <span className="flex flex-col">
             <span className="text-sm font-medium">{user?.name}</span>

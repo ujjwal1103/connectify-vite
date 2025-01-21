@@ -1,10 +1,12 @@
 :root {
   font-size: 16px;
+  color: hsl(var(--foreground));
 }
 
 #root {
-  height: 100dvh;
-  width: 100dvw;
+  min-height: 100dvh;
+  min-width: 100dvw;
+  max-width: 100dvw;
   overflow: hidden;
   background-color: hsl(var(--background));
 }
@@ -25,6 +27,12 @@ body {
   overflow: hidden;
   min-width: 375px;
   font-size: 14px;
+  touch-action: manipulation;
+  pointer-events: auto !important;
+  padding-top: env(safe-area-inset-top);
+  padding-right: env(safe-area-inset-right);
+  padding-bottom: env(safe-area-inset-bottom);
+  padding-left: env(safe-area-inset-left);
 }
 
 .infinite-scroll {
@@ -46,10 +54,143 @@ body {
 #waveform ::part(cursor) {
   height: 14px !important;
   top: 35%;
-  border-radius: 7px;
-  background-color: black;
+  box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
 }
 
 * {
   transition: background-color 0.1s ease-in;
+}
+
+body.dragging {
+  cursor: grabbing !important;
+}
+
+.advanced-cropper-handler-wrapper {
+  display: none;
+}
+
+.advanced-cropper-rectangle-stencil {
+  box-shadow: 0 0 0 200px black;
+}
+input:-webkit-autofill,
+input:-webkit-autofill:focus {
+  transition:
+    background-color 0s 600000s,
+    color 0s 600000s !important;
+  outline: none;
+}
+
+.loader {
+  height: 4px;
+  width: 100%;
+  --c: no-repeat linear-gradient(#6100ee 0 0);
+  background: var(--c), var(--c), #d7b8fc;
+  background-size: 60% 100%;
+  animation: l16 3s infinite;
+}
+@keyframes l16 {
+  0% {
+    background-position:
+      -150% 0,
+      -150% 0;
+  }
+  66% {
+    background-position:
+      250% 0,
+      -150% 0;
+  }
+  100% {
+    background-position:
+      250% 0,
+      250% 0;
+  }
+}
+
+/* HTML:  */
+.dots {
+  width: 30px;
+  aspect-ratio: 2;
+  --_g: no-repeat radial-gradient(circle closest-side, #fff 90%, transparent);
+  background:
+    var(--_g) 0% 50%,
+    var(--_g) 50% 50%,
+    var(--_g) 100% 50%;
+  background-size: calc(100% / 3) 50%;
+  animation: l3 1s infinite linear;
+}
+@keyframes l3 {
+  20% {
+    background-position:
+      0% 0%,
+      50% 50%,
+      100% 50%;
+  }
+  40% {
+    background-position:
+      0% 100%,
+      50% 0%,
+      100% 50%;
+  }
+  60% {
+    background-position:
+      0% 50%,
+      50% 100%,
+      100% 0%;
+  }
+  80% {
+    background-position:
+      0% 50%,
+      50% 50%,
+      100% 100%;
+  }
+}
+
+.chat-bubble:before {
+  position: absolute;
+  bottom: 0px;
+  height: 0.75rem /* 12px */;
+  width: 0.75rem /* 12px */;
+  background-color: inherit;
+  content: '';
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  mask-position: center;
+}
+.start .chat-bubble {
+  grid-column-start: 2;
+  border-end-start-radius: 0px;
+}
+.start .chat-bubble:before {
+  mask-image: url('./assets/svg/bubble.svg');
+  inset-inline-start: -0.749rem;
+}
+
+.end .chat-bubble {
+  grid-column-start: 1;
+  border-bottom-right-radius: 0px;
+  border-bottom-left-radius: 0.75rem;
+}
+.end .chat-bubble:before {
+  mask-image: url('./assets/svg/bubble-end.svg');
+  inset-inline-start: 99.9%;
+}
+
+.scrollbar-guttor {
+  scrollbar-gutter: stable;
+}
+
+.safe-area-inset-bottom {
+  padding-bottom: calc(0.75rem + var(--safe-area-inset-bottom));
+}
+
+.send-button-safe-area {
+  padding-bottom: calc(0.75rem + var(--safe-area-inset-bottom));
+}
+
+.calculated-height {
+  --height-of: calc(105px + var(--safe-area-inset-bottom));
+  height: calc(100dvh - var(--height-of));
 }

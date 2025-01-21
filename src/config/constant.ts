@@ -4,24 +4,23 @@ const DEV_BASE_URL = import.meta.env.VITE_DEV_BASE_URL;
 const FIREBASE_API = import.meta.env.VITE_FIREBASE_API;
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 const GOOGLE_CLIENT_SECREAT = import.meta.env.VITE_GOOGLE_CLIENT_SECREAT;
-const GOOGLE_PROD_OAUTH_REDIRECT_URI =
-  import.meta.env.VITE_PROD_GOOGLE_OAUTH_REDIRECT_URI;
-const GOOGLE_DEV_OAUTH_REDIRECT_URI =
-  import.meta.env.VITE_DEV_GOOGLE_OAUTH_REDIRECT_URI;
-const NODE_ENV = import.meta.env.NODE_ENV;
-// const NODE_ENV = 'production';
-const PROD = "production";
+const GOOGLE_PROD_OAUTH_REDIRECT_URI = import.meta.env
+  .VITE_PROD_GOOGLE_OAUTH_REDIRECT_URI;
+const GOOGLE_DEV_OAUTH_REDIRECT_URI = import.meta.env
+  .VITE_DEV_GOOGLE_OAUTH_REDIRECT_URI;
+const NODE_ENV = import.meta.env.MODE;
+const DEV = "development";
 
-const BASE_URL = NODE_ENV === PROD ? PROD_BASE_URL : DEV_BASE_URL;
+const BASE_URL = NODE_ENV === DEV ? DEV_BASE_URL : PROD_BASE_URL;
 const SOCKET_SERVER_URL =
-  NODE_ENV === PROD
-    ? import.meta.env.VITE_PROD_SOCKET_URL
-    : import.meta.env.VITE_DEV_SOCKET_URL;
+  NODE_ENV === DEV
+    ? import.meta.env.VITE_DEV_SOCKET_URL
+    : import.meta.env.VITE_PROD_SOCKET_URL;
 
 const GOOGLE_OAUTH_REDIRECT_URI =
-  NODE_ENV === PROD
-    ? GOOGLE_PROD_OAUTH_REDIRECT_URI
-    : GOOGLE_DEV_OAUTH_REDIRECT_URI;
+  NODE_ENV === DEV
+    ? GOOGLE_DEV_OAUTH_REDIRECT_URI
+    : GOOGLE_PROD_OAUTH_REDIRECT_URI;
 
 export {
   PROD_BASE_URL,

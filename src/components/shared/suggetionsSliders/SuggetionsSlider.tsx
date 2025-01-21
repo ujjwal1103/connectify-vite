@@ -1,121 +1,130 @@
-import Avatar from "@/components/shared/Avatar";
-import UsernameLink from "../../shared/UsernameLink";
-import { Link } from "react-router-dom";
-import FollowButton from "../FollowButton";
-import { useEffect, useRef, useState } from "react";
-import { ChevronBack, ChevronForward } from "@/components/icons";
-import useGetSuggestedUsers from "@/hooks/useGetSuggestedUsers";
-import { IUser } from "@/lib/types";
+import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { Link } from 'react-router-dom'
 
-const SuggetionsSlider = ({ username }: { username?: string }) => {
-  const [canScrollLeft, setCanScrollLeft] = useState(false);
-  const [canScrollRight, setCanScrollRight] = useState(false);
-  const { suggetions, loading } = useGetSuggestedUsers() as any;
+import useGetSuggestedUsers from '@/hooks/useGetSuggestedUsers'
 
-  const scrollRef = useRef<HTMLDivElement>(null);
+import FollowButton from '@/components/shared/FollowButton'
+import UsernameLink from '@/components/shared/UsernameLink'
+import Avatar from '@/components/shared/Avatar'
 
+import { IUser } from '@/lib/types'
+
+const SuggestionsSlider = ({ username }: { username?: string }) => {
+  const [canScrollLeft, setCanScrollLeft] = useState(false)
+  const [canScrollRight, setCanScrollRight] = useState(false)
+
+  const scrollRef = useRef<HTMLDivElement>(null)
+  const scrollContainerRef = useRef<HTMLDivElement>(null)
+
+  const { suggestedUsers, loading, remove } = useGetSuggestedUsers() as any
+
+  // Update scroll buttons visibility
   useEffect(() => {
     const updateScrollButtons = () => {
       if (scrollRef.current) {
-        const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
-        setCanScrollLeft(scrollLeft > 0);
-        setCanScrollRight(scrollLeft + clientWidth < scrollWidth);
+        const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current
+        setCanScrollLeft(scrollLeft > 0)
+        setCanScrollRight(scrollLeft + clientWidth < scrollWidth)
       }
-    };
+    }
 
-    updateScrollButtons();
-    scrollRef.current?.addEventListener("scroll", updateScrollButtons);
+    updateScrollButtons()
+    scrollRef.current?.addEventListener('scroll', updateScrollButtons)
+    return () =>
+      scrollRef.current?.removeEventListener('scroll', updateScrollButtons)
+  }, [suggestedUsers, loading])
 
-    return () => {
-      scrollRef.current?.removeEventListener("scroll", updateScrollButtons);
-    };
-  }, [JSON.stringify(suggetions)]);
+  // Filter suggestedUsers excluding the current user
+  const filteredSuggestions = useMemo(
+    () => suggestedUsers.filter((person: IUser) => person.username !== username),
+    [suggestedUsers, username]
+  )
 
   const handleScrollLeft = () => {
-    if (suggetions.length && scrollRef.current) {
-      const { clientWidth, scrollLeft, scrollWidth } = scrollRef.current;
-      const scroll = scrollLeft + clientWidth - scrollWidth;
-      const absScroll = Math.abs(scroll);
-      const left = (absScroll < clientWidth
-        ? clientWidth + absScroll
-        : clientWidth);
-      scrollRef.current.scrollBy({ left: -left, behavior: "smooth" });
+    if (filteredSuggestions.length && scrollRef.current) {
+      const { clientWidth } = scrollRef.current
+      scrollRef.current.scrollBy({ left: -clientWidth, behavior: 'smooth' })
     }
-  };
-  const handleScrollRight = () => {
-    if (suggetions.length && scrollRef.current) {
-      const { clientWidth, scrollLeft, scrollWidth } = scrollRef.current;
+  }
 
-      const scroll = scrollLeft + clientWidth - scrollWidth;
-      const absScroll = Math.abs(scroll);
-      scrollRef.current.scrollBy({
-        left: absScroll < clientWidth ? clientWidth + absScroll : clientWidth,
-        behavior: "smooth",
-      });
+  const handleScrollRight = () => {
+    if (filteredSuggestions.length && scrollRef.current) {
+      const { clientWidth } = scrollRef.current
+      scrollRef.current.scrollBy({ left: clientWidth, behavior: 'smooth' })
     }
-  };
+  }
 
   if (loading) {
     return (
-      <div className="w-20 bg-[#0D0D0D] hidden">
-        <div className=" w-[50%]  m-auto flex  flex-col items-center">
-          <div className="flex justify-start  w-full p-2">
-            <span className="h-6 bg-zinc-800 rounded-md w-44 "></span>
+      <div className="hidden w-full bg-gray-800">
+        <div className="m-auto flex flex-col items-center p-4">
+          <div className="w-full animate-pulse">
+            <div className="mb-2 h-6 w-44 rounded-md bg-gray-600"></div>
+            <span className="text-gray-400">Loading...</span>
           </div>
-          loading
         </div>
       </div>
-    );
+    )
+  }
+
+  if (filteredSuggestions.length <= 11) {
+    return null
   }
 
   return (
-    <div className=" ">
-      <div className="p-2 flex justify-between ">
-        <span>Suggested for you</span>
-        <Link to="/explore">See all</Link>
+    <div ref={scrollContainerRef} className="flex w-full flex-col items-center">
+      <div className="flex w-screen items-center justify-between px-3 py-2 sm:w-128 sm:px-0 md:w-160 lg:w-192 xl:w-240 2xl:w-256">
+        <span className="text-lg font-medium">Suggested for you</span>
+        <Link to="/explore" className="text-blue-500 hover:underline">
+          See all
+        </Link>
       </div>
-      <div className="relative z-1">
-        <div className="flex justify-between z-10 w-full px-2 mb-2 absolute top-1/2 -translate-y-1/2">
+      <div className="relative w-screen px-3 sm:w-128 sm:px-0 md:w-160 lg:w-192 xl:w-240 2xl:w-256">
+        <div className="group absolute top-1/2 z-10 flex w-full -translate-y-1/2 justify-between">
           <button
-            className="border text-sm ml-2 p-1 bg-background rounded absoulute left-0 disabled:opacity-50"
             onClick={handleScrollLeft}
             disabled={!canScrollLeft}
+            aria-label="Scroll Left"
+            className="rounded-full bg-gray-700 p-2 text-white opacity-0 group-hover:opacity-100 group-hover:disabled:opacity-0"
           >
-            <ChevronBack />
+            <ChevronLeft />
           </button>
           <button
-            className="border text-sm mr-2 p-1 bg-background absoulute right-0 rounded disabled:opacity-50"
             onClick={handleScrollRight}
             disabled={!canScrollRight}
+            aria-label="Scroll Right"
+            className="mr-5 rounded-full bg-gray-700 p-2 text-white opacity-0 group-hover:opacity-100 group-hover:disabled:opacity-0 sm:mr-0"
           >
-            <ChevronForward />
+            <ChevronRight />
           </button>
         </div>
         <div
           ref={scrollRef}
-          className="overflow-x-scroll relative snap-x scrollbar-none overflow-hidden"
+          className="flex snap-x gap-4 overflow-x-auto scrollbar-none"
         >
-          <div className="inline-flex h-44 max-h-44 snap-center">
-            {suggetions
-              .filter((people: IUser) => people.username !== username)
-              ?.map((people: IUser) => {
-                return <People key={people._id} {...people} />;
-              })}
+          <div className="flex max-h-44 min-h-44 gap-3">
+            {filteredSuggestions.map((person: IUser) => (
+              <People {...person} remove={() => remove(person._id)} />
+            ))}
           </div>
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default SuggetionsSlider;
+export default SuggestionsSlider
 
-const People = ({ avatar, username, name, _id }: any) => (
-  <div className="w-36 p-2 rounded-lg border  dark:border-zinc-500/30  flex items-center justify-between flex-col mx-2 mb-2">
-    <Avatar src={avatar?.url} className={"w-14 h-14 rounded-full"} />
+const People = ({ avatar, username, name, _id, remove }: any) => (
+  <div className="flex w-36 flex-col items-center justify-between rounded-lg border border-background/50 p-2 transition-colors duration-300 hover:bg-background">
+    <Avatar src={avatar?.url} className={'h-14 w-14 rounded-full'} />
     <div className="flex flex-col justify-center">
-      <span className="text-sm">{name}</span>
-      <UsernameLink username={username} className="text-gray-400 text-xs">
+      <span className="text-center text-sm">{name}</span>
+      <UsernameLink
+        username={username}
+        className="text-center text-xs text-gray-400"
+      >
         <span>{username}</span>
       </UsernameLink>
     </div>
@@ -127,7 +136,8 @@ const People = ({ avatar, username, name, _id }: any) => (
         showRemoveFollowerBtn={false}
         isRequested={false}
         isPrivate={false}
+        callBack={remove}
       />
     </div>
   </div>
-);
+)

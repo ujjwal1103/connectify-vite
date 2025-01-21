@@ -2,28 +2,35 @@ import {
   Avatar as ShadAvatat,
   AvatarFallback,
   AvatarImage,
-} from "@/components/ui/avatar";
-import noAvatar from "/assets/Icons/no_avatar.png";
+} from '@/components/ui/avatar'
+import noAvatar from '../../assets/Icons/no_avatar.png'
+import { tranformUrl } from '@/lib/utils'
+import { memo } from 'react'
 
 const Avatar = ({
   src,
   name,
-  className = "size-8 border border-zinc-400",
+  className = 'size-8',
   onClick,
+  resize = 100,
 }: {
-  src?: string;
-  name?: string;
-  className?: string;
-  onClick?: () => void;
+  src?: string
+  name?: string
+  className?: string
+  onClick?: () => void
+  resize?: number
 }) => {
   return (
     <ShadAvatat className={className} onClick={onClick}>
-      <AvatarImage src={src || noAvatar} className="object-cover" />
+      <AvatarImage
+        src={tranformUrl(src, resize) || noAvatar}
+        className="object-cover"
+      />
       <AvatarFallback className="text-sm">
         {name?.substring(0, 2)}
       </AvatarFallback>
     </ShadAvatat>
-  );
-};
+  )
+}
 
-export default Avatar;
+export default memo(Avatar)
