@@ -2,7 +2,13 @@ import { deleteThisPost } from '@/api'
 import { IPost, IUser } from '@/lib/types'
 import { usePostSlice } from '@/redux/services/postSlice'
 import { AnimatePresence, motion } from 'framer-motion'
-import { Loader, MaximizeIcon, MoreHorizontal, Pencil, Trash2 } from 'lucide-react'
+import {
+  Loader,
+  MaximizeIcon,
+  MoreHorizontal,
+  Pencil,
+  Trash2,
+} from 'lucide-react'
 import {
   Dispatch,
   SetStateAction,
@@ -36,7 +42,6 @@ export const ProfilePost = ({
   onClickPost,
   index,
 }: ProfilePostProps) => {
-  console.log({post})
   const [currentPost, setCurrentPost] = useState(post)
   const [editPost, setEditPost] = useState(false)
   const [deletingPost, setDeletingPost] = useState(false)
@@ -75,8 +80,12 @@ export const ProfilePost = ({
 
   return (
     <motion.div className="group relative flex aspect-1 items-center bg-black">
-      <div className="w-full aspect-1">
-        <ImageSlider images={currentPost?.images} aspect={true} />
+      <div className="aspect-1 w-full">
+        <ImageSlider
+          images={currentPost?.images}
+          aspect={true}
+          resizeMode="cover"
+        />
       </div>
 
       <div
@@ -94,16 +103,11 @@ export const ProfilePost = ({
         />
       </div>
       <AnimatePresence>
-      {editPost && (
-        <Modal showCloseButton={false} onClose={() => setEditPost(false)}>
-        <EditPostModal
-          
-          isOpen={editPost}
-         
-          post={currentPost}
-        />
-        </Modal>
-      )}
+        {editPost && (
+          <Modal showCloseButton={false} onClose={() => setEditPost(false)}>
+            <EditPostModal isOpen={editPost} post={currentPost} />
+          </Modal>
+        )}
       </AnimatePresence>
 
       <AnimatePresence>
@@ -261,7 +265,6 @@ const PostMenu = ({
                   label="View"
                   icon={MaximizeIcon}
                   onClick={() => navigate(`/p/${postId}`)}
-               
                 />
                 {isSelfPosts && (
                   <>
@@ -269,14 +272,13 @@ const PostMenu = ({
                       label="Edit"
                       icon={Pencil}
                       onClick={handleEditPost}
-                   
                     />
                     <DropDownMenuItem
                       label="Delete"
                       icon={Trash2}
                       onClick={handleOpen}
                       // disabled={deletingPost}
-                      className='text-red-600'
+                      className="text-red-600"
                     />
                   </>
                 )}

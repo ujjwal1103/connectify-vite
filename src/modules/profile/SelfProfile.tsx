@@ -44,10 +44,10 @@ const SelfProfile = () => {
 
   return (
     <div
-      className="relative mb-8 flex h-dvh min-h-dvh flex-1 overflow-x-hidden overflow-y-scroll pt-16 sm:pt-0 scrollbar-thin scrollbar-none md:mb-0 md:mt-0 md:w-full md:flex-1"
+      className="relative mb-8 flex h-dvh min-h-dvh flex-1 overflow-x-hidden overflow-y-scroll pt-16 scrollbar-thin scrollbar-none sm:pt-0 md:my-0 md:w-full"
       id="scrollableDiv"
     >
-      <div className="flex-1 text-sm md:w-full md:text-sm">
+      <div className="w-full text-sm">
         <div className="flex flex-col justify-center gap-3 px-2 py-3 md:mx-auto md:justify-evenly md:px-10 md:py-5 lg:w-4/5">
           <div className="flex gap-5">
             <div className="flex size-24 flex-col items-center justify-center rounded-full border-zinc-800 p-1 md:size-40 md:flex-row md:border-2">
@@ -107,7 +107,7 @@ const SelfProfile = () => {
               </div>
             </div>
           </div>
-          <div className='md:hidden'>
+          <div className="md:hidden">
             <pre className="font-sans text-txs md:text-sm">{user?.bio}</pre>
           </div>
           <div className="flex items-center gap-2 md:hidden">
@@ -143,4 +143,4 @@ const SelfProfile = () => {
   )
 }
 
-export default SelfProfile;
+export default SelfProfile

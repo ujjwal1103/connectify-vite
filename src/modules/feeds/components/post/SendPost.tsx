@@ -97,10 +97,10 @@ const SendPost = ({ onClose, post }: SendPostProps) => {
 
   return (
     <motion.div
-      variants={variants}
-      initial="initial"
-      animate="animate"
-      exit="exit"
+      // variants={variants}
+      // initial="initial"
+      // animate="animate"
+      // exit="exit"
       className="relative h-dvh w-screen overflow-hidden bg-background text-foreground md:h-auto md:w-500"
     >
       <div className="flex w-full items-center justify-between border-b-[0.5px] border-border p-2 text-xl text-foreground">

@@ -8,9 +8,11 @@ import { motion, useMotionValueEvent, useScroll } from 'framer-motion'
 import { useRef, useState } from 'react'
 import { useOutletContext } from 'react-router-dom'
 import LoadingFeed from './components/LoadingFeed'
-import { ChevronUpIcon } from 'lucide-react'
+import { ChevronUpIcon, Loader } from 'lucide-react'
 import Wrapper from '@/components/Wrapper'
 import NoPosts from './components/NoPosts'
+import UploadingPost from './components/UploadingPost'
+import usePostStore from '@/stores/posts'
 // import StoryComponent from './StoryComponent'
 // import Stories from './components/stories/Stories'
 
@@ -24,6 +26,7 @@ const Feeds = () => {
   const { feeds, hasNextPage, setPage, page, isLoading } =
     useFetchFeeds<IPost>(fetchPosts)
   const setHide: any = useOutletContext()
+  const { uploadingPost } = usePostStore()
 
   const containerRef = useRef<HTMLDivElement>(null)
   const [showScrollToTop, setShowScrollToTop] = useState(false)
@@ -60,10 +63,10 @@ const Feeds = () => {
     <>
       <main
         ref={containerRef}
-        className="relative h-dvh bg-secondary flex overflow-y-auto scrollbar-thin"
+        className="relative flex h-dvh overflow-y-auto bg-secondary scrollbar-thin"
         id="scrollableDiv"
       >
-        <div className="h-full w-full md:p-4 p-0 pt-14  m-auto flex-[0.7]">
+        <div className="m-auto h-full w-full flex-[0.7] p-0 pt-14 md:p-4">
           <section className="flex flex-col">
             <InfiniteScroll
               dataLength={feeds?.length}
@@ -71,11 +74,14 @@ const Feeds = () => {
               hasMore={hasNextPage}
               loader={<LoadingFeed />}
               scrollableTarget={'scrollableDiv'}
-              className="w-screen md:w-full max-w-lg m-auto"
+              className="m-auto w-screen max-w-lg md:w-full"
             >
               {/* <StoryComponent /> */}
               {isLoading && <div>Loading</div>}
               {feeds.length === 0 && !isLoading && <NoPosts />}
+              {uploadingPost.isUploading && (
+                <UploadingPost uploadingPost={uploadingPost} />
+              )}
               {feeds?.map((feed: any) => <Post key={feed._id} post={feed} />)}
             </InfiniteScroll>
           </section>

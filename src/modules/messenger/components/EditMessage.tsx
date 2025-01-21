@@ -1,3 +1,4 @@
+import { editMessage } from '@/api'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { IMessage } from '@/lib/types'
@@ -15,7 +16,7 @@ type EditMessageProps = {
 const EditMessage = ({ message, end = false, onClose }: EditMessageProps) => {
   const [messageText, setMessageText] = useState(message?.text)
   const [isValid, setIsValid] = useState(false)
-  const { editMessageById , setIsAddingContent} = useChatSlice()
+  const { editMessageById, setIsAddingContent, selectedChat } = useChatSlice()
 
   useEffect(() => {
     if (!messageText) {
@@ -32,6 +33,13 @@ const EditMessage = ({ message, end = false, onClose }: EditMessageProps) => {
   const handleSendChangedMessage = async () => {
     try {
       setIsAddingContent(true)
+      const res = editMessage({
+        messageId: message._id,
+        text: messageText,
+        chatId: message.chat,
+        members: selectedChat?.members?.map((u) => u._id) as string[],
+      })
+      console.log(res)
       editMessageById({ text: messageText, messageId: message._id })
       onClose?.()
       setIsAddingContent(false)

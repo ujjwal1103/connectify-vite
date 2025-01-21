@@ -58,8 +58,8 @@ const TextMessage = ({
         createdAt={message.createdAt}
         currentUserMessage={isCurrentUserMessage}
         isLoading={isLoading}
-        allSeen={allSeen}
-        seen={message.seen}
+        allSeen={false}
+      seen={message.seen}
         className="self-end"
         reaction={message.reaction}
       />

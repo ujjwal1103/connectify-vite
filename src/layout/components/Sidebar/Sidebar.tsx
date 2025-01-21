@@ -61,8 +61,11 @@ const Sidebar = () => {
     target: HTMLElement
   ) => {
     if (!sidebarRef.current) return
-
-    console.log(modalName, id, target)
+    console.log({ modalName })
+    if (modalName === 'newPost') {
+      setModalState(modalName)
+      return
+    }
     if (target.id.toLocaleLowerCase() === id.toLocaleLowerCase()) return
 
     // const modalElement = sidebarRef.current.querySelector(
@@ -244,17 +247,25 @@ const Sidebar = () => {
       </AnimatePresence>
       <AnimatePresence>
         {newStory && (
-          <StoryModal
-            onClose={(e: React.MouseEvent<HTMLButtonElement>) => {
-              if (e.target) {
-                handleModalClose(
-                  'newStory',
-                  'New Story',
-                  e.target as HTMLElement
-                )
-              }
+          <Modal
+            shouldCloseOutsideClick={false}
+            showCloseButton={false}
+            onClose={(e) => {
+              handleModalClose('newStory', 'New Story', e.target as HTMLElement)
             }}
-          />
+          >
+            <StoryModal
+              onClose={(e: React.MouseEvent<HTMLButtonElement>) => {
+                if (e.target) {
+                  handleModalClose(
+                    'newStory',
+                    'New Story',
+                    e.target as HTMLElement
+                  )
+                }
+              }}
+            />
+          </Modal>
         )}
       </AnimatePresence>
     </>
@@ -295,7 +306,7 @@ const PostOptions = ({
       exit={{ opacity: 0, y: 10, height: 0 }}
       transition={{ duration: 0.3, ease: 'easeInOut' }}
       ref={menuRef}
-      className="absolute z-[200] md:w-60 w-44  rounded-md border overflow-hidden border-border bg-background origin-bottom"
+      className="absolute z-[200] w-44 origin-bottom overflow-hidden rounded-md border border-border bg-background md:w-60"
       style={postMenuPosition}
     >
       <li className="p-2 hover:bg-secondary" onClick={handleOpenNewPost}>

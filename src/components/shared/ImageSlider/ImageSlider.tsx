@@ -8,25 +8,27 @@ import {
 import ImageComponent from '../Image/ImageComponent'
 import { IIamge } from '@/lib/types'
 
-export const ImageSlider = ({ images, width, aspect }: any) => {
+export const ImageSlider = ({ images, width, aspect, resizeMode }: any) => {
   return (
     <Carousel
       defaultChecked={true}
-      className="relative block bg-background"
+      className="relative block bg-background h-full"
       style={{ width }}
+
     >
-      <CarouselContent className="w-full">
+      <CarouselContent className="w-full h-full">
         {images.map((image: IIamge, index: number) => (
           <CarouselItem
             nonce=""
             key={index}
-            style={{ width, aspectRatio: aspect && '1' }}
+            style={{ width, aspectRatio: aspect && '1', objectFit:resizeMode }}
           >
             {image.type === 'IMAGE' ? (
               <ImageComponent
                 src={image.url}
                 width={width}
                 className="h-full w-full object-contain"
+                resizeMode={resizeMode}
               />
             ) : (
               <video

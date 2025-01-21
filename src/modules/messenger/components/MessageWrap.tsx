@@ -149,6 +149,5 @@ const MessageWrap = ({
   )
 }
 export default memo(
-  MessageWrap,
-  (prev, next) => prev.message._id === next.message._id
+  MessageWrap
 )

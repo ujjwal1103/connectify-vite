@@ -15,6 +15,8 @@ import { useState, useRef, useEffect, memo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useChat, useMessage } from '@/redux/services/chatSlice'
 import { IChat } from '@/lib/types'
+import { clearAllMessages } from '@/api'
+import { toast } from 'sonner'
 
 type MessageListHeaderProps = {
   selectedChat: IChat | null
@@ -22,7 +24,7 @@ type MessageListHeaderProps = {
 
 const MessageListHeader = ({ selectedChat }: MessageListHeaderProps) => {
   const { toggleShowChat } = useChat()
-  const { setIsSelectMessages } = useMessage()
+  const { setIsSelectMessages, setMessages, setMessagePage } = useMessage()
   const [open, setOpen] = useState(false)
 
   const menuRef = useRef<any>(null)
@@ -49,13 +51,27 @@ const MessageListHeader = ({ selectedChat }: MessageListHeaderProps) => {
     navigate(-1)
   }
 
+  const confirmDeleteAllMessages = async () => {
+    const response = confirm('This will delete all messages from chat.')
+    if (response) {
+      setIsSelectMessages(false)
+      setOpen(false)
+      setMessages([])
+      setMessagePage(1)
+
+      const res = await clearAllMessages(selectedChat!._id)
+      toast.success('All Messages deleted successfully.')
+      console.log(res)
+    }
+  }
+
   return (
     <div className="relative z-100 flex flex-[0.05] items-center bg-background py-2 pr-3">
-      <button className="md:hidden block pl-2" onClick={handleGoBack}>
+      <button className="block pl-2 md:hidden" onClick={handleGoBack}>
         <ChevronLeft size={24} />
       </button>
       <div
-        className="flex items-center gap-3 font-semibold ml-2"
+        className="ml-2 flex items-center gap-3 font-semibold"
         onClick={toggleShowChat}
       >
         <Avatar
@@ -103,7 +119,11 @@ const MessageListHeader = ({ selectedChat }: MessageListHeaderProps) => {
                     setOpen(false)
                   }}
                 />
-                <DropDownMenuItem label="Clear Chat" icon={MessageSquareX} />
+                <DropDownMenuItem
+                  label="Clear Chat"
+                  icon={MessageSquareX}
+                  onClick={confirmDeleteAllMessages}
+                />
                 <DropDownMenuItem label="Delete Chat" icon={Trash2} />
               </ul>
             </motion.div>

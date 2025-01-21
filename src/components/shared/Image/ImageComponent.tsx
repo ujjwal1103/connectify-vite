@@ -9,6 +9,7 @@ const ImageComponent = ({
   fallback,
   width,
   className = '',
+  resizeMode = 'containe',
   ...props
 }: any) => {
   const [loading, setLoading] = useState(true)
@@ -36,7 +37,7 @@ const ImageComponent = ({
           alt={alt}
           onLoad={handleLoad}
           onError={handleError}
-          style={{width: width}}
+          style={{ width: width, objectFit: resizeMode }}
           className={cn(className, { hidden: loading })}
           {...props}
         />

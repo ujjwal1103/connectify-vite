@@ -108,6 +108,26 @@ const getAllMessages = async (chatId: string, page: number): Promise<any> => {
   return await makeRequest.get(`/messages/${chatId}?page=${page}&limit=25`)
 }
 
+export const clearAllMessages = async (chatId: string): Promise<any> => {
+  return await makeRequest.delete(`/messages/${chatId}`)
+}
+
+export const seenMessages = async (data: {
+  messageId: string
+  chatId: string
+  members: string[]
+}) => {
+  return await makeRequest.put(`/message/seen/${data.messageId}`, data)
+}
+export const editMessage = async (data: {
+  messageId: string
+  chatId: string
+  text: string
+  members: string[]
+}) => {
+  return await makeRequest.put(`/message/${data.messageId}`, data)
+}
+
 const sendMessage = async (
   chatId: string,
   message: {
@@ -164,7 +184,9 @@ const getCommentsByPostId = async (postId: string, pcId?: string) => {
 
 // post apis
 
-const getPostById = async (postId: string): Promise<{isSuccess:boolean, post:IPost}> => {
+const getPostById = async (
+  postId: string
+): Promise<{ isSuccess: boolean; post: IPost }> => {
   return await makeRequest.get(`post/${postId}`)
 }
 
@@ -172,7 +194,7 @@ const getAllPost = async (page: number): Promise<any> => {
   return await makeRequest.get(`posts?page=${page}`)
 }
 
-const getSelfPosts = async (page: number) => {
+const getSelfPosts = async (page: number): Promise<any> => {
   return await makeRequest.get(`posts/user?page=${page}&limit=12`)
 }
 
@@ -180,12 +202,14 @@ const getSelfReels = async (page: number) => {
   return await makeRequest.get(`posts/reels/user?page=${page}&limit=12`)
 }
 
-const getUserPosts = async (page: number, username?: string) => {
+const getUserPosts = async (page: number, username?: string): Promise<any> => {
   return await makeRequest.get(`posts/${username}?page=${page}&limit=12`)
 }
 
-const uploadPosts = async (data: any) => {
-  return await makeRequest.postForm('/post', data)
+const uploadPosts = async (
+  formData: FormData
+): Promise<{ isSuccess: boolean; post: IPost }> => {
+  return await makeRequest.postForm('/post', formData)
 }
 
 const searchUser = async (searchQuery: string): Promise<any> => {

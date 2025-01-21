@@ -5,6 +5,9 @@ import { useClickOutside } from '@react-hookz/web'
 import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
 
+const cssVars =
+  '[--opacity-close:0%] [--opacity-open:100%] [--scale-from:1] [--scale-to:1] [--translatey-from:100] [--translatey-to:0] md:w-auto md:[--scale-from:30%] md:[--scale-to:100%] md:[--translatey-from:0]'
+
 type ModalProps = {
   onClose?: (e: any) => void
   shouldCloseOutsideClick?: boolean
@@ -13,6 +16,22 @@ type ModalProps = {
   overlayClasses?: string
   children: React.ReactElement
 }
+
+const variantsSlide = {
+  initial: {
+    x: 'var(--x-from)',
+    scale: 'var(--scale-from)',
+  },
+  animate: {
+    x: 'var(--x-to)',
+    scale: 'var(--scale-to)',
+  },
+  exit: {
+    x: 'var(--x-from)',
+    scale: 'var(--scale-from)',
+  },
+}
+
 const Modal = ({
   onClose,
   children,
@@ -80,14 +99,15 @@ const Modal = ({
         <div className="flex h-dvh w-screen items-center justify-center">
           {animate ? (
             <motion.div
-              initial={{ scale: 0.8 }}
-              animate={{ scale: 1 }}
-              exit={{ scale: 0.8 }}
+              variants={variantsSlide}
+              initial={'initial'}
+              animate={'animate'}
+              exit={'exit'}
               transition={{ type: 'tween' }}
               onClick={handleChildClick}
               tabIndex={-1}
               ref={modalRef}
-              className="focus-visible:outline-0"
+              className="[--scale-from:1] [--scale-to:1] [--x-from:100%] [--x-to:0%] focus-visible:outline-0 md:[--x-from:0%] md:[--scale-from:0.8]"
             >
               {childrenWithProps}
             </motion.div>

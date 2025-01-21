@@ -1,23 +1,23 @@
-// SocketContext.js
-import React, {
+import {
   createContext,
   PropsWithChildren,
   useContext,
   useEffect,
-  useMemo,
-  useState,
+  // useMemo,
+  // useState,
 } from 'react'
-import io, { Socket } from 'socket.io-client'
-import { SOCKET_SERVER_URL } from '@/config/constant'
+import { Socket } from 'socket.io-client'
+// import { SOCKET_SERVER_URL } from '@/config/constant'
 import { useAuth } from './AuthContext'
+import { useSocketStore } from '@/zustand/useSocketStore'
 
-const isDev = import.meta.env.DEV
+// const isDev = import.meta.env.DEV
 
 interface SocketContextProps {
   socket: Socket | null
-  users: any[]
-  isUserOnline: (userId: string) => boolean
-  setUsers: React.Dispatch<React.SetStateAction<any[]>>
+  // users: any[]
+  // isUserOnline: (userId: string) => boolean
+  // setUsers: React.Dispatch<React.SetStateAction<any[]>>
 }
 
 const SocketContext = createContext<SocketContextProps | undefined>(undefined)
@@ -31,51 +31,24 @@ export const useSocket = (): SocketContextProps => {
 }
 
 export const SocketProvider = ({ children }: PropsWithChildren) => {
-  const [socket, setSocket] = useState<Socket | null>(null)
-  const [users, setUsers] = useState<any[]>([])
-  const [isConnected, setIsConnected] = useState(false)
+  const { connect, disconnect, socket } = useSocketStore()
   const { user } = useAuth()
 
-  const newSocket = useMemo(() => {
-    if (user) {
-      const ioo = io(SOCKET_SERVER_URL, {
-        query: { user: JSON.stringify(user) },
-        auth: { name: user?.name, username: user?.username, userId: user?._id },
-      })
-      return ioo
-    }
-
-    return null
-  }, [user])
-
   useEffect(() => {
-    if (newSocket) {
-      setSocket(newSocket)
-      newSocket.on('connect', () => {
-        setIsConnected(true)
-      })
-      newSocket.on('disconnect', () => {
-        setIsConnected(false)
-      })
-      newSocket.on('', () => {})
-      return () => {
-        newSocket.disconnect()
-      }
+    if (user) {
+      connect(user)
     }
-  }, [newSocket])
-
-  const isUserOnline = (userId: string) => {
-    return users && users.some((user) => user.userId === userId)
-  }
+    return () => disconnect()
+  }, [user, connect, disconnect])
 
   return (
-    <SocketContext.Provider value={{ socket, users, isUserOnline, setUsers }}>
+    <SocketContext.Provider value={{ socket }}>
       {children}
-      {isConnected && isDev && (
-        <span className="fixed top-0 bg-green-500/20 px-2 hidden text-primary lg:bottom-0">
+      {/* {isConnected && isDev && (
+        <span className="fixed top-0 hidden bg-green-500/20 px-2 text-primary lg:bottom-0">
           Socket Connected
         </span>
-      )}
+      )} */}
     </SocketContext.Provider>
   )
 }

@@ -24,7 +24,6 @@ const RenderMessage = (props: any) => {
 
 interface MessageProps {
   currentUserMessage: boolean
-  seen: boolean
   isMessageSelected: boolean
   message: IMessage
   isNextMessageUsMine: boolean

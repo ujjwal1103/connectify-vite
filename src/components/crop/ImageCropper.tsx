@@ -21,13 +21,13 @@ import Avatar from '../shared/Avatar'
 import { getCurrentUser } from '@/lib/localStorage'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ChevronLeft, ChevronRight, MapPin, Smile } from 'lucide-react'
-import { usePostSlice } from '@/redux/services/postSlice'
 import { useFeedSlice } from '@/redux/services/feedSlice'
 import { useAuth } from '@/context/AuthContext'
 import { uploadPosts } from '@/api'
-import { IPost, IUser } from '@/lib/types'
-import { toast } from 'react-toastify'
+import { IUser } from '@/lib/types'
+import { toast } from 'sonner'
 import ProgressLoading from '../shared/Loading/ProgressLoading'
+import usePostStore from '@/stores/posts'
 const emptyFn = () => {}
 
 interface ImageCropperProps {
@@ -35,12 +35,13 @@ interface ImageCropperProps {
   onCrop: (file: File, url: string, allNextImageCrop: boolean) => void
   onImagePick: (data: any) => void
   clearImage: (name: string) => void
-  croppedImagesUrls: { file: File; croppedUrl: string; type: string }[]; 
+  croppedImagesUrls: { file: File; croppedUrl: string; type: string }[]
   setCroppedImagesUrls: (urls: string[]) => void
   onResetAndClose: () => void
   selectImage: (name: string) => void
   aspectRatio: number
   setAspectRatio: (ratio: number) => void
+  onClose: () => void
 }
 
 const ImageCropper: React.FC<ImageCropperProps> = ({
@@ -53,6 +54,7 @@ const ImageCropper: React.FC<ImageCropperProps> = ({
   selectImage,
   aspectRatio,
   setAspectRatio,
+  onClose,
 }) => {
   const cropperRef = useRef<FixedCropperRef | null>(null)
 
@@ -64,11 +66,11 @@ const ImageCropper: React.FC<ImageCropperProps> = ({
   const [caption, setCaption] = useState(false)
   const [croppedUrls, setCroppedUrls] = useState<string[]>([])
 
-    const [captionText, setCaptionText] = useState<string>('')
-    const [isLoading, setIsLoading] = useState(false)
-    const { addPost } = usePostSlice()
-    const { addNewFeed } = useFeedSlice()
-    const { updateUser, user } = useAuth()
+  const [captionText, setCaptionText] = useState<string>('')
+  const [isLoading, setIsLoading] = useState(false)
+  const { addPost, setUploadingPost } = usePostStore()
+  const { addNewFeed } = useFeedSlice()
+  const { updateUser, user } = useAuth()
 
   useEffect(() => {
     if (cropper) {
@@ -84,35 +86,42 @@ const ImageCropper: React.FC<ImageCropperProps> = ({
     }
     try {
       setIsLoading(true)
+      setUploadingPost({
+        isUploading: true,
+        image: croppedImagesUrls[0]?.croppedUrl,
+      })
       const formData = new FormData()
       for (let i = 0; i < croppedImagesUrls.length; i++) {
         formData.append('postImage', croppedImagesUrls[i].file)
       }
       formData.append('caption', captionText || '')
       formData.append('aspectRatio', `${aspectRatio}`)
-      const response = await uploadPosts(formData);
-      const data = response.data as { isSuccess: boolean; post: IPost };
-
+      onClose()
+      const data = await uploadPosts(formData)
       if (data?.isSuccess) {
+        setUploadingPost({
+          isUploading: false,
+          image: null,
+        })
         addPost(data.post)
         addNewFeed(data.post)
+
         const posts = user?.posts || 0
         const newUser = { ...user, posts: posts + 1 } as IUser
         updateUser(newUser)
-        toast('Image Uploade SuccessFully')
+        toast.success('Image Uploaded SuccessFully')
         
       }
-    } catch (error) {
+    } catch (error: any) {
       console.log('ERROR UPLOADING POST', error)
-      toast.error('Error Uploading Post')
+      toast.error(error?.message || 'Failed to upload post.')
     } finally {
       setIsLoading(false)
     }
   }
 
   const onCropImage = async (allNextImageCrop = false) => {
-
-    if(caption){
+    if (caption) {
       await handlePost()
     }
     if (cropperRef.current) {
@@ -135,13 +144,16 @@ const ImageCropper: React.FC<ImageCropperProps> = ({
     onImagePick(data)
   }
 
-
   return (
     <motion.div className="relative flex w-full flex-col items-center justify-center bg-background">
-       {isLoading && <ProgressLoading />}
+      {isLoading && <ProgressLoading />}
       <CropHeaderButtons
         onResetAndClose={() => {
-          setCaption(false)
+          if (caption) {
+            setCaption(false)
+          } else {
+            onClose()
+          }
         }}
         onCropImage={onCropImage}
         isCaptionOpen={caption}
@@ -151,7 +163,11 @@ const ImageCropper: React.FC<ImageCropperProps> = ({
           <>
             <AnimatePresence>
               {caption ? (
-                <CaptionComponent caption={captionText} onChangeCaption={setCaptionText} croppedUrls={croppedUrls} />
+                <CaptionComponent
+                  caption={captionText}
+                  onChangeCaption={setCaptionText}
+                  croppedUrls={croppedUrls}
+                />
               ) : (
                 <Cropper
                   ref={cropperRef}
@@ -192,8 +208,8 @@ export default ImageCropper
 
 interface CaptionComponentProps {
   croppedUrls: string[]
-  caption: string,
-  onChangeCaption: (v:string)=>void
+  caption: string
+  onChangeCaption: (v: string) => void
 }
 
 const CaptionComponent = ({ croppedUrls }: CaptionComponentProps) => {
@@ -201,8 +217,6 @@ const CaptionComponent = ({ croppedUrls }: CaptionComponentProps) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const [showLocation, setShowLocation] = useState(false)
   const [location, setLocation] = useState<string>('')
-
-
 
   const user = getCurrentUser()
   const captionInputRef = useRef<HTMLTextAreaElement>(null)
@@ -233,24 +247,24 @@ const CaptionComponent = ({ croppedUrls }: CaptionComponentProps) => {
     setLocation(loc)
   }
 
-  "[--opacity-close:0%] [--opacity-open:100%] [--scale-from:1] [--scale-to:1] [--translatey-from:100] [--translatey-to:0] md:w-auto md:[--scale-from:30%] md:[--scale-to:100%] md:[--translatey-from:0]"
+  ;('[--opacity-close:0%] [--opacity-open:100%] [--scale-from:1] [--scale-to:1] [--translatey-from:100] [--translatey-to:0] md:w-auto md:[--scale-from:30%] md:[--scale-to:100%] md:[--translatey-from:0]')
 
   return (
-    <div className="flex flex-col h-[calc(100dvh_-_37px)] md:flex-row overflow-y-scroll md:overflow-y-hidden md:h-500">
+    <div className="flex h-[calc(100dvh_-_37px)] flex-col overflow-y-scroll md:h-500 md:flex-row md:overflow-y-hidden">
       {croppedUrls.length > 0 && <ImageCanvas urls={croppedUrls} />}
       <motion.div
         initial={{ width: 0 }}
-        animate={{ width: 'var(--width)'}}
-        className="relative  h-full md:[--width:300] [--width:100%] flex-col md:flex"
+        animate={{ width: 'var(--width)' }}
+        className="relative h-full flex-col [--width:100%] md:flex md:[--width:300]"
       >
-        <div className="flex items-center gap-3 w-full p-4">
+        <div className="flex w-full items-center gap-3 p-4">
           <Avatar src={user?.avatar?.url} className="size-7 border-none" />
           <span className="text-sm">{user?.username}</span>
         </div>
         <div className="px-4">
           <textarea
             ref={captionInputRef}
-            name="caption" 
+            name="caption"
             id="caption"
             value={captionText}
             onChange={handleCaptionChange}
@@ -284,11 +298,11 @@ const CaptionComponent = ({ croppedUrls }: CaptionComponentProps) => {
           </div>
         </div>
         {showLocation && (
-          <div className="w-full max-h-40 overflow-auto rounded shadow-md">
+          <div className="max-h-40 w-full overflow-auto rounded shadow-md">
             {Array(20)
               .fill({})
               .map(() => {
-                const name ='name'
+                const name = 'name'
                 return (
                   <div
                     onClick={() => handleSelectLocation(name)}
@@ -301,21 +315,18 @@ const CaptionComponent = ({ croppedUrls }: CaptionComponentProps) => {
           </div>
         )}
         {isDropdownOpen && (
-          <div className="w-full max-h-40  overflow-auto rounded shadow-md">
+          <div className="max-h-40 w-full overflow-auto rounded shadow-md">
             {Array(20)
               .fill({})
               .map(() => {
-                const name ='name'
+                const name = 'name'
                 return (
                   <div
                     onClick={() => handleSelect(name)}
                     className="flex cursor-pointer items-center gap-2 border-b-[0.3px] border-border p-2 hover:bg-secondary"
                   >
                     <span>
-                      <Avatar
-                        src={'image'}
-                        className="size-7"
-                      />
+                      <Avatar src={'image'} className="size-7" />
                     </span>
                     {name}
                   </div>
@@ -357,7 +368,7 @@ const ImageCanvas = ({ urls }: { urls: string[] }) => {
 
   return (
     <div className="relative aspect-1 w-screen md:h-500 md:w-500">
-      <div className='relative'>
+      <div className="relative">
         <canvas ref={canvasRef} className="aspect-1 w-screen md:w-500" />
 
         <button

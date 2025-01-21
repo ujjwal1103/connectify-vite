@@ -79,13 +79,14 @@ const MessageInput = () => {
     deleteAllMessagesByIds,
     selectedChat,
     currentMessageReply,
+    setCurrentMessageReply
   } = useChatSlice()
 
-  useEffect(()=>{
-    if(isSelectMessages){
+  useEffect(() => {
+    if (isSelectMessages) {
       handleClick('Menu')
     }
-  },[isSelectMessages])
+  }, [isSelectMessages])
 
   const handleTextChange = (e: any) => {
     setMessageText(e.target.value)
@@ -124,6 +125,7 @@ const MessageInput = () => {
       to: selectedChat?.friend?._id!,
       reply: currentMessageReply?.message,
     }
+    setCurrentMessageReply(null)
     setMessageText('')
     await send(newMessage, chatId!)
   }
@@ -189,7 +191,7 @@ const MessageInput = () => {
   }
 
   const onEmojiSelect = (e: any) => {
-    setMessageText((prev) => prev + e.native)
+    setMessageText((prev: string) => prev + e.native)
   }
 
   return (

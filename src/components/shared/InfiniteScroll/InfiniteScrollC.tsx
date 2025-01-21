@@ -7,34 +7,48 @@ interface InfiniteScrollProps {
   children: ReactNode
   className?: string
   id?: string
-  disableScroll?: boolean
   isAddingContent: boolean
   setIsAddingContent: (isadding: boolean) => void
+  setLastMessageId: React.Dispatch<React.SetStateAction<string | null>>
+  lastMessageId: string | null
 }
 
 const InfiniteScrollC: React.FC<InfiniteScrollProps> = ({
   loadMore,
   children,
   id,
-  disableScroll = false,
   isAddingContent,
   setIsAddingContent,
+  setLastMessageId,
+  lastMessageId,
 }) => {
   const scrollContainerRef = useRef<HTMLDivElement>(null)
+  const lastMessageScrollPosition = useRef(0)
   const prevScrollHeightRef = useRef(0)
   const { scrollToBottom, setScrollToBottom } = useNewMessages()
+
+  const scrollToLastElement = () => {
+    if (lastMessageId) {
+      const lastElement = document.getElementById(lastMessageId)
+      if (lastElement) {
+        lastElement.scrollIntoView({
+          block: 'center', // Scroll to the start of the element
+        })
+      }
+      setLastMessageId(null)
+    }
+  }
 
   const handleScroll = () => {
     const scrollContainer = scrollContainerRef.current
 
     if (scrollContainer && scrollContainer.scrollTop === 0) {
+      lastMessageScrollPosition.current = scrollContainer.scrollHeight
       loadMore()
     }
   }
 
   useLayoutEffect(() => {
-    if (disableScroll) return
-
     const scrollContainer = scrollContainerRef.current
 
     if (scrollContainer) {
@@ -48,11 +62,9 @@ const InfiniteScrollC: React.FC<InfiniteScrollProps> = ({
             previousScrollTop
           : previousScrollTop
     }
-  }, [id, disableScroll])
+  }, [id])
 
   useEffect(() => {
-    if (disableScroll) return
-
     const scrollContainer = scrollContainerRef.current
 
     if (scrollContainer) {
@@ -62,16 +74,21 @@ const InfiniteScrollC: React.FC<InfiniteScrollProps> = ({
         scrollContainer.removeEventListener('scroll', handleScroll)
       }
     }
-  }, [id, disableScroll])
+  }, [id])
 
   useEffect(() => {
-    if (disableScroll) return
-
     const scrollContainer = scrollContainerRef.current
     if (scrollContainer) {
       prevScrollHeightRef.current = scrollContainer.scrollHeight
     }
-  }, [id, disableScroll])
+  }, [id])
+
+  useEffect(() => {
+    const scrollContainer = scrollContainerRef.current
+    if (lastMessageId && scrollContainer) {
+      scrollToLastElement()
+    }
+  }, [lastMessageId])
 
   useEffect(() => {
     if (isAddingContent) {

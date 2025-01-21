@@ -159,6 +159,7 @@ const CreatePost = ({ onClose }: any) => {
           onResetAndClose={reset}
           aspectRatio={aspectRatio}
           setAspectRatio={setAspectRatio}
+          onClose={onClose}
         />
       )}
 

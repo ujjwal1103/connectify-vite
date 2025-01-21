@@ -76,6 +76,7 @@ const PostHeaderMenu = ({ postId, post }: PostHeaderMenuProps) => {
             onClose={handleClose}
             showCloseButton={false}
             shouldCloseOutsideClick={false}
+            animate={false}
           >
             <div className="rounded-md bg-background p-4 text-primary shadow-xl md:rounded-lg md:p-6">
               <div className="mb-4 text-lg font-bold">Delete this post</div>

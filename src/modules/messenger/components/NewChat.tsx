@@ -115,10 +115,7 @@ const AddNewUser = ({ onClose }: any) => {
                 {searchTerm && (
                   <span
                     className="absolute right-0 mr-2 cursor-pointer rounded-full bg-foreground text-secondary"
-                    onClick={() => {
-                      //   setFocused(false);
-                      setSearchTerm('')
-                    }}
+                    onClick={() => setSearchTerm('')}
                   >
                     <X size={16} />
                   </span>
