@@ -116,8 +116,8 @@ const CommentPage = ({ postId, onClose }: CommentPageProps) => {
           <X />
         </Button>
       </div>
-      <div className="relative h-[calc(100%_-_52px)] md:h-auto">
-        <div className="flex h-[calc(100%_-_52px)] flex-col overflow-y-scroll text-sm scrollbar-none md:h-128">
+      <div className="relative calculated-height md:h-auto">
+        <div className="flex calculated-height flex-col overflow-y-scroll text-sm scrollbar-none md:h-128">
           {comments.length > 0 ? (
             <Comments
               postId={postId!}

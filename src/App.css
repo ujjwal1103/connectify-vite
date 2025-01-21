@@ -186,6 +186,11 @@ input:-webkit-autofill:focus {
   padding-bottom: calc(0.75rem + var(--safe-area-inset-bottom));
 }
 
-.send-button-safe-area{
+.send-button-safe-area {
   padding-bottom: calc(0.75rem + var(--safe-area-inset-bottom));
+}
+
+.calculated-height {
+  --height-of: calc(105px + var(--safe-area-inset-bottom));
+  height: calc(100vh - var(--height-of));
 }
