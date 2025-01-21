@@ -262,7 +262,7 @@ const MessageInput = () => {
                   </div>
                   <div className="flex-1">
                     <input
-                      className="w-full rounded-md border-2 border-transparent p-1 px-3 focus:outline-none focus-visible:border-blue-800"
+                      className="w-full rounded-md border-2 border-transparent bg-background p-1 px-3 focus:outline-none focus-visible:border-blue-800"
                       value={messageText}
                       onChange={handleTextChange}
                       placeholder="Type..."
