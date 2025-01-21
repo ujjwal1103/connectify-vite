@@ -98,16 +98,25 @@ const CommentPage = ({ postId, onClose }: CommentPageProps) => {
     <div className="relative flex h-dvh w-screen flex-col overflow-hidden bg-background text-foreground md:h-auto md:w-128">
       <div className="flex w-full items-center justify-between border-b-[0.5px] border-border p-2 text-xl text-foreground">
         <div className="flex items-center gap-3">
-          <Button onClick={onClose} size={'icon'} className="md:hidden p-0 hover:bg-background">
+          <Button
+            onClick={onClose}
+            size={'icon'}
+            className="p-0 hover:bg-background md:hidden"
+          >
             <ChevronLeft />
           </Button>
           <h1 className="text-xl font-semibold">Comments</h1>
         </div>
-        <Button variant={'ghost'} size="icon" onClick={onClose} className="hidden md:flex">
+        <Button
+          variant={'ghost'}
+          size="icon"
+          onClick={onClose}
+          className="hidden md:flex"
+        >
           <X />
         </Button>
       </div>
-      <div className="relative h-dvh md:h-auto">
+      <div className="relative h-[calc(100%_-_52px)] md:h-auto">
         <div className="flex h-[calc(100%_-_52px)] flex-col overflow-y-scroll text-sm scrollbar-none md:h-128">
           {comments.length > 0 ? (
             <Comments
@@ -121,19 +130,18 @@ const CommentPage = ({ postId, onClose }: CommentPageProps) => {
             <EmplyComments />
           )}
         </div>
-        <div className='flex gap-2 p-2'>
-          <div className='flex items-center justify-center'>
-          <Avatar src={getCurrentUser()?.avatar?.url} className='size-6'/>
+        <div className="flex gap-2 p-2">
+          <div className="flex items-center justify-center">
+            <Avatar src={getCurrentUser()?.avatar?.url} className="size-6" />
           </div>
-         <div className='w-full'>
-         <CommentInput
-            postId={postId}
-            onComment={addNewComment}
-            setReply={setReply}
-            reply={reply}
-          />
-         </div>
-          
+          <div className="w-full">
+            <CommentInput
+              postId={postId}
+              onComment={addNewComment}
+              setReply={setReply}
+              reply={reply}
+            />
+          </div>
         </div>
       </div>
     </div>
