@@ -21,7 +21,7 @@ export interface PostActions {
   setPosts: (data: { data: IPost[]; pagination: { hasNext: boolean } }) => void;
   setSavedPosts: (data: IPost[]) => void;
   fetchSelfPosts: () => Promise<void>;
-  fetchUserPosts: () => Promise<void>;
+  fetchUserPosts: (userId: string) => Promise<void>;
   addPost: (post: IPost) => void;
   setError: (error: string) => void;
   setPost: (post: IPost | object) => void;

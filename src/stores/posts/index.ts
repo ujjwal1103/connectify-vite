@@ -38,7 +38,9 @@ const usePostStore = create<PostState & PostActions>()(
     fetchUserPosts: async (userId: string) => {
       const { page } = get()
       try {
-        set({ loadingPost: true, error: null })
+        if (page === 1) {
+          set({ loadingPost: true, error: null })
+        }
         const res = await getUserPosts(page, userId)
         const { posts: newPosts, pagination } = res
         set((state) => ({

@@ -38,7 +38,8 @@ const Posts = ({ isSelfPosts = true, userId }: PostsProps) => {
     if (isSelfPosts) {
       fetchSelfPosts()
     } else {
-      fetchUserPosts()
+      if(!userId) return;
+      fetchUserPosts(userId)
     }
   }, [fetchSelfPosts, fetchUserPosts, page, isSelfPosts, userId])
 
@@ -107,7 +108,7 @@ const Posts = ({ isSelfPosts = true, userId }: PostsProps) => {
 export default Posts
 
 export const NoPosts: React.FC = () => (
-  <div className="w-full py-10 container">
+  <div className="w-full py-10">
     <EmptyPost message="" />
     <SuggetionsSlider />
   </div>

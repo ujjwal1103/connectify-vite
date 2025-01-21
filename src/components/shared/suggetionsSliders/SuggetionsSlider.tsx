@@ -73,20 +73,20 @@ const SuggestionsSlider = ({ username }: { username?: string }) => {
   }
 
   return (
-    <div ref={scrollContainerRef} className="flex w-full flex-col items-center ">
-      <div className="flex items-center justify-between lg:w-192 md:w-160 xl:w-256 sm:w-128 w-screen py-2 px-3 sm:px-0">
+    <div ref={scrollContainerRef} className="flex w-full flex-col items-center">
+      <div className="flex w-screen items-center justify-between px-3 py-2 sm:w-128 sm:px-0 md:w-160 lg:w-192 xl:w-240 2xl:w-256">
         <span className="text-lg font-medium">Suggested for you</span>
         <Link to="/explore" className="text-blue-500 hover:underline">
           See all
         </Link>
       </div>
-      <div className="relative lg:w-192 md:w-160 xl:w-256 sm:w-128 w-screen px-3 sm:px-0">
-        <div className="absolute top-1/2 z-10 flex w-full -translate-y-1/2 justify-between">
+      <div className="relative w-screen px-3 sm:w-128 sm:px-0 md:w-160 lg:w-192 xl:w-240 2xl:w-256">
+        <div className="absolute top-1/2 z-10 flex w-full -translate-y-1/2 justify-between group">
           <button
             onClick={handleScrollLeft}
             disabled={!canScrollLeft}
             aria-label="Scroll Left"
-            className="rounded-full bg-gray-700 p-2 text-white disabled:opacity-50"
+            className="rounded-full bg-gray-700 p-2 text-white group-hover:disabled:opacity-0 opacity-0 group-hover:opacity-100"
           >
             <ChevronLeft />
           </button>
@@ -94,7 +94,7 @@ const SuggestionsSlider = ({ username }: { username?: string }) => {
             onClick={handleScrollRight}
             disabled={!canScrollRight}
             aria-label="Scroll Right"
-            className="rounded-full bg-gray-700 p-2 mr-5 sm:mr-0 text-white disabled:opacity-50"
+            className="mr-5 rounded-full bg-gray-700 p-2 text-white group-hover:disabled:opacity-0 opacity-0 group-hover:opacity-100 sm:mr-0"
           >
             <ChevronRight />
           </button>
@@ -103,7 +103,7 @@ const SuggestionsSlider = ({ username }: { username?: string }) => {
           ref={scrollRef}
           className="flex snap-x gap-4 overflow-x-auto scrollbar-none"
         >
-          <div className="flex h-auto max-h-[30vh] gap-3">
+          <div className="flex max-h-44 min-h-44 gap-3">
             {filteredSuggestions.map((person: IUser) => (
               <People {...person} />
             ))}
@@ -117,11 +117,14 @@ const SuggestionsSlider = ({ username }: { username?: string }) => {
 export default SuggestionsSlider
 
 const People = ({ avatar, username, name, _id }: any) => (
-  <div className="flex w-36 flex-col items-center justify-between rounded-lg border p-2 dark:border-zinc-500/30">
+  <div className="flex w-36 flex-col items-center justify-between rounded-lg border transition-colors duration-300 border-background/50 hover:bg-background p-2">
     <Avatar src={avatar?.url} className={'h-14 w-14 rounded-full'} />
     <div className="flex flex-col justify-center">
-      <span className="text-sm">{name}</span>
-      <UsernameLink username={username} className="text-xs text-gray-400">
+      <span className="text-center text-sm">{name}</span>
+      <UsernameLink
+        username={username}
+        className="text-center text-xs text-gray-400"
+      >
         <span>{username}</span>
       </UsernameLink>
     </div>

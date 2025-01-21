@@ -44,7 +44,7 @@ const SelfProfile = () => {
 
   return (
     <div
-      className="relative mb-8 flex h-dvh min-h-dvh flex-1 overflow-x-hidden overflow-y-scroll pt-16 scrollbar-thin scrollbar-none sm:pt-0 md:my-0 md:w-full"
+      className="relative mb-8 py-14 sm:py-0  overflow-x-hidden h-dvh overflow-y-scroll scrollbar-thin sm:pt-0 md:my-0 md:w-full"
       id="scrollableDiv"
     >
       <div className="w-full text-sm">

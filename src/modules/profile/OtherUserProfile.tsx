@@ -2,7 +2,7 @@ import Avatar from '@/components/shared/Avatar'
 import FollowButton from '@/components/shared/FollowButton'
 import { TabControl } from '@/components/shared/TabControl'
 import { Button } from '@/components/ui/button'
-import { Grid, Video } from 'lucide-react'
+import { ChevronLeft, Grid, Video } from 'lucide-react'
 import { useCallback, useState } from 'react'
 
 import Posts from './components/Posts'
@@ -55,10 +55,14 @@ const OtherUserProfile = () => {
 
   return (
     <div
-      className="relative flex min-h-dvh w-screen flex-1 overflow-x-hidden overflow-y-scroll scrollbar-thin scrollbar-none md:w-full md:flex-1"
+      className="relative mb-8 overflow-x-hidden h-dvh overflow-y-scroll scrollbar-thin sm:pt-0 md:my-0 md:w-full"
       id="scrollableDiv"
     >
-      <div className="min-w-screen flex-1 text-sm md:w-auto md:text-sm">
+      <div className="w-full text-sm">
+        <div className='flex p-2 items-center gap-3 border-b border-background/35'>
+          <button onClick={()=>navigate(-1)}><ChevronLeft/></button>
+          <span>{user?.username}</span>
+        </div>
         {user?._id && (
           <FollowRequest
             userId={user?._id}
