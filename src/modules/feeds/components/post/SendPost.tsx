@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button'
 import { makeRequest } from '@/config/api.config'
 import { useDebounce } from '@/hooks/useDebounce'
 import { IPost, IUser } from '@/lib/types'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { X, CircleCheck, Circle, ChevronLeft, Loader } from 'lucide-react'
 import { useState, useCallback, useEffect } from 'react'
 
@@ -63,8 +63,8 @@ const SendPost = ({ onClose, post }: SendPostProps) => {
   }
 
   const toggleUserSelection = useCallback(
-    (user: IUser) => {
-      if (selectedUser.some((u) => u.username === user.username)) {
+    (user: IUser, isSelected: boolean) => {
+      if (isSelected) {
         setSelectedUser((prev) =>
           prev.filter((u) => u.username !== user.username)
         )
@@ -109,7 +109,7 @@ const SendPost = ({ onClose, post }: SendPostProps) => {
         <motion.div className="flex items-center p-2 px-3">
           {/* <span>To:</span> */}
 
-          <motion.div className="ml-2 flex max-h-20 w-full items-center flex-wrap gap-1 overflow-auto rounded bg-secondary p-2">
+          <motion.div className="ml-2 flex max-h-20 w-full flex-wrap items-center gap-1 overflow-auto rounded bg-secondary p-2">
             {/* <AnimatePresence>
               {selectedUser.map((user) => (
                 <AnimatePresence>
@@ -148,7 +148,12 @@ const SendPost = ({ onClose, post }: SendPostProps) => {
               placeholder="Search"
             />
 
-            {isSearching && <Loader size={16} className="fill-secondary ml-auto mr-2 animate-spin" />}
+            {isSearching && (
+              <Loader
+                size={16}
+                className="ml-auto mr-2 animate-spin fill-secondary"
+              />
+            )}
           </motion.div>
         </motion.div>
 
@@ -192,7 +197,7 @@ export default SendPost
 interface PeopleProps {
   user: IUser
   isSelected: boolean
-  toggleUserSelection: (user: IUser) => void
+  toggleUserSelection: (user: IUser, isSelected: boolean) => void
 }
 
 const People = ({ user, isSelected, toggleUserSelection }: PeopleProps) => {
@@ -209,7 +214,7 @@ const People = ({ user, isSelected, toggleUserSelection }: PeopleProps) => {
         transition: { duration: 0.3, delay: 0 },
       }}
       className="flex cursor-pointer items-center gap-3 px-3 py-2 hover:bg-secondary"
-      onClick={() => toggleUserSelection(user)}
+      onClick={() => toggleUserSelection(user, isSelected)}
     >
       <Avatar src={user.avatar?.url} className={'size-10 rounded-full'} />
       <span>{user.username}</span>
