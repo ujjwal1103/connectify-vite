@@ -14,7 +14,7 @@ const ChatBox = () => {
   const { showChatInfo } = useChatSlice()
 
   return (
-    <div className="relative flex h-dvh max-h-dvh min-h-dvh w-full min-w-80 flex-1 bg-chat-background md:flex-1">
+    <div className="relative flex h-dvh max-h-dvh min-h-dvh w-full min-w-80 flex-1 bg-chat-background md:flex-1 safeArea">
       <div className="flex flex-1 flex-col">
         <MessageListHeader selectedChat={selectedChat} />
         <MessageList />

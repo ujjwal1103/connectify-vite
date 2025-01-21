@@ -194,3 +194,7 @@ input:-webkit-autofill:focus {
   --height-of: calc(105px + var(--safe-area-inset-bottom));
   height: calc(100dvh - var(--height-of));
 }
+
+.safeArea {
+  padding-bottom: var(--safe-area-inset-bottom);
+}
