@@ -58,7 +58,7 @@ body {
   border-radius: 8px;
   cursor: pointer;
   display: flex;
-}         
+}
 
 * {
   transition: background-color 0.1s ease-in;
@@ -178,7 +178,10 @@ input:-webkit-autofill:focus {
   inset-inline-start: 99.9%;
 }
 
-
 .scrollbar-guttor {
   scrollbar-gutter: stable;
+}
+
+.tabbar {
+  padding-bottom: calc(0.75rem + var(--safe-area-inset-bottom));
 }

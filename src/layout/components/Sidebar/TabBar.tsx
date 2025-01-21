@@ -49,8 +49,8 @@ const TabBar = ({ hideAppBar, show }: any) => {
       variants={variants}
       transition={{ duration: 0.2 }}
       className={cn(
-        'absolute bottom-0 flex h-14 w-full items-center bg-secondary sm:hidden',
-        { hidden: !show }
+        'absolute bottom-0 flex p-3 w-full tabbar items-center bg-secondary sm:hidden',
+        { hidden: !show } 
       )}
     >
       <div className="w-full">

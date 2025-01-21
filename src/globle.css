@@ -31,6 +31,11 @@
     --chat-bubble-user:  233 11% 84%;
     --chat-backgroud: 0 0% 96%;
     --message-background:220 14.3% 95.9%;
+
+    --safe-area-inset-top: env(safe-area-inset-top);
+    --safe-area-inset-right: env(safe-area-inset-right);
+    --safe-area-inset-bottom: env(safe-area-inset-bottom);
+    --safe-area-inset-left: env(safe-area-inset-left);
   }
  
 
@@ -63,5 +68,10 @@
     --chat-bubble-user: 240 1% 15%;
     /* --chat-backgroud: 240 5.3% 26.1%; */
     --message-background:214.3 31.8% 91.4%;
+
+    --safe-area-inset-top: env(safe-area-inset-top);
+    --safe-area-inset-right: env(safe-area-inset-right);
+    --safe-area-inset-bottom: env(safe-area-inset-bottom);
+    --safe-area-inset-left: env(safe-area-inset-left);
   }
 }
