@@ -4,7 +4,7 @@ import { makeRequest } from '@/config/api.config'
 import { useDebounce } from '@/hooks/useDebounce'
 import { IPost, IUser } from '@/lib/types'
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, CircleCheck, Circle, ChevronLeft } from 'lucide-react'
+import { X, CircleCheck, Circle, ChevronLeft, Loader } from 'lucide-react'
 import { useState, useCallback, useEffect } from 'react'
 
 interface SendPostProps {
@@ -15,6 +15,7 @@ interface SendPostProps {
 const SendPost = ({ onClose, post }: SendPostProps) => {
   const [users, setUsers] = useState<IUser[]>([])
   const [search, setSearch] = useState<string>('')
+  const [isSearching, setIsSearching] = useState(false)
   const [selectedUser, setSelectedUser] = useState<
     { username: string; id: string }[]
   >([])
@@ -24,12 +25,15 @@ const SendPost = ({ onClose, post }: SendPostProps) => {
     let url = '/users/send'
     if (debounceSearch) {
       url = url + `?search=${debounceSearch}`
+      setIsSearching(true)
     }
     try {
       const res = await makeRequest(url)
       setUsers(res.data)
     } catch (error) {
       console.log(error)
+    } finally {
+      setIsSearching(false)
     }
   }, [debounceSearch])
 
@@ -103,10 +107,10 @@ const SendPost = ({ onClose, post }: SendPostProps) => {
       <hr className="h-0 border-secondary border-b-[0.5]" />
       <div>
         <motion.div className="flex items-center p-2 px-3">
-          <span>To:</span>
+          {/* <span>To:</span> */}
 
-          <motion.div className="ml-2 flex max-h-20 w-full flex-wrap gap-1 overflow-auto rounded bg-secondary p-2">
-            <AnimatePresence>
+          <motion.div className="ml-2 flex max-h-20 w-full items-center flex-wrap gap-1 overflow-auto rounded bg-secondary p-2">
+            {/* <AnimatePresence>
               {selectedUser.map((user) => (
                 <AnimatePresence>
                   <motion.span
@@ -133,7 +137,7 @@ const SendPost = ({ onClose, post }: SendPostProps) => {
                   </motion.span>
                 </AnimatePresence>
               ))}
-            </AnimatePresence>
+            </AnimatePresence> */}
 
             <input
               type="text"
@@ -141,13 +145,15 @@ const SendPost = ({ onClose, post }: SendPostProps) => {
               value={search}
               onChange={handleChange}
               onKeyDown={handleKeyDown}
-              placeholder="search"
+              placeholder="Search"
             />
+
+            {isSearching && <Loader size={16} className="fill-secondary ml-auto mr-2 animate-spin" />}
           </motion.div>
         </motion.div>
 
         <hr className="h-0 border-secondary border-b-[0.5]" />
-        <div className="h-[calc(100dvh_-_200px)] overflow-y-scroll py-2 scrollbar-none md:h-[350px]">
+        <div className="h-[calc(100dvh_-_155px)] overflow-y-scroll py-2 scrollbar-none md:h-[350px]">
           <h1 className="px-3 pb-2">Suggested</h1>
           <ul className="">
             {users?.map((user) => {
