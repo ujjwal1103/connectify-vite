@@ -79,13 +79,7 @@ const SendPost = ({ onClose, post }: SendPostProps) => {
   }, [fetchUsers])
 
   return (
-    <motion.div
-      // variants={variants}
-      // initial="initial"
-      // animate="animate"
-      // exit="exit"
-      className="relative h-dvh w-screen overflow-hidden bg-background text-foreground md:h-auto md:w-500"
-    >
+    <div className="relative h-dvh w-screen overflow-hidden bg-background text-foreground md:h-auto md:w-128">
       <div className="flex w-full items-center justify-between border-b-[0.5px] border-border p-2 text-xl text-foreground">
         <div className="flex items-center gap-3">
           <Button
@@ -106,8 +100,8 @@ const SendPost = ({ onClose, post }: SendPostProps) => {
           <X />
         </Button>
       </div>
-      <div className="">
-        <hr className="border-secondary" />
+      <hr className="h-0 border-secondary border-b-[0.5]" />
+      <div>
         <motion.div className="flex items-center p-2 px-3">
           <span>To:</span>
 
@@ -152,8 +146,8 @@ const SendPost = ({ onClose, post }: SendPostProps) => {
           </motion.div>
         </motion.div>
 
-        <hr className="border-secondary" />
-        <div className="h-[calc(100dvh_-_160px)] overflow-y-scroll py-2 scrollbar-none md:h-[350px]">
+        <hr className="h-0 border-secondary border-b-[0.5]" />
+        <div className="h-[calc(100dvh_-_200px)] overflow-y-scroll py-2 scrollbar-none md:h-[350px]">
           <h1 className="px-3 pb-2">Suggested</h1>
           <ul className="">
             {users?.map((user) => {
@@ -171,20 +165,19 @@ const SendPost = ({ onClose, post }: SendPostProps) => {
             })}
           </ul>
         </div>
-
-        <div className="w-full bg-background px-2 send-button-safe-area">
-          <Button
-            onClick={handleSendPost}
-            disabled={!selectedUser.length}
-            className="w-full"
-            variant={'follow'}
-            size={'lg'}
-          >
-            Send
-          </Button>
-        </div>
       </div>
-    </motion.div>
+      <div className="send-button-safe-area w-full bg-background px-2">
+        <Button
+          onClick={handleSendPost}
+          disabled={!selectedUser.length}
+          className="w-full"
+          variant={'follow'}
+          size={'lg'}
+        >
+          Send
+        </Button>
+      </div>
+    </div>
   )
 }
 
