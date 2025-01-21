@@ -3,6 +3,7 @@ export interface ExpandEventDetail {
 }
 
 declare global {
+  // eslint-disable-next-line no-unused-vars
   interface WindowEventMap {
     expand: CustomEvent<ExpandEventDetail> // Define the custom event in the global event map
   }

@@ -90,6 +90,7 @@ export interface IMessage {
   isCurrentUserMessage?: boolean
   isEdited?: boolean
   systemMessageType: SystemMessageType | null
+  reply?: IMessage
 }
 
 export interface MessagesRootObject {

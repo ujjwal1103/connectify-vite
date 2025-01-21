@@ -16,10 +16,10 @@ const MetaData = ({
   return (
     <div
       className={cn(
-        'float-right flex w-fit flex-col items-center justify-end rounded-md  pt-2 text-right text-xs text-xss',
+        'float-right flex w-fit flex-col items-center justify-end rounded-md text-right text-xs text-xss',
         className,
         {
-          'text-white': currentUserMessage
+          'text-white': currentUserMessage,
         }
       )}
     >
@@ -42,13 +42,15 @@ const MetaData = ({
             {reaction}
           </button>
         )}
-        <span className={cn('text-black',{
-         
-          'text-white':currentUserMessage
-        })}>{getReadableTime(createdAt)}
+        <span
+          className={cn('text-black', {
+            'text-white': currentUserMessage,
+          })}
+        >
+          {getReadableTime(createdAt)}
         </span>
 
-       {currentUserMessage && (
+        {currentUserMessage && (
           <>
             {seen || allSeen ? (
               <CheckCheck className="text-blue-500" size={12} />
@@ -57,15 +59,17 @@ const MetaData = ({
                 {isLoading ? (
                   <Clock9Icon className="" size={12} />
                 ) : (
-                  <Check size={12} className={cn({
-                    'text-white':currentUserMessage
-                  })}/>
+                  <Check
+                    size={12}
+                    className={cn({
+                      'text-white': currentUserMessage,
+                    })}
+                  />
                 )}
               </>
             )}
           </>
         )}
- 
       </span>
     </div>
   )

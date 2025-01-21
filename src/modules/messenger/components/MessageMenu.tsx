@@ -161,7 +161,7 @@ const MessageMenu = ({
           {moreOptions && (
             <motion.div
               ref={menuRef}
-              className="fixed z-200 bg-[#1b1b1b] border border-[#1f1f1f]"
+              className="fixed z-200 bg-background border border-[#1f1f1f]"
               initial={{ opacity: 0, scale: 0.3 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.3 }}
