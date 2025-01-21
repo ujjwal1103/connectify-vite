@@ -5,9 +5,6 @@ import { useClickOutside } from '@react-hookz/web'
 import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
 
-const cssVars =
-  '[--opacity-close:0%] [--opacity-open:100%] [--scale-from:1] [--scale-to:1] [--translatey-from:100] [--translatey-to:0] md:w-auto md:[--scale-from:30%] md:[--scale-to:100%] md:[--translatey-from:0]'
-
 type ModalProps = {
   onClose?: (e: any) => void
   shouldCloseOutsideClick?: boolean

@@ -11,7 +11,6 @@ type TextMessageProps = {
 }
 
 const TextMessage = ({
-  allSeen,
   showNotch,
   message,
 }: TextMessageProps) => {

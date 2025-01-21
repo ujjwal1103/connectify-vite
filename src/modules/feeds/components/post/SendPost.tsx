@@ -7,23 +7,6 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { X, CircleCheck, Circle, ChevronLeft } from 'lucide-react'
 import { useState, useCallback, useEffect } from 'react'
 
-const variants = {
-  initial: {
-    // x: '100%',
-    scale: 0.9,
-  },
-  animate: {
-    // x: 0,
-    scale: 1,
-    transition: { duration: 0.2, ease: 'linear' },
-  },
-  exit: {
-    // x: '100%',
-    scale: 0.9,
-    transition: { duration: 0.2, ease: 'linear' },
-  },
-}
-
 interface SendPostProps {
   onClose: () => void
   post: IPost

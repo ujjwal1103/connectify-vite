@@ -4,7 +4,7 @@ import { ImageSlider } from '@/components/shared/ImageSlider/ImageSlider'
 import ProgressLoading from '@/components/shared/Loading/ProgressLoading'
 import RichTextEditor from '@/components/shared/RichTextEditor'
 import { useAuth } from '@/context/AuthContext'
-import { IPost, IUser } from '@/lib/types'
+import { IUser } from '@/lib/types'
 import { useFeedSlice } from '@/redux/services/feedSlice'
 import { usePostSlice } from '@/redux/services/postSlice'
 import EmojiPicker from '@emoji-mart/react'
@@ -24,11 +24,11 @@ const CaptionComponent = ({
   cropedImagesUrls,
   aspectRatio,
   onClose,
-}: { 
-  setStep: Dispatch<SetStateAction<Step>>; 
-  cropedImagesUrls: { file: File; croppedUrl: string; type: string }[]; 
-  aspectRatio: string; 
-  onClose: () => void; 
+}: {
+  setStep: Dispatch<SetStateAction<Step>>
+  cropedImagesUrls: { file: File; croppedUrl: string; type: string }[]
+  aspectRatio: string
+  onClose: () => void
 }) => {
   const [caption, setCaption] = useState<string>('')
   const [isLoading, setIsLoading] = useState(false)
@@ -49,8 +49,7 @@ const CaptionComponent = ({
       }
       formData.append('caption', caption || '')
       formData.append('aspectRatio', aspectRatio)
-      const response = await uploadPosts(formData);
-      const data = response.data as { isSuccess: boolean; post: IPost };
+      const data = await uploadPosts(formData)
 
       if (data?.isSuccess) {
         addPost(data.post)
@@ -99,15 +98,15 @@ const CaptionComponent = ({
             <Avatar src={user?.avatar?.url} className="size-8 border-none" />
             <span className="text-sm">{user?.username}</span>
           </div>
-          <div className="h-full max-h-fit w-full flex-1  p-3">
+          <div className="h-full max-h-fit w-full flex-1 p-3">
             <RichTextEditor
               value={caption}
               onChange={setCaption}
-              className="h-full max-h-[115px] w-full flex-1 overflow-y-scroll scrollbar-none outline-none lg:max-h-full"
+              className="h-full max-h-[115px] w-full flex-1 overflow-y-scroll outline-none scrollbar-none lg:max-h-full"
             />
           </div>
           <div className="flex items-center justify-between px-3 py-2">
-            <div className='z-10'>
+            <div className="z-10">
               <DropdownMenu>
                 <DropdownMenuTrigger>
                   <SmileIcon />
@@ -135,10 +134,12 @@ const CaptionComponent = ({
         </div>
         <div className="flex items-center justify-center lg:flex-1">
           <ImageSlider
-            images={cropedImagesUrls.map((c: { file: File; croppedUrl: string; type: string }) => ({
-              url: c.croppedUrl,
-              type: c.type,
-            }))}
+            images={cropedImagesUrls.map(
+              (c: { file: File; croppedUrl: string; type: string }) => ({
+                url: c.croppedUrl,
+                type: c.type,
+              })
+            )}
             height="100%"
           />
         </div>
