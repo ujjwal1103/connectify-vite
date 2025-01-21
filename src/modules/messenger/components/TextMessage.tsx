@@ -66,7 +66,7 @@ const TextMessage = ({ showNotch, message }: TextMessageProps) => {
     <div
       ref={messageRef}
       className={cn(
-        'relative z-10 flex w-fit max-w-md flex-col rounded-xl bg-message-background p-2 text-foreground transition-all duration-700',
+        'relative z-10 cursor-pointer flex w-fit max-w-md flex-col rounded-xl bg-message-background p-2 text-foreground transition-all duration-700',
         {
           'bg-chat-bubble-self text-white': isCurrentUserMessage,
           'chat-bubble': showNotch,
