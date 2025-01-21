@@ -172,7 +172,7 @@ const SendPost = ({ onClose, post }: SendPostProps) => {
           </ul>
         </div>
 
-        <div className="fixed bottom-2 w-full bg-transparent px-2">
+        <div className="fixed bottom-2 w-full bg-transparent px-2 safe-area-inset-bottom">
           <Button
             onClick={handleSendPost}
             disabled={!selectedUser.length}
