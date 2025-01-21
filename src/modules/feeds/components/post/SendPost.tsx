@@ -12,9 +12,12 @@ interface SendPostProps {
   post: IPost
 }
 
+type Status = 'IDEAL' | 'SUCCESS' | 'LOADING' | 'ERROR'
+
 const SendPost = ({ onClose, post }: SendPostProps) => {
   const [users, setUsers] = useState<IUser[]>([])
   const [search, setSearch] = useState<string>('')
+  const [status, setStatus] = useState<Status>('IDEAL')
   const [isSearching, setIsSearching] = useState(false)
   const [selectedUser, setSelectedUser] = useState<
     { username: string; id: string }[]
@@ -26,12 +29,16 @@ const SendPost = ({ onClose, post }: SendPostProps) => {
     if (debounceSearch) {
       url = url + `?search=${debounceSearch}`
       setIsSearching(true)
+    } else {
+      setStatus('LOADING')
     }
     try {
       const res = await makeRequest(url)
       setUsers(res.data)
+      setStatus('SUCCESS')
     } catch (error) {
       console.log(error)
+      setStatus('ERROR')
     } finally {
       setIsSearching(false)
     }
@@ -160,21 +167,35 @@ const SendPost = ({ onClose, post }: SendPostProps) => {
         <hr className="h-0 border-secondary border-b-[0.5]" />
         <div className="h-[calc(100dvh_-_155px)] overflow-y-scroll py-2 scrollbar-none md:h-[350px]">
           <h1 className="px-3 pb-2">Suggested</h1>
-          <ul className="">
-            {users?.map((user) => {
-              const isSelected = selectedUser.some(
-                (u) => u.username === user.username
-              )
-              return (
-                <People
-                  key={user._id}
-                  user={user}
-                  isSelected={isSelected}
-                  toggleUserSelection={toggleUserSelection}
-                />
-              )
-            })}
-          </ul>
+  
+          {status === 'LOADING' && (
+            <ul className="px-3 space-y-2">
+              {[1, 2, 3, 4,5, 6, 7, 8, 9, 10, 11, 12].map((_s) => (
+                <li className="flex h-14 animate-pulse cursor-pointer items-center gap-3 rounded">
+                  <span className='size-10 bg-secondary rounded-full inline-block p-2'></span>
+                  <span className='w-20 h-4 rounded bg-secondary'></span>
+                  <span className='size-7 bg-secondary rounded-full ml-auto'></span>
+                </li>
+              ))}
+            </ul>
+          )}
+                  {status === 'SUCCESS' && (
+            <ul className="">
+              {users?.map((user) => {
+                const isSelected = selectedUser.some(
+                  (u) => u.username === user.username
+                )
+                return (
+                  <People
+                    key={user._id}
+                    user={user}
+                    isSelected={isSelected}
+                    toggleUserSelection={toggleUserSelection}
+                  />
+                )
+              })}
+            </ul>
+          )}
         </div>
       </div>
       <div className="send-button-safe-area w-full bg-background px-2">
@@ -204,15 +225,15 @@ const People = ({ user, isSelected, toggleUserSelection }: PeopleProps) => {
   return (
     <motion.li
       key={user?._id}
-      initial={{ opacity: 0, y: '-20%' }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.2 }}
-      exit={{
-        opacity: 0,
-        y: '-20%',
-        animationDirection: 'forward',
-        transition: { duration: 0.3, delay: 0 },
-      }}
+      // initial={{ opacity: 0, y: '-20%' }}
+      // animate={{ opacity: 1, y: 0 }}
+      // transition={{ duration: 0.2 }}
+      // exit={{
+      //   opacity: 0,
+      //   y: '-20%',
+      //   animationDirection: 'forward',
+      //   transition: { duration: 0.3, delay: 0 },
+      // }}
       className="flex cursor-pointer items-center gap-3 px-3 py-2 hover:bg-secondary"
       onClick={() => toggleUserSelection(user, isSelected)}
     >
