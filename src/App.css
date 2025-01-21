@@ -192,5 +192,5 @@ input:-webkit-autofill:focus {
 
 .calculated-height {
   --height-of: calc(105px + var(--safe-area-inset-bottom));
-  height: calc(100vh - var(--height-of));
+  height: calc(100dvh - var(--height-of));
 }
