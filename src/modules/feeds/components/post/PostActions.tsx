@@ -5,11 +5,11 @@ import { AnimatePresence } from 'framer-motion'
 import { LikeButton } from '@/components/shared/LikeButton'
 import { IPost } from '@/lib/types'
 import { BookmarkButton } from '@/components/shared/BookmarkButton'
-import { useFeedSlice } from '@/redux/services/feedSlice'
 import Modal from '@/components/shared/modal/Modal'
-import SendPost from './SendPost'
 import CommentPage from './CommentPage'
-import { MessageCircle, Send } from 'lucide-react'
+import { MessageCircle } from 'lucide-react'
+import useFeedStore from '@/stores/Feeds'
+import ShareButton from '@/components/posts/ShareButton'
 
 type PostActionsProps = {
   post: IPost
@@ -27,9 +27,8 @@ const PostActions = ({
   onLike,
   onBookmark,
 }: PostActionsProps) => {
-  const [sendPost, setSendPost] = useState(false)
   const [showComments, setShowComments] = useState(false)
-  const { addAndRemoveBookmark, likeUnlikePost } = useFeedSlice()
+  const { likeUnlikePost, addAndRemoveBookmark } = useFeedStore()
 
   const handleLikeClicked = useCallback(
     async (isLike: boolean, error: boolean) => {
@@ -57,11 +56,9 @@ const PostActions = ({
             onClick={() => setShowComments(true)}
           />
         )}
-        <Send
-          onClick={() => setSendPost(true)}
-          className="cursor-pointer hover:text-muted-foreground"
-        />
+        <ShareButton post={post} />
       </div>
+
       <BookmarkButton
         postId={post?._id}
         isBookmarked={post.isBookmarked}
@@ -70,18 +67,6 @@ const PostActions = ({
           addAndRemoveBookmark(isBookmarked, post?._id)
         }}
       />
-      <AnimatePresence>
-        {sendPost && (
-          <Modal
-            shouldCloseOutsideClick={false}
-            onClose={() => setSendPost(false)}
-            showCloseButton={false}
-            // animate={false}
-          >
-            <SendPost post={post} onClose={() => setSendPost(false)} />
-          </Modal>
-        )}
-      </AnimatePresence>
       <AnimatePresence>
         {showComments && (
           <Modal

@@ -25,9 +25,9 @@ import ConfirmModal from '../shared/modal/ConfirmModal'
 import EditPostModal from '../shared/modal/EditPostModal'
 import { useAuth } from '@/context/AuthContext'
 import { cn } from '@/lib/utils'
-import { useFeedSlice } from '@/redux/services/feedSlice'
 import DropDownMenuItem from '../shared/dialogs/DropDownMenu/DropDownMenuItem'
 import Modal from '../shared/modal/Modal'
+import useFeedStore from '@/stores/Feeds'
 
 interface ProfilePostProps {
   post: IPost
@@ -46,7 +46,7 @@ export const ProfilePost = ({
   const [editPost, setEditPost] = useState(false)
   const [deletingPost, setDeletingPost] = useState(false)
   const { deletePost } = usePostSlice()
-  const { deleteFeed } = useFeedSlice()
+  const { deleteFeed } = useFeedStore()
 
   const { updateUser, user } = useAuth()
   useEffect(() => {

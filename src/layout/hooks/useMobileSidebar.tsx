@@ -7,7 +7,7 @@ const useMobileSidebar = () => {
   const location = useLocation();
 
   useEffect(() => {
-    const tabUrls = ["/", "/search", "/notifications", "/create", "/profile"];
+    const tabUrls = ["/", "/search", "/notifications", "/create"];
 
     if (tabUrls.includes(location.pathname)) {
       setShow(true);

@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect, useRef, useState } from 'react'
+import { ChangeEvent, useCallback, useEffect, useRef, useState } from 'react'
 import {
   CoreSettings,
   CropperState,
@@ -21,13 +21,13 @@ import Avatar from '../shared/Avatar'
 import { getCurrentUser } from '@/lib/localStorage'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ChevronLeft, ChevronRight, MapPin, Smile } from 'lucide-react'
-import { useFeedSlice } from '@/redux/services/feedSlice'
 import { useAuth } from '@/context/AuthContext'
 import { uploadPosts } from '@/api'
 import { IUser } from '@/lib/types'
 import { toast } from 'sonner'
 import ProgressLoading from '../shared/Loading/ProgressLoading'
 import usePostStore from '@/stores/posts'
+import useFeedStore from '@/stores/Feeds'
 const emptyFn = () => {}
 
 interface ImageCropperProps {
@@ -69,8 +69,9 @@ const ImageCropper: React.FC<ImageCropperProps> = ({
   const [captionText, setCaptionText] = useState<string>('')
   const [isLoading, setIsLoading] = useState(false)
   const { addPost, setUploadingPost } = usePostStore()
-  const { addNewFeed } = useFeedSlice()
+  const { addNewFeed } = useFeedStore()
   const { updateUser, user } = useAuth()
+  const [loadingCrop, setLoadingCrop] = useState(false)
 
   useEffect(() => {
     if (cropper) {
@@ -110,7 +111,6 @@ const ImageCropper: React.FC<ImageCropperProps> = ({
         const newUser = { ...user, posts: posts + 1 } as IUser
         updateUser(newUser)
         toast.success('Image Uploaded SuccessFully')
-        
       }
     } catch (error: any) {
       console.log('ERROR UPLOADING POST', error)
@@ -120,23 +120,32 @@ const ImageCropper: React.FC<ImageCropperProps> = ({
     }
   }
 
-  const onCropImage = async (allNextImageCrop = false) => {
-    if (caption) {
-      await handlePost()
-    }
-    if (cropperRef.current) {
-      !allNextImageCrop && setCaption(true)
-      const url = cropperRef?.current?.getCanvas()!.toDataURL()
-      setCroppedUrls((prev) => [...prev, url])
-      cropperRef.current.getCanvas()!.toBlob((blob: Blob | null) => {
-        const file = blobToFile(blob!, image.originalImage.name, blob!.type)
-        onCrop(file, url, allNextImageCrop)
-      }, 'image/jpeg')
-    }
-    if (image.type === 'VIDEO') {
-      onCrop(image.originalImage, image.originalImageUrl, allNextImageCrop)
-    }
-  }
+  const onCropImage = useCallback(
+    async (allNextImageCrop = false) => {
+      if (caption) await handlePost()
+
+      if (cropperRef.current) {
+        setLoadingCrop(true)
+        const canvas = cropperRef.current.getCanvas()
+        if (canvas) {
+          const url = canvas.toDataURL()
+          canvas.toBlob(async (blob) => {
+            if (blob) {
+              const file = blobToFile(blob, image.originalImage.name, blob.type)
+              onCrop(file, url, allNextImageCrop)
+              setCroppedUrls((prev) => [...prev, url])
+            }
+            setLoadingCrop(false)
+          }, 'image/jpeg')
+        }
+      }
+
+      if (image.type === 'VIDEO') {
+        onCrop(image.originalImage, image.originalImageUrl, allNextImageCrop)
+      }
+    },
+    [caption, cropperRef, image, onCrop, setCroppedUrls, handlePost]
+  )
 
   const handleImagePick = async (e: ChangeEvent<HTMLInputElement>) => {
     await onCropImage(true)
@@ -145,9 +154,10 @@ const ImageCropper: React.FC<ImageCropperProps> = ({
   }
 
   return (
-    <motion.div className="relative flex w-full flex-col items-center justify-center bg-background">
+    <motion.div className="relative flex w-full flex-col items-center justify-center rounded-lg bg-background">
       {isLoading && <ProgressLoading />}
       <CropHeaderButtons
+        isLoadingPost={loadingCrop}
         onResetAndClose={() => {
           if (caption) {
             setCaption(false)
@@ -155,7 +165,9 @@ const ImageCropper: React.FC<ImageCropperProps> = ({
             onClose()
           }
         }}
-        onCropImage={onCropImage}
+        onCropImage={(e) => {
+          onCropImage(e)
+        }}
         isCaptionOpen={caption}
       />
       <div className="relative h-full w-full overflow-hidden rounded-lg rounded-t-none md:h-500">
@@ -247,15 +259,15 @@ const CaptionComponent = ({ croppedUrls }: CaptionComponentProps) => {
     setLocation(loc)
   }
 
-  ;('[--opacity-close:0%] [--opacity-open:100%] [--scale-from:1] [--scale-to:1] [--translatey-from:100] [--translatey-to:0] md:w-auto md:[--scale-from:30%] md:[--scale-to:100%] md:[--translatey-from:0]')
+  // ;('[--opacity-close:0%] [--opacity-open:100%] [--scale-from:1] [--scale-to:1] [--translatey-from:100] [--translatey-to:0] md:w-auto md:[--scale-from:30%] md:[--scale-to:100%] md:[--translatey-from:0]')
 
   return (
-    <div className="flex h-[calc(100dvh_-_37px)] flex-col overflow-y-scroll md:h-500 md:flex-row md:overflow-y-hidden">
+    <div className="flex h-[calc(100dvh_-_37px)] flex-col overflow-y-scroll rounded-md md:h-500 md:flex-row md:overflow-y-hidden">
       {croppedUrls.length > 0 && <ImageCanvas urls={croppedUrls} />}
       <motion.div
         initial={{ width: 0 }}
         animate={{ width: 'var(--width)' }}
-        className="relative h-full flex-col [--width:100%] md:flex md:[--width:300]"
+        className="relative h-full flex-col [--width:100%] md:flex md:[--width:300px]"
       >
         <div className="flex w-full items-center gap-3 p-4">
           <Avatar src={user?.avatar?.url} className="size-7 border-none" />

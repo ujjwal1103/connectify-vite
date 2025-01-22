@@ -12,6 +12,7 @@ import Modal from '@/components/shared/modal/Modal'
 import { IPost } from '@/lib/types'
 import { useLocation } from 'react-router-dom'
 import usePostStore from '@/stores/posts'
+import { AnimatePresence } from 'framer-motion'
 
 interface PostsProps {
   isSelfPosts?: boolean
@@ -95,12 +96,13 @@ const Posts = ({ isSelfPosts = true, userId }: PostsProps) => {
           ))}
         </div>
       </InfiniteScroll>
-
+     <AnimatePresence>
       {openSlider && (
-        <Modal onClose={handleClose} showCloseButton={false}>
+        <Modal onClose={handleClose} showCloseButton={false} shouldCloseOutsideClick={false}>
           <PostSliderModal posts={posts} index={selectedIndex} />
         </Modal>
       )}
+      </AnimatePresence>
     </div>
   )
 }

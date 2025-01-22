@@ -5,7 +5,6 @@ import ProgressLoading from '@/components/shared/Loading/ProgressLoading'
 import RichTextEditor from '@/components/shared/RichTextEditor'
 import { useAuth } from '@/context/AuthContext'
 import { IUser } from '@/lib/types'
-import { useFeedSlice } from '@/redux/services/feedSlice'
 import { usePostSlice } from '@/redux/services/postSlice'
 import EmojiPicker from '@emoji-mart/react'
 import {
@@ -18,6 +17,7 @@ import { ArrowLeft, SmileIcon } from 'lucide-react'
 import { Dispatch, SetStateAction, useState } from 'react'
 import { toast } from 'react-toastify'
 import { Step } from './CreateNewPost'
+import useFeedStore from '@/stores/Feeds'
 
 const CaptionComponent = ({
   setStep,
@@ -33,7 +33,7 @@ const CaptionComponent = ({
   const [caption, setCaption] = useState<string>('')
   const [isLoading, setIsLoading] = useState(false)
   const { addPost } = usePostSlice()
-  const { addNewFeed } = useFeedSlice()
+  const { addNewFeed } = useFeedStore()
   const { updateUser, user } = useAuth()
 
   const handlePost = async () => {

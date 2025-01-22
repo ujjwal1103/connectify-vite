@@ -65,14 +65,14 @@ function ImagePreview({ onClose, previewImage }: any) {
       shouldCloseOutsideClick={false}
     >
       <div
-        className="flex h-auto w-screen items-center justify-center"
+        className="flex h-dvh w-screen items-center justify-center"
         onClick={onClose}
       >
         <div
           className="flex w-full flex-col md:h-dvh"
           onClick={(e) => e.stopPropagation()}
         >
-          <div className="h-14 w-full bg-black/60 z-10 p-2">
+          <div className="h-14 w-full fixed top-0 bg-black/60 z-10 p-2">
             <div className="flex space-x-4 justify-end">
               <Button
                 size={'icon'}
@@ -100,7 +100,7 @@ function ImagePreview({ onClose, previewImage }: any) {
               </Button>
             </div>
           </div>
-          <div className='bg-red-400 flex items-center justify-center h-dvh'>
+          <div className='flex items-center justify-center h-dvh'>
           <motion.img
             src={previewImage}
             alt={'IMAGE PREVIEW'}

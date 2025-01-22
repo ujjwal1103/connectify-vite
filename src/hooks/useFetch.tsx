@@ -1,13 +1,13 @@
-import { useFeedSlice } from "@/redux/services/feedSlice";
-import { useCallback, useEffect, useState } from "react";
+import useFeedStore from '@/stores/Feeds'
+import { useCallback, useEffect, useState } from 'react'
 
 interface Pagination {
-  hasNext: boolean;
+  hasNext: boolean
 }
 
 interface FetchResponse<T> {
-  data: T[];
-  pagination: Pagination;
+  data: T[]
+  pagination: Pagination
 }
 
 const useFetch = <T,>(
@@ -18,22 +18,22 @@ const useFetch = <T,>(
   params?: Record<string, any>,
   deps?: any[]
 ) => {
-  const [items, setItems] = useState<T[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [page, setPage] = useState(1);
-  const [hasNextPage, setHasNextPage] = useState(true);
+  const [items, setItems] = useState<T[]>([])
+  const [loading, setLoading] = useState(false)
+  const [page, setPage] = useState(1)
+  const [hasNextPage, setHasNextPage] = useState(true)
 
   const fetchItems = useCallback(async () => {
-    page === 1 && setLoading(true);
-    const res = await fetchFunction(page, params);
-    setItems((prevItems) => [...prevItems, ...res.data]);
-    setHasNextPage(res.pagination.hasNext);
-    setLoading(false);
-  }, [page, fetchFunction, deps]);
+    page === 1 && setLoading(true)
+    const res = await fetchFunction(page, params)
+    setItems((prevItems) => [...prevItems, ...res.data])
+    setHasNextPage(res.pagination.hasNext)
+    setLoading(false)
+  }, [page, fetchFunction, deps])
 
   useEffect(() => {
-    fetchItems();
-  }, [fetchItems]);
+    fetchItems()
+  }, [fetchItems])
 
   return {
     items,
@@ -42,10 +42,10 @@ const useFetch = <T,>(
     setPage,
     fetchItems,
     loading,
-  };
-};
+  }
+}
 
-export default useFetch;
+export default useFetch
 
 const useFetchFeeds = <T,>(
   fetchFunction: (
@@ -55,29 +55,28 @@ const useFetchFeeds = <T,>(
   params?: Record<string, any>,
   deps?: any[]
 ) => {
-  const { isLoading, setPage, feeds, setFeeds, page, setError, ...rest } =
-    useFeedSlice();
+  const { feeds, setFeeds, page, setPage, isLoading, setError, hasNextPage } = useFeedStore()
 
   const fetchItems = useCallback(async () => {
     try {
-      const res = (await fetchFunction(page, params)) as any;
-      setFeeds(res);
+      const res = (await fetchFunction(page, params)) as any
+      setFeeds(res)
     } catch (error) {
-      setError(error);
+      setError(error)
     }
-  }, [page, fetchFunction, deps]);
+  }, [page, fetchFunction, deps])
 
   useEffect(() => {
-    fetchItems();
-  }, [fetchItems]);
+    fetchItems()
+  }, [fetchItems])
 
   return {
     isLoading,
-    feeds: feeds,
+    feeds,
     setPage,
     page,
-    ...rest,
-  };
-};
+    hasNextPage
+  }
+}
 
-export { useFetchFeeds };
+export { useFetchFeeds }

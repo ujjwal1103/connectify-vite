@@ -2,15 +2,14 @@ import { getPostById } from '@/api'
 import Avatar from '@/components/shared/Avatar'
 import { ImageSlider } from '@/components/shared/ImageSlider/ImageSlider'
 import { IPost } from '@/lib/types'
-import { Ellipsis, Loader } from 'lucide-react'
+import { Loader } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import PostActions from '../feeds/components/post/PostActions'
 import Caption from '../feeds/components/post/Caption'
 import CommentComponent from '../feeds/components/post/CommentComponent'
-import { AnimatePresence } from 'framer-motion'
-import PostOptions from '@/components/PostOptions'
 import PostNotFound from '@/components/shared/Error/PostError'
+import PostHeaderMenu from '@/components/shared/modal/PostHeaderMenu'
 
 const superLikes = [
   {
@@ -29,7 +28,7 @@ const superLikes = [
 
 const Post = () => {
   const { postId } = useParams()
-  const [menu, setMenu] = useState(false)
+
   const [loadingPost, setLoadingPost] = useState(true)
   const [post, setPost] = useState<IPost | null>(null)
   const [error, setError] = useState<Error | null>(null)
@@ -68,7 +67,7 @@ const Post = () => {
   }
 
   return (
-    <div className="z-10 flex h-full flex-1 flex-col md:flex-row">
+    <div className="z-10 flex h-dvh bg-background flex-1 flex-col md:flex-row">
       <div className="w-screen md:w-144">
         <div className="md:pl-5 md:pt-5">
           <div className="flex items-center gap-3 p-2 md:hidden md:p-0">
@@ -77,6 +76,8 @@ const Post = () => {
               <span className="font-semibold">{post?.user?.username}</span>
               <span>{post?.user?.name}</span>
             </div>
+
+            <PostHeaderMenu post={post!} postId={post!._id} />
           </div>
           <ImageSlider images={post?.images} aspect={true} readOnly={true} />
         </div>
@@ -133,10 +134,8 @@ const Post = () => {
                 <span className="font-semibold">{post?.user?.username}</span>
                 <span>{post?.user?.name}</span>
               </div>
-
-              <button onClick={() => setMenu(true)} className="ml-auto">
-                <Ellipsis className="cursor-pointer" />
-              </button>
+          
+              <PostHeaderMenu post={post!} postId={post!._id} />
             </div>
 
             {post?.caption && (
@@ -150,17 +149,6 @@ const Post = () => {
           <CommentComponent post={post!} postId={postId!} setPost={setPost} />
         </div>
       </div>
-
-      <AnimatePresence>
-        {menu && (
-          <PostOptions
-            handleDelete={() => {}}
-            post={post!}
-            open={menu}
-            onClose={() => setMenu(false)}
-          />
-        )}
-      </AnimatePresence>
     </div>
   )
 }

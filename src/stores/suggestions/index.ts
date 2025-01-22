@@ -10,21 +10,21 @@ interface SuggestionState {
   reset: () => void
 }
 
-// Create the store
-const useSuggestionStore = create<SuggestionState>((set) => ({
+const initialState = {
   suggestedUsers: [],
   loading: true,
+}
+
+// Create the store
+const useSuggestionStore = create<SuggestionState>((set) => ({
+  ...initialState,
   setSuggestions: (suggestions) =>
     set({ suggestedUsers: suggestions, loading: false }),
   removeSuggestion: (id) =>
     set((state) => ({
       suggestedUsers: state.suggestedUsers.filter((user) => user._id !== id),
     })),
-  reset: () =>
-    set({
-      suggestedUsers: [],
-      loading: true,
-    }),
+  reset: () => set(() => initialState),
 }))
 
 export default useSuggestionStore

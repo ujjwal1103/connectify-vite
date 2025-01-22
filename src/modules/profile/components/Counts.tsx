@@ -11,6 +11,7 @@ const Counts = ({
   following,
   userId,
   canViewFollowers,
+  username,
 }: any) => {
   const location = useLocation()
   const [followersOrFollowing, setFollowersOrFollowing] = useState<
@@ -75,9 +76,9 @@ const Counts = ({
             <XIcon size={30} />
           </button>
           <motion.div
-            initial={{ opacity: 0, scale: 0.5 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.5 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
             className="mx-auto md:w-1/2 lg:w-1/3"
           >
             <Tabs
@@ -91,6 +92,7 @@ const Counts = ({
                 followers: !(canViewFollowers && followers),
                 following: !(canViewFollowers && following),
               }}
+              username={username}
             />
           </motion.div>
         </motion.div>

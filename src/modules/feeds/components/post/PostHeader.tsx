@@ -17,7 +17,6 @@ type PostHeaderProps = {
 
 const PostHeader = ({
   postId,
-  userId,
   userAvatar,
   name,
   username,
@@ -40,7 +39,7 @@ const PostHeader = ({
         </div>
       </div>
 
-      <PostHeaderMenu post={post} postId={postId} userId={userId} />
+      <PostHeaderMenu post={post} postId={postId} />
     </div>
   )
 }

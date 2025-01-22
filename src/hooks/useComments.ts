@@ -9,7 +9,7 @@ export type ReplyType = {
   repliedTo: string | null
 }
 
-export const useComments = (postId: string) => {
+export const useComments = (postId: string, isActive?: boolean) => {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [comments, setComments] = useState<IComment[]>([])
@@ -20,9 +20,9 @@ export const useComments = (postId: string) => {
   })
 
   useEffect(() => {
+    if(!isActive) return;
     getComments()
-  }, [])
-
+  }, [isActive])
 
   const getComments = useCallback(async () => {
     try {
@@ -33,7 +33,7 @@ export const useComments = (postId: string) => {
     } finally {
       setIsLoading(false)
     }
-  }, [])
+  }, [postId])
 
   const addNewComment = useCallback(
     (comment: IComment, isReply: boolean) => {

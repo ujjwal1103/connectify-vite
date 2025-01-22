@@ -4,15 +4,14 @@ import { memo, useState } from 'react'
 import { usePostSlice } from '@/redux/services/postSlice'
 import { deleteThisPost } from '@/api'
 import { toast } from 'react-toastify'
-import { useFeedSlice } from '@/redux/services/feedSlice'
 import Modal from '@/components/shared/modal/Modal'
 import { useAuth } from '@/context/AuthContext'
 import { cn } from '@/lib/utils'
 import PostOptions from '@/components/PostOptions'
 import { IPost, IUser } from '@/lib/types'
+import useFeedStore from '@/stores/Feeds'
 
 interface PostHeaderMenuProps {
-  userId: string
   postId: string
   post: IPost
 }
@@ -23,7 +22,7 @@ const PostHeaderMenu = ({ postId, post }: PostHeaderMenuProps) => {
   const [deletingPost, setDeletingPost] = useState(false)
   const { deletePost } = usePostSlice()
   const { updateUser, user } = useAuth()
-  const { deleteFeed } = useFeedSlice()
+  const { deleteFeed } = useFeedStore()
 
   const handleClose = () => setModalOpen(false)
   const handleConfirm = () => {
@@ -47,7 +46,7 @@ const PostHeaderMenu = ({ postId, post }: PostHeaderMenuProps) => {
     }
   }
   return (
-    <div className="text-secondary-foreground">
+    <div className="text-secondary-foreground ml-auto">
       <button
         onClick={() => setMenu(!menu)}
         className={cn(

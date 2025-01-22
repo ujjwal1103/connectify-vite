@@ -105,7 +105,7 @@ const SuggestionsSlider = ({ username }: { username?: string }) => {
         >
           <div className="flex max-h-44 min-h-44 gap-3">
             {filteredSuggestions.map((person: IUser) => (
-              <People {...person} remove={() => remove(person._id)} />
+              <People key={person._id} {...person} remove={() => remove(person._id)} />
             ))}
           </div>
         </div>

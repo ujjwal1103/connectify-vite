@@ -20,6 +20,7 @@ type FollowButtonProps = {
   isRequested?: boolean
   isPrivate?: boolean
   size?: 'default' | 'sm' | 'lg' | 'icon' | 'follow' | null | undefined
+  className?: string
 }
 
 const FollowButton = ({
@@ -30,6 +31,7 @@ const FollowButton = ({
   isRequested = false,
   isPrivate = true,
   size = 'sm',
+  className= ''
 }: FollowButtonProps) => {
   const [follow, setFollow] = useState(isFollow)
   const [isRequestSent, setIsRequestSent] = useState(false)
@@ -112,7 +114,7 @@ const FollowButton = ({
 
   if (follow) {
     return (
-      <Button variant="following" onClick={handleUnfollow} size={size}>
+      <Button variant="following" className={className} onClick={handleUnfollow} size={size}>
         Following
       </Button>
     )

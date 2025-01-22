@@ -1,9 +1,9 @@
 import Avatar from '@/components/shared/Avatar'
 import { TabControl } from '@/components/shared/TabControl'
 import { Button } from '@/components/ui/button'
-import { Grid, VideoIcon } from 'lucide-react'
+import { ChevronLeft, Grid, VideoIcon } from 'lucide-react'
 import { IoIosSettings } from 'react-icons/io'
-import { Link, useSearchParams } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import Posts from './components/Posts'
 import Counts from './components/Counts'
 import PageLoading from '@/components/shared/Loading/PageLoading'
@@ -33,6 +33,7 @@ const SelfProfile = () => {
   const [searchParams, setSearchParams] = useSearchParams()
   const tab = searchParams.get('tab') || 'posts'
   const { user, loading } = useAuth()
+  const navigate= useNavigate()
 
   const handleTabChange = (tab: string) => {
     setSearchParams({ tab }, { replace: true })
@@ -44,9 +45,16 @@ const SelfProfile = () => {
 
   return (
     <div
-      className="relative mb-8 py-14 sm:py-0  overflow-x-hidden h-dvh overflow-y-scroll scrollbar-thin sm:pt-0 md:my-0 md:w-full"
+      className="relative h-dvh overflow-x-hidden overflow-y-scroll scrollbar-thin sm:py-0 sm:pt-0 md:my-0 md:w-full"
       id="scrollableDiv"
     >
+      <div className="sticky -top-0 z-20 flex sm:hidden items-center gap-2 border-b-[0.4px] bg-background p-2 ">
+        <button onClick={()=>navigate(-1)}>
+          <ChevronLeft />
+        </button>
+
+        <span>{user?.username}</span>
+      </div>
       <div className="w-full text-sm">
         <div className="flex flex-col justify-center gap-3 px-2 py-3 md:mx-auto md:justify-evenly md:px-10 md:py-5 lg:w-4/5">
           <div className="flex gap-5">
@@ -95,6 +103,7 @@ const SelfProfile = () => {
                 following={user?.following}
                 userId={user?._id}
                 canViewFollowers={true}
+                username={user?.username}
               />
               <div>
                 <span>{user?.username}</span>
@@ -129,12 +138,15 @@ const SelfProfile = () => {
             </Button>
           </div>
         </div>
-        <TabControl
-          tabId={'tabs'}
-          selectedTab={tab}
-          setSelectedTab={handleTabChange}
-          tabs={tabs}
-        />
+        <div className='sticky top-10 sm:top-0 z-20 bg-background'>
+          <TabControl
+            tabId={'tabs'}
+            selectedTab={tab}
+            setSelectedTab={handleTabChange}
+            tabs={tabs}
+          />
+        </div>
+
         {tab === 'posts' && <Posts />}
         {tab === 'reels' && <Reels />}
         {/* {tab === 'saved' && <SavedPost />} */}

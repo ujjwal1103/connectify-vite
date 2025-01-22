@@ -7,12 +7,12 @@ import { IMember, IUser } from '@/lib/types'
 import { cn } from '@/lib/utils'
 import { useChatSlice } from '@/redux/services/chatSlice'
 
-import { AnimatePresence } from 'framer-motion'
-import { PlusIcon, X } from 'lucide-react'
+import { AnimatePresence, motion } from 'framer-motion'
+import { ChevronLeft, Circle, CircleCheck, PlusIcon, X } from 'lucide-react'
 import { useState, useCallback, useEffect, ReactNode } from 'react'
 import { BiLoader } from 'react-icons/bi'
 import { IoClose } from 'react-icons/io5'
-import { toast } from 'sonner' // Assuming you're using react-toastify for toast messages
+import { toast } from 'sonner'
 
 const AddGroupMembers = ({
   chatId,
@@ -73,10 +73,9 @@ const AddGroupMembers = ({
     }
   }
 
-  const handleSelectChat = (user: IUser) => {
+  const handleSelectChat = (user: IUser, isSelected: boolean) => {
     setSelectedUsers((prev) => {
-      const userExists = prev.some((u) => u._id === user._id)
-      if (userExists) {
+      if (isSelected) {
         return prev.filter((u) => u._id !== user._id)
       }
       return [...prev, user]
@@ -90,12 +89,12 @@ const AddGroupMembers = ({
           setOpenList(true)
         }}
         disabled={members.length >= 10}
-        className='disabled:pointer-events-none disabled:opacity-25'
+        className="disabled:pointer-events-none disabled:opacity-25"
       >
         {children ? (
           children
         ) : (
-          <div className="mr-2 flex size-8 items-center justify-center rounded hover:bg-secondary/40 ">
+          <div className="mr-2 flex size-8 items-center justify-center rounded hover:bg-secondary/40">
             <PlusIcon />
           </div>
         )}
@@ -103,13 +102,24 @@ const AddGroupMembers = ({
       <AnimatePresence>
         {openList && (
           <Modal showCloseButton={false}>
-            <div className="relative z-10 flex h-144 flex-col bg-background text-foreground scrollbar-none">
+            <div className="relative z-10 flex h-dvh flex-col overflow-hidden bg-background text-foreground scrollbar-none md:h-144">
               <div className="h-full flex-1 overflow-y-scroll scrollbar-none">
                 <div className="h-full w-screen overflow-y-scroll shadow-lg scrollbar-none md:w-96">
                   <div className="sticky top-0 z-10 bg-background">
-                    <div className="mb-2 flex items-center justify-between rounded-sm p-2 font-medium text-foreground shadow-lg">
-                      <h1 className="text-2xl">Add Members</h1>
-                      <button type="button" onClick={() => setOpenList(false)}>
+                    <div className="flex items-center gap-2 rounded-sm p-2 font-medium text-foreground shadow-lg">
+                      <button
+                        type="button"
+                        className="md:hidden"
+                        onClick={() => setOpenList(false)}
+                      >
+                        <ChevronLeft size={20} />
+                      </button>
+                      <h1 className="text-lg md:text-2xl">Add Members</h1>
+                      <button
+                        type="button"
+                        className="ml-auto hidden md:block"
+                        onClick={() => setOpenList(false)}
+                      >
                         <IoClose size={24} />
                       </button>
                     </div>
@@ -189,16 +199,32 @@ const AddGroupMembers = ({
                   </div>
                 </div>
               </div>
+              <AnimatePresence>
               {selectedUsers.length > 0 && (
-                <div className="flex w-full items-center justify-center p-2">
+                <motion.div
+                  initial={{
+                    opacity: 0,
+                    y:20
+                  }}
+                  exit={{
+                    opacity: 0,
+                    y: 20
+                  }}
+                  animate={{
+                    opacity:1,
+                    y:0
+                  }}
+                  className="flex w-full items-center justify-center p-2"
+                >
                   <button
                     className="w-full rounded-md bg-blue-500 p-2"
                     onClick={addMembers}
                   >
                     Add
                   </button>
-                </div>
+                </motion.div>
               )}
+              </AnimatePresence>
             </div>
           </Modal>
         )}
@@ -210,8 +236,8 @@ const AddGroupMembers = ({
 type MemberItemProps = {
   user: IUser
   isSelected: boolean
-  handleSelectChat: (user: IUser) => void
   isChecked: boolean
+  handleSelectChat: (user: IUser, isSelected: boolean) => void
 }
 
 const MemberItem = ({
@@ -228,14 +254,10 @@ const MemberItem = ({
         isSelected && 'pointer-events-none opacity-20'
       )}
     >
-      <div>
-        <input
-          type="checkbox"
-          onChange={() => handleSelectChat(user)}
-          checked={isChecked}
-        />
-      </div>
-      <div className="flex items-center gap-3">
+      <div
+        onClick={() => handleSelectChat(user, isChecked)}
+        className="flex w-full items-center gap-3"
+      >
         <Avatar
           src={user?.avatar?.url}
           className="inline-block h-8 w-8 rounded-full object-cover duration-500 hover:scale-90"
@@ -246,6 +268,14 @@ const MemberItem = ({
         >
           <span>{user?.username}</span>
         </UsernameLink>
+
+        <span className="ml-auto flex">
+          {isChecked || isSelected ? (
+            <CircleCheck size={20} className="rounded-full fill-green-600" />
+          ) : (
+            <Circle size={20} />
+          )}
+        </span>
       </div>
     </div>
   )

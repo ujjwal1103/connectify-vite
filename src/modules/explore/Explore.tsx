@@ -7,7 +7,7 @@ import { IUser } from "@/lib/types";
 import InfiniteScroll from "react-infinite-scroll-component";
 
 const Explore = () => {
-  const { suggetions, loading, hasNextPage, setPage, page } =
+  const { suggestedUsers, loading, hasNextPage, setPage, page } =
     useGetSuggestedUsers() as any;
 
   const handleLoadMore = () => {
@@ -32,7 +32,7 @@ const Explore = () => {
       id="scrollableDiv"
     >
       <InfiniteScroll
-        dataLength={suggetions?.length}
+        dataLength={suggestedUsers?.length}
         next={handleLoadMore}
         hasMore={hasNextPage}
         loader={[12].map(() => (
@@ -52,7 +52,7 @@ const Explore = () => {
         ))}
         scrollableTarget={"scrollableDiv"}
       >
-        {suggetions?.map((people: IUser) => {
+        {suggestedUsers?.map((people: IUser) => {
           return <People key={people._id} people={people} />;
         })}
       </InfiniteScroll>

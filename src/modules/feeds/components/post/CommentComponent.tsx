@@ -24,7 +24,7 @@ const CommentComponent = ({
     setReply,
     addNewComment,
     reply,
-  } = useComments(postId)
+  } = useComments(postId, true)
 
   const onLikeDislikePost = useCallback(
     (liked: boolean) => {

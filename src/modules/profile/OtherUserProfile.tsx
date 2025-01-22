@@ -55,12 +55,14 @@ const OtherUserProfile = () => {
 
   return (
     <div
-      className="relative mb-8 overflow-x-hidden h-dvh overflow-y-scroll scrollbar-thin sm:pt-0 md:my-0 md:w-full"
+      className="relative mb-8 h-dvh overflow-x-hidden overflow-y-scroll scrollbar-thin sm:pt-0 md:my-0 md:w-full"
       id="scrollableDiv"
     >
       <div className="w-full text-sm">
-        <div className='flex p-2 items-center gap-3 border-b border-background/35 sm:hidden'>
-          <button onClick={()=>navigate(-1)}><ChevronLeft/></button>
+        <div className="flex items-center gap-3 border-b border-background/35 p-2 sm:hidden">
+          <button onClick={() => navigate(-1)}>
+            <ChevronLeft />
+          </button>
           <span>{user?.username}</span>
         </div>
         {user?._id && (
@@ -70,56 +72,79 @@ const OtherUserProfile = () => {
             setUser={setUser}
           />
         )}
-        <div className="flex justify-center gap-6  px-2 py-3 md:mx-auto mdjustify-evenly md:px-10 md:py-5 lg:w-[80%]">
-          <div className="flex size-[90px] flex-col items-center justify-center rounded-full border-zinc-800 p-[4px] md:size-[162px] md:flex-row md:border-2">
-            <Avatar
-
-              src={user?.avatar?.url}
-              name={user?.name}
-              className="size-[90px] md:size-[150px] select-none pointer-events-none"
-            />
-          </div>
-          <div className="space-y-2 text-sm md:space-y-3 md:text-sm">
-            <div className="flex items-center gap-1 md:gap-3">
-              <div className="hidden md:block">
-                <span>{username}</span>
-              </div>
-              <FollowButton
-                userId={user?._id!}
-                isFollow={user?.isFollow}
-                showRemoveFollowerBtn={false}
-                isRequested={user?.isRequested}
-                isPrivate={user?.isPrivate}
-                callBack={handleRefech}
-                size={'follow'}
+        <div className="flex flex-col justify-center gap-3 px-2 py-3 md:mx-auto md:justify-evenly md:px-10 md:py-5 lg:w-4/5">
+          <div className="flex justify-center gap-8 sm:justify-start sm:gap-5">
+            <div className="flex size-24 flex-col items-center justify-center rounded-full border-zinc-800 p-1 md:size-40 md:flex-row md:border-2">
+              <Avatar
+                src={user?.avatar?.url}
+                name={user?.name}
+                className="size-24 md:size-40"
               />
-              {user?.isFollow && (
-                <Button className="h-6 bg-gradient-to-l from-blue-900 to-violet-900 px-2 py-0.5 text-sm text-white hover:bg-zinc-900 md:h-8">
-                  Message
-                </Button>
-              )}
             </div>
-            <Counts
-              posts={user?.posts}
-              followers={user?.followers}
-              following={user?.following}
-              userId={user?._id}
-              canViewFollowers={!isPrivateAndNotFollowed}
+            <div className="space-y-2 text-sm md:space-y-3 md:text-sm">
+              <div className="flex items-center gap-1 md:gap-3">
+                <div className="hidden md:inline">
+                  <span>{user?.username}</span>
+                </div>
+                <div className="hidden gap-2 md:flex">
+                  <div className="hidden md:block">
+                    <span>{username}</span>
+                  </div>
+                  <FollowButton
+                    userId={user?._id!}
+                    isFollow={user?.isFollow}
+                    showRemoveFollowerBtn={false}
+                    isRequested={user?.isRequested}
+                    isPrivate={user?.isPrivate}
+                    callBack={handleRefech}
+                    size={'follow'}
+                  />
+                  {user?.isFollow && (
+                    <Button className="h-6 bg-gradient-to-l from-blue-900 to-violet-900 px-2 py-0.5 text-sm text-white hover:bg-zinc-900 md:h-8">
+                      Message
+                    </Button>
+                  )}
+                </div>
+              </div>
+              <Counts
+                posts={user?.posts}
+                followers={user?.followers}
+                following={user?.following}
+                userId={user?._id}
+                canViewFollowers={true}
+                username={user?.username}
+              />
+              <div>
+                <span>{user?.username}</span>
+              </div>
+              <div>
+                <span>{user?.name}</span>
+              </div>
+              <div className="hidden md:block">
+                <pre className="font-sans text-txs md:text-sm">{user?.bio}</pre>
+              </div>
+            </div>
+          </div>
+          <div className="md:hidden">
+            <pre className="font-sans text-txs md:text-sm">{user?.bio}</pre>
+          </div>
+          <div className="flex items-center gap-2 md:hidden">
+            <FollowButton
+              className="h-8 w-full bg-gradient-to-l from-blue-900 to-violet-900 px-2 py-2 text-sm md:h-9 md:px-4 md:text-sm"
+              userId={user?._id!}
+              isFollow={user?.isFollow}
+              showRemoveFollowerBtn={false}
+              isRequested={user?.isRequested}
+              isPrivate={user?.isPrivate}
+              callBack={handleRefech}
+              size={'follow'}
             />
-            <div className='hidden md:block'>
-              <span>{user?.name}</span>
-            </div>
-            <div className="hidden md:block">
-              <pre className="text-sm font-sans">{user?.bio}</pre>
-            </div>
-          </div>
-        </div>
-        <div className="mx-5 mb-5 space-y-2 block md:hidden">
-          <div>
-            <span>{user?.name}</span>
-          </div>
-          <div className="block md:hidden">
-            <pre className="text-xs">{user?.bio}</pre>
+
+            {user?.isFollow && (
+              <Button className="h-8 w-full bg-gradient-to-l from-blue-900 to-violet-900 px-2 py-2 text-sm md:h-9 md:px-4 md:text-sm">
+                Message
+              </Button>
+            )}
           </div>
         </div>
         {isPrivateAndNotFollowed ? (

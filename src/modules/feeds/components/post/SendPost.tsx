@@ -46,11 +46,11 @@ const SendPost = ({ onClose, post }: SendPostProps) => {
 
   const handleSendPost = useCallback(async () => {
     if (selectedUser[0]?.id) {
-      makeRequest.post('/message/u/send', {
-        userId: selectedUser[0].id,
+      const res = await makeRequest.post('/message/users/send', {
+        userIds: selectedUser.map((u) => u.id),
         post: post?._id,
-        messageType: 'POST_MESSAGE',
       })
+      console.log(res)
       onClose()
     }
   }, [onClose, post?._id, selectedUser])
@@ -167,19 +167,19 @@ const SendPost = ({ onClose, post }: SendPostProps) => {
         <hr className="h-0 border-secondary border-b-[0.5]" />
         <div className="h-[calc(100dvh_-_155px)] overflow-y-scroll py-2 scrollbar-none md:h-[350px]">
           <h1 className="px-3 pb-2">Suggested</h1>
-  
+
           {status === 'LOADING' && (
-            <ul className="px-3 space-y-2">
-              {[1, 2, 3, 4,5, 6, 7, 8, 9, 10, 11, 12].map((_s) => (
+            <ul className="space-y-2 px-3">
+              {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((_s) => (
                 <li className="flex h-14 animate-pulse cursor-pointer items-center gap-3 rounded">
-                  <span className='size-10 bg-secondary rounded-full inline-block p-2'></span>
-                  <span className='w-20 h-4 rounded bg-secondary'></span>
-                  <span className='size-7 bg-secondary rounded-full ml-auto'></span>
+                  <span className="inline-block size-10 rounded-full bg-secondary p-2"></span>
+                  <span className="h-4 w-20 rounded bg-secondary"></span>
+                  <span className="ml-auto size-7 rounded-full bg-secondary"></span>
                 </li>
               ))}
             </ul>
           )}
-                  {status === 'SUCCESS' && (
+          {status === 'SUCCESS' && (
             <ul className="">
               {users?.map((user) => {
                 const isSelected = selectedUser.some(
@@ -225,15 +225,6 @@ const People = ({ user, isSelected, toggleUserSelection }: PeopleProps) => {
   return (
     <motion.li
       key={user?._id}
-      // initial={{ opacity: 0, y: '-20%' }}
-      // animate={{ opacity: 1, y: 0 }}
-      // transition={{ duration: 0.2 }}
-      // exit={{
-      //   opacity: 0,
-      //   y: '-20%',
-      //   animationDirection: 'forward',
-      //   transition: { duration: 0.3, delay: 0 },
-      // }}
       className="flex cursor-pointer items-center gap-3 px-3 py-2 hover:bg-secondary"
       onClick={() => toggleUserSelection(user, isSelected)}
     >
@@ -241,9 +232,9 @@ const People = ({ user, isSelected, toggleUserSelection }: PeopleProps) => {
       <span>{user.username}</span>
       <motion.span className="ml-auto flex">
         {isSelected ? (
-          <CircleCheck className="rounded-full bg-green-600" />
+          <CircleCheck size={20} className="rounded-full fill-green-600" />
         ) : (
-          <Circle />
+          <Circle size={20} />
         )}
       </motion.span>
     </motion.li>

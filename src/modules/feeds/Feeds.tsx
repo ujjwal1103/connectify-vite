@@ -23,7 +23,7 @@ const fetchPosts = (page: number) =>
   }))
 
 const Feeds = () => {
-  const { feeds, hasNextPage, setPage, page, isLoading } =
+  const { hasNextPage, feeds, setPage, page, isLoading } =
     useFetchFeeds<IPost>(fetchPosts)
   const setHide: any = useOutletContext()
   const { uploadingPost } = usePostStore()
