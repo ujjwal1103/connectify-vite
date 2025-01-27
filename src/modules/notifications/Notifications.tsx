@@ -5,7 +5,7 @@ import {
 } from '@/api'
 
 import { makeRequest } from '@/config/api.config'
-import {useState } from 'react'
+import { useState } from 'react'
 import moment from 'moment'
 import FollowRequests from './FollowRequests'
 import { INotification } from './types'
@@ -29,24 +29,24 @@ const Notifications = () => {
 
   const queryClient = useQueryClient()
 
-  const {data, isLoading} = useQuery({
-    queryKey:['NOTIFICATIONS'],
+  const { data, isLoading } = useQuery({
+    queryKey: ['NOTIFICATIONS'],
     queryFn: getAllNotification,
-    _optimisticResults:'optimistic',
+    _optimisticResults: 'optimistic',
   })
 
-  const {data:fData} = useQuery({
-    queryKey:['FOLLOW_REQUESTS'],
+  const { data: fData } = useQuery({
+    queryKey: ['FOLLOW_REQUESTS'],
     queryFn: getAllFollowRequest,
-    _optimisticResults:'optimistic',
+    _optimisticResults: 'optimistic',
   })
-  
+
   const notifications = data?.data ?? []
   const followRequests = fData?.followRequest ?? []
 
-  const invalidateQueries = ()=>{
-    queryClient.invalidateQueries({queryKey:['NOTIFICATIONS']})
-    queryClient.invalidateQueries({queryKey:['FOLLOW_REQUESTS']})
+  const invalidateQueries = () => {
+    queryClient.invalidateQueries({ queryKey: ['NOTIFICATIONS'] })
+    queryClient.invalidateQueries({ queryKey: ['FOLLOW_REQUESTS'] })
   }
 
   const handleAccept = async (requestId: string, accept: boolean) => {
@@ -59,22 +59,6 @@ const Notifications = () => {
   }
 
   const deleteNotification = async (id: string, _groupId: string) => {
-    // const newNotications = notifications
-    //   .map((g: GroupNotification) => {
-    //     if (g._id === groupId) {
-    //       console.log(g.notifications, {
-    //         ...g,
-    //         notifications: g.notifications.filter((n: any) => n._id !== id),
-    //       })
-    //       return {
-    //         ...g,
-    //         notifications: g.notifications.filter((n: any) => n._id !== id),
-    //       }
-    //     } else {
-    //       return g
-    //     }
-    //   })
-    //   .filter((n) => n.notifications.length > 0)
     await deleteNotificationById(id)
     invalidateQueries()
   }
@@ -92,7 +76,7 @@ const Notifications = () => {
   useSocketEvents(socket, eventHandlers)
 
   return (
-    <div className="flex h-dvh w-screen flex-1 flex-col overflow-x-hidden overflow-y-scroll bg-background text-primary drop-shadow-xl scrollbar-none md:w-96 md:rounded-r-xl md:border-l-[1px] md:border-r-[1px] md:border-border">
+    <div className="flex h-dvh w-screen flex-1 flex-col overflow-x-hidden overflow-y-scroll bg-background text-primary drop-shadow-xl scrollbar-none sm:w-96 md:w-96 md:rounded-r-xl md:border-l-[1px] md:border-r-[1px] md:border-border">
       {!showFollowRequests && (
         <>
           <div className="flex w-full justify-between p-2">
@@ -115,7 +99,7 @@ const Notifications = () => {
               <div>Loading notifications</div>
             )}
             {notifications.length <= 0 && !isLoading && (
-              <div className='p-2 text-center text-2xl'>No Notification</div>
+              <div className="p-2 text-center text-2xl">No Notification</div>
             )}
             {notifications?.map((date) => {
               return (

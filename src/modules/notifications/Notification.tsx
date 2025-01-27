@@ -2,7 +2,7 @@ import Avatar from '@/components/shared/Avatar'
 import { INotification, NotificationType } from './types'
 import { NotificationText } from './NotificationText'
 import FollowButton from '@/components/shared/FollowButton'
-import { Trash2 } from 'lucide-react'
+import { XIcon } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { tranformUrl } from '@/lib/utils'
 import FollowRequestButtons from './FollowRequestButtons'
@@ -31,7 +31,7 @@ export const Notification = ({
             date={notification.createdAt}
           />
 
-          <div className="translate-x-10 transition-transform group-hover:translate-x-0">
+          <div className="translate-x-8 transition-transform group-hover:translate-x-0">
             <FollowButton
               isFollow={!!notification.user.isFollow}
               userId={notification.user._id}
@@ -42,10 +42,10 @@ export const Notification = ({
           </div>
 
           <button
-            className="translate-x-10 transition-transform group-hover:translate-x-0"
+            className="translate-x-8  rounded hover:bg-secondary  transition-transform group-hover:translate-x-0"
             onClick={() => deleteNotification(notification._id)}
           >
-            <Trash2 />
+            <XIcon size={16} />
           </button>
         </li>
       )
@@ -62,7 +62,7 @@ export const Notification = ({
             username={notification.user.username}
             date={notification.createdAt}
           />
-          <div className="translate-x-10 transition-transform group-hover:translate-x-0">
+          <div className="translate-x-8 transition-transform group-hover:translate-x-0">
             <FollowButton
               isFollow={!!notification.user.isFollow}
               userId={notification.user._id}
@@ -72,10 +72,10 @@ export const Notification = ({
             />
           </div>
           <button
-            className="translate-x-10 transition-transform group-hover:translate-x-0"
+            className="translate-x-8  rounded hover:bg-secondary  transition-transform group-hover:translate-x-0"
             onClick={() => deleteNotification(notification._id)}
           >
-            <Trash2 />
+            <XIcon size={16} />
           </button>
         </li>
       )
@@ -93,7 +93,7 @@ export const Notification = ({
             date={notification.createdAt}
           />
 
-          <div className="translate-x-10 cursor-pointer transition-transform group-hover:translate-x-0">
+          <div className="translate-x-8 cursor-pointer transition-transform group-hover:translate-x-0">
             <Link to={`/p/${notification?.postId?._id}`}>
               <img
                 src={
@@ -107,10 +107,10 @@ export const Notification = ({
           </div>
 
           <button
-            className="translate-x-10 transition-transform group-hover:translate-x-0"
+            className="translate-x-8  rounded hover:bg-secondary transition-transform group-hover:translate-x-0"
             onClick={() => deleteNotification(notification?._id)}
           >
-            <Trash2 />
+            <XIcon size={16} />
           </button>
         </li>
       )
@@ -128,7 +128,7 @@ export const Notification = ({
             date={notification.createdAt}
           />
 
-          <div className="translate-x-10 cursor-pointer transition-transform group-hover:translate-x-0">
+          <div className="translate-x-8 cursor-pointer transition-transform group-hover:translate-x-0">
             <Link to={`/p/${notification?.postId?._id}`}>
               <img
                 src={
@@ -142,10 +142,10 @@ export const Notification = ({
           </div>
 
           <button
-            className="translate-x-10 transition-transform group-hover:translate-x-0"
+            className="translate-x-8  rounded hover:bg-secondary  transition-transform group-hover:translate-x-0"
             onClick={() => deleteNotification(notification._id)}
           >
-            <Trash2 />
+            <XIcon size={16} />
           </button>
         </li>
       )
@@ -162,7 +162,7 @@ export const Notification = ({
             username={notification?.user?.username}
             date={notification?.createdAt}
           />
-          <div className="translate-x-10 cursor-pointer transition-transform group-hover:translate-x-0">
+          <div className="translate-x-8 cursor-pointer transition-transform group-hover:translate-x-0">
             <Link to={`/p/${notification?.postId?._id}`}>
               <img
                 src={
@@ -176,17 +176,17 @@ export const Notification = ({
           </div>
 
           <button
-            className="translate-x-10 transition-transform group-hover:translate-x-0"
+            className="translate-x-8  rounded hover:bg-secondary  transition-transform group-hover:translate-x-0"
             onClick={() => deleteNotification(notification._id)}
           >
-            <Trash2 />
+            <XIcon size={16} />
           </button>
         </li>
       )
     }
     default: {
       return (
-        <li className="group flex items-center justify-between gap-4 rounded-md dark:text-gray-50">
+        <li className="group flex items-center justify-between gap-4 rounded-md">
           <Avatar
             src={notification.user.avatar?.url}
             className={'size-8 rounded-full object-cover'}
@@ -196,7 +196,7 @@ export const Notification = ({
             username={notification.user.username}
             date={notification.createdAt}
           />
-          <div className="translate-x-10 transition-transform group-hover:translate-x-0">
+          <div className="translate-x-8 transition-transform group-hover:translate-x-0">
             <FollowRequestButtons
               handleAccept={handleAccept}
               requestId={notification.requestId!}
@@ -204,10 +204,10 @@ export const Notification = ({
           </div>
 
           <button
-            className="translate-x-10 transition-transform group-hover:translate-x-0"
+            className="translate-x-8  rounded hover:bg-secondary  transition-transform group-hover:translate-x-0"
             onClick={() => deleteNotification(notification._id)}
           >
-            <Trash2 />
+            <XIcon size={16} />
           </button>
         </li>
       )
