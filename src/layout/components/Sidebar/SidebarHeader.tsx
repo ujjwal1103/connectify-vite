@@ -10,7 +10,7 @@ const SidebarHeader = ({hide}:{hide:boolean}) => {
         <ConnectifyIcon size={42} />
       </Link>
       <Link to={'/'} className={cn('sm:hidden lg:block',hide && 'lg:hidden')}>
-        <ConnectifyLogoText w="200" h="44" />
+        <ConnectifyLogoText w="180" h="44" />
       </Link>
     </div>
   )

@@ -24,33 +24,39 @@ export const TabControl = ({
   indicatorClasses = '',
 }: TabControlProps) => {
   return (
-    <div className="flex w-full">
+    <div className="flex w-full border-collapse border-y border-secondary">
       {tabs.map((tab: Tab) => {
+        const isSelected = selectedTab === tab.id
         return (
           <button
             key={tab.id}
             onClick={() => setSelectedTab(tab.id)}
             className={cn(
-              'relative flex h-[40px] w-1/2 flex-1 disabled:pointer-events-none disabled:opacity-45 items-center justify-center gap-2 bg-background 3 py-1.5 text-sm font-medium uppercase text-foreground transition hover:text-white/60 focus-visible:outline-2'
+              '3 relative flex h-[40px] w-1/2 flex-1 border-collapse items-center justify-center gap-2 bg-background py-1.5 text-sm font-medium uppercase text-foreground transition hover:text-white/60 focus-visible:outline-2 disabled:pointer-events-none disabled:opacity-45'
             )}
             style={{
               WebkitTapHighlightColor: 'transparent',
             }}
             disabled={tab.disabled}
           >
-            {selectedTab === tab.id && (
+            {isSelected && (
               <motion.span
                 layoutId={tabId}
                 className={cn(
-                  'absolute inset-0 top-[35px] z-10 h-[5px] rounded-xl w-full bg-foreground mix-blend-exclusion',
+                  'absolute inset-0 top-0 z-10 mx-auto h-[5px] rounded-xl bg-foreground mix-blend-exclusion md:top-9 md:w-full',
                   indicatorClasses
                 )}
                 // style={{ borderRadius: broderRadius }}
                 transition={{ duration: 0.2 }}
               />
             )}
-            {tab.icon}
-            {tab.name}
+            <span
+              data-selected={isSelected ? 'true' : 'false'}
+              className=" data-[selected=true]:text-blue-800"
+            >
+              {tab.icon}
+            </span>
+            { <span className="hidden sm:inline-block">{tab.name}</span>}
           </button>
         )
       })}

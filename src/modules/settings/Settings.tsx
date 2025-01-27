@@ -49,7 +49,7 @@ const Setting = () => {
       <header className="py-4 md:flex hidden">
         <h1 className="font-bold text-xl">Settings</h1>
       </header>
-      <section className="space-y-2">
+      <section className="space-y-2 md:p-0 p-2">
         {settings.map((setting) => {
           return (
             <div className="bg-background p-2 rounded-md">

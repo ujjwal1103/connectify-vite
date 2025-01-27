@@ -31,7 +31,7 @@ const FollowButton = ({
   isRequested = false,
   isPrivate = true,
   size = 'sm',
-  className= ''
+  className = '',
 }: FollowButtonProps) => {
   const [follow, setFollow] = useState(isFollow)
   const [isRequestSent, setIsRequestSent] = useState(false)
@@ -114,14 +114,26 @@ const FollowButton = ({
 
   if (follow) {
     return (
-      <Button variant="following" className={className} onClick={handleUnfollow} size={size}>
+      <Button
+        data-follow="true"
+        variant="following"
+        className={className}
+        onClick={handleUnfollow}
+        size={size}
+      >
         Following
       </Button>
     )
   }
 
   return (
-    <Button onClick={handleFollowRequest} size={size} variant={'follow'}>
+    <Button
+      data-follow="false"
+      onClick={handleFollowRequest}
+      className={className}
+      size={size}
+      variant={'follow'}
+    >
       Follow
     </Button>
   )

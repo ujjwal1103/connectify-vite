@@ -24,8 +24,8 @@ const Counts = ({
 
   return (
     <div className="flex gap-8 md:gap-10">
-      <div className="flex flex-col items-center text-sm md:text-sm md:only:space-x-2">
-        <span>{posts}</span>
+      <div className="flex flex-col items-center w-14 text-sm md:text-sm md:only:space-x-2">
+        <span className='text-base'>{posts}</span>
         <span>Posts</span>
       </div>
       <button
@@ -41,7 +41,7 @@ const Counts = ({
           }
         )}
       >
-        <span>{followers}</span>
+        <span className='text-base'>{followers}</span>
         <span>Followers</span>
       </button>
       <button
@@ -57,7 +57,7 @@ const Counts = ({
           }
         )}
       >
-        <span>{following}</span>
+        <span className='text-base'>{following}</span>
         <span>Following</span>
       </button>
       {followersOrFollowing && (

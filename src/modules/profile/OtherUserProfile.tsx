@@ -73,7 +73,7 @@ const OtherUserProfile = () => {
           />
         )}
         <div className="flex flex-col justify-center gap-3 px-2 py-3 md:mx-auto md:justify-evenly md:px-10 md:py-5 lg:w-4/5">
-          <div className="flex justify-center gap-8 sm:justify-start sm:gap-5">
+          <div className="flex justify-between sm:gap-8 sm:justify-start">
             <div className="flex size-24 flex-col items-center justify-center rounded-full border-zinc-800 p-1 md:size-40 md:flex-row md:border-2">
               <Avatar
                 src={user?.avatar?.url}
@@ -83,9 +83,6 @@ const OtherUserProfile = () => {
             </div>
             <div className="space-y-2 text-sm md:space-y-3 md:text-sm">
               <div className="flex items-center gap-1 md:gap-3">
-                {/* <div className="hidden md:inline">
-                  <span>{user?.username}</span>
-                </div> */}
                 <div className="hidden gap-2 md:flex">
                   <div className="hidden md:block">
                     <span>{username}</span>
@@ -130,7 +127,7 @@ const OtherUserProfile = () => {
           </div>
           <div className="flex items-center gap-2 md:hidden">
             <FollowButton
-              className="h-8 w-full bg-gradient-to-l from-blue-900 to-violet-900 px-2 py-2 text-sm md:h-9 md:px-4 md:text-sm"
+              className="h-8 w-full bg-gradient-to-l from-blue-900 to-violet-900 px-2 py-2 text-sm md:h-9 md:px-4 md:text-sm data-[follow=true]:bg-green-500"
               userId={user?._id!}
               isFollow={user?.isFollow}
               showRemoveFollowerBtn={false}
@@ -140,7 +137,7 @@ const OtherUserProfile = () => {
               size={'follow'}
             />
 
-            {user?.isFollow && (
+            {user?.isFollow || !user?.isPrivate && (
               <Button className="h-8 w-full bg-gradient-to-l from-blue-900 to-violet-900 px-2 py-2 text-sm md:h-9 md:px-4 md:text-sm">
                 Message
               </Button>

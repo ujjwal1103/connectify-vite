@@ -47,6 +47,7 @@ export const ProfilePost = ({
   const [deletingPost, setDeletingPost] = useState(false)
   const { deletePost } = usePostSlice()
   const { deleteFeed } = useFeedStore()
+  const navigate = useNavigate()
 
   const { updateUser, user } = useAuth()
   useEffect(() => {
@@ -80,7 +81,12 @@ export const ProfilePost = ({
 
   return (
     <motion.div className="group relative flex aspect-1 items-center bg-black">
-      <div className="aspect-1 w-full">
+      <div
+        className="aspect-1 w-full"
+        onClick={() => {
+          navigate(`/p/${post._id}`)
+        }}
+      >
         <ImageSlider
           images={currentPost?.images}
           aspect={true}
@@ -92,7 +98,7 @@ export const ProfilePost = ({
         onClick={() => {
           onClickPost?.(index)
         }}
-        className="absolute top-0 flex h-full w-full items-center justify-center group-hover:bg-black/50"
+        className="absolute top-0 hidden h-full w-full items-center justify-center sm:flex sm:group-hover:bg-black/50"
       >
         <PostMenu
           setModalOpen={setModalOpen}
