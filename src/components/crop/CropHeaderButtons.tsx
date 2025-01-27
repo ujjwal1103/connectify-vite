@@ -1,15 +1,11 @@
-import { Loader } from 'lucide-react'
-
 const CropHeaderButtons = ({
   onResetAndClose,
   onCropImage,
   isCaptionOpen,
-  isLoadingPost
 }: {
   onResetAndClose: () => void
   onCropImage: (val: boolean) => void
   isCaptionOpen: boolean
-  isLoadingPost: boolean
 }) => {
   return (
     <div className="w-full">
@@ -17,10 +13,8 @@ const CropHeaderButtons = ({
         <button onClick={onResetAndClose} className="text-white">
           Back
         </button>
-        {isLoadingPost && <Loader />}
         <button onClick={() => onCropImage(false)} className="text-white">
           {isCaptionOpen ? 'Post' : 'Next'}
-          
         </button>
       </div>
     </div>

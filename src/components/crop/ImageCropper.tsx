@@ -71,7 +71,6 @@ const ImageCropper: React.FC<ImageCropperProps> = ({
   const { addPost, setUploadingPost } = usePostStore()
   const { addNewFeed } = useFeedStore()
   const { updateUser, user } = useAuth()
-  const [loadingCrop, setLoadingCrop] = useState(false)
 
   useEffect(() => {
     if (cropper) {
@@ -122,10 +121,13 @@ const ImageCropper: React.FC<ImageCropperProps> = ({
 
   const onCropImage = useCallback(
     async (allNextImageCrop = false) => {
-      if (caption) await handlePost()
+      if (caption) {
+        await handlePost()
+        return
+      }
 
       if (cropperRef.current) {
-        setLoadingCrop(true)
+        setCaption(true)
         const canvas = cropperRef.current.getCanvas()
         if (canvas) {
           const url = canvas.toDataURL()
@@ -135,7 +137,6 @@ const ImageCropper: React.FC<ImageCropperProps> = ({
               onCrop(file, url, allNextImageCrop)
               setCroppedUrls((prev) => [...prev, url])
             }
-            setLoadingCrop(false)
           }, 'image/jpeg')
         }
       }
@@ -157,7 +158,6 @@ const ImageCropper: React.FC<ImageCropperProps> = ({
     <motion.div className="relative flex w-full flex-col items-center justify-center rounded-lg bg-background">
       {isLoading && <ProgressLoading />}
       <CropHeaderButtons
-        isLoadingPost={loadingCrop}
         onResetAndClose={() => {
           if (caption) {
             setCaption(false)
@@ -165,9 +165,7 @@ const ImageCropper: React.FC<ImageCropperProps> = ({
             onClose()
           }
         }}
-        onCropImage={(e) => {
-          onCropImage(e)
-        }}
+        onCropImage={onCropImage}
         isCaptionOpen={caption}
       />
       <div className="relative h-full w-full overflow-hidden rounded-lg rounded-t-none md:h-500">
