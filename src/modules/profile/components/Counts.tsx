@@ -23,7 +23,7 @@ const Counts = ({
   }, [location.pathname])
 
   return (
-    <div className="flex gap-4 md:gap-10">
+    <div className="flex gap-8 md:gap-10">
       <div className="flex flex-col items-center text-sm md:text-sm md:only:space-x-2">
         <span>{posts}</span>
         <span>Posts</span>
@@ -65,7 +65,7 @@ const Counts = ({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-50 mx-auto h-dvh w-screen bg-zinc-900 bg-opacity-60 backdrop-blur"
+          className="fixed inset-0 z-200 mx-auto sm:mx-0 sm:ml-[10.7%] md:ml-0 h-dvh sm:w-[89.9%] md:w-screen md:max-auto bg-opacity-60 backdrop-blur-sm"
         >
           <button
             className="absolute right-5 top-5 hidden md:block"

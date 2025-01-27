@@ -83,9 +83,9 @@ const OtherUserProfile = () => {
             </div>
             <div className="space-y-2 text-sm md:space-y-3 md:text-sm">
               <div className="flex items-center gap-1 md:gap-3">
-                <div className="hidden md:inline">
+                {/* <div className="hidden md:inline">
                   <span>{user?.username}</span>
-                </div>
+                </div> */}
                 <div className="hidden gap-2 md:flex">
                   <div className="hidden md:block">
                     <span>{username}</span>
@@ -114,19 +114,19 @@ const OtherUserProfile = () => {
                 canViewFollowers={true}
                 username={user?.username}
               />
-              <div>
+              <div className='md:hidden'>
                 <span>{user?.username}</span>
               </div>
               <div>
                 <span>{user?.name}</span>
               </div>
-              <div className="hidden md:block">
-                <pre className="font-sans text-txs md:text-sm">{user?.bio}</pre>
+              <div className="hidden sm:block">
+                <pre className="font-sans sm:text-sm">{user?.bio}</pre>
               </div>
             </div>
           </div>
-          <div className="md:hidden">
-            <pre className="font-sans text-txs md:text-sm">{user?.bio}</pre>
+          <div className="sm:hidden">
+            <pre className="font-sans sm:text-sm">{user?.bio}</pre>
           </div>
           <div className="flex items-center gap-2 md:hidden">
             <FollowButton

@@ -9,7 +9,7 @@ const usePostStore = create<PostState & PostActions>()(
     // Initial State
     post: {},
     posts: [],
-    loadingPost: true,
+    loadingPost: false,
     error: null,
     hasNext: false,
     page: 1,
@@ -117,7 +117,7 @@ const usePostStore = create<PostState & PostActions>()(
       set({
         post: {},
         posts: [],
-        loadingPost: true,
+        loadingPost: false,
         error: null,
         hasNext: false,
         page: 1,

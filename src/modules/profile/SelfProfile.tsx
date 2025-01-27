@@ -48,16 +48,17 @@ const SelfProfile = () => {
       className="relative h-dvh overflow-x-hidden overflow-y-scroll scrollbar-thin sm:py-0 sm:pt-0 md:my-0 md:w-full"
       id="scrollableDiv"
     >
-      <div className="sticky -top-0 z-20 flex sm:hidden items-center gap-2 border-b-[0.4px] bg-background p-2 ">
+      <div className="sticky -top-0 z-20 flex sm:hidden items-center gap-2 bg-background p-2 ">
         <button onClick={()=>navigate(-1)}>
           <ChevronLeft />
         </button>
 
         <span>{user?.username}</span>
       </div>
+      <hr className='border-[#595959]'/>
       <div className="w-full text-sm">
         <div className="flex flex-col justify-center gap-3 px-2 py-3 md:mx-auto md:justify-evenly md:px-10 md:py-5 lg:w-4/5">
-          <div className="flex gap-5">
+          <div className="flex gap-10 sm:mx-10">
             <div className="flex size-24 flex-col items-center justify-center rounded-full border-zinc-800 p-1 md:size-40 md:flex-row md:border-2">
               <Avatar
                 src={user?.avatar?.url}
@@ -111,13 +112,13 @@ const SelfProfile = () => {
               <div>
                 <span>{user?.name}</span>
               </div>
-              <div className="hidden md:block">
-                <pre className="font-sans text-txs md:text-sm">{user?.bio}</pre>
+              <div className="hidden sm:block">
+                <pre className="font-sans sm:text-sm">{user?.bio}</pre>
               </div>
             </div>
           </div>
-          <div className="md:hidden">
-            <pre className="font-sans text-txs md:text-sm">{user?.bio}</pre>
+          <div className="sm:hidden">
+            <pre className="font-sans sm:text-sm">{user?.bio}</pre>
           </div>
           <div className="flex items-center gap-2 md:hidden">
             <Button asChild>

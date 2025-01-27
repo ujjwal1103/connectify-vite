@@ -1,4 +1,3 @@
-
 import { ProfilePost } from '@/components/posts/ProfilePost'
 
 import { useEffect, useState } from 'react'
@@ -17,9 +16,14 @@ import { AnimatePresence } from 'framer-motion'
 interface PostsProps {
   isSelfPosts?: boolean
   userId?: string
+  shouldFetchPosts: boolean
 }
 
-const Posts = ({ isSelfPosts = true, userId }: PostsProps) => {
+const Posts = ({
+  isSelfPosts = true,
+  userId,
+  shouldFetchPosts = false,
+}: PostsProps) => {
   const {
     fetchSelfPosts,
     fetchUserPosts,
@@ -36,13 +40,15 @@ const Posts = ({ isSelfPosts = true, userId }: PostsProps) => {
   const location = useLocation()
 
   useEffect(() => {
+    if (!shouldFetchPosts) return;
+
     if (isSelfPosts) {
       fetchSelfPosts()
     } else {
-      if(!userId) return;
+      if (!userId) return
       fetchUserPosts(userId)
     }
-  }, [fetchSelfPosts, fetchUserPosts, page, isSelfPosts, userId])
+  }, [fetchSelfPosts, fetchUserPosts, page, isSelfPosts, userId, shouldFetchPosts])
 
   useEffect(() => {
     return () => {
@@ -66,13 +72,15 @@ const Posts = ({ isSelfPosts = true, userId }: PostsProps) => {
     window.history.replaceState(null, '', location.pathname)
   }
 
+  if (!loadingPost && !posts.length) {
+    return <NoPosts />
+  }
+
   if (loadingPost) {
     return <LoadingPosts />
   }
 
-  if (!loadingPost && !posts.length) {
-    return <NoPosts />
-  }
+
 
   return (
     <div className="overflow-hidden">
@@ -96,12 +104,16 @@ const Posts = ({ isSelfPosts = true, userId }: PostsProps) => {
           ))}
         </div>
       </InfiniteScroll>
-     <AnimatePresence>
-      {openSlider && (
-        <Modal onClose={handleClose} showCloseButton={false} shouldCloseOutsideClick={false}>
-          <PostSliderModal posts={posts} index={selectedIndex} />
-        </Modal>
-      )}
+      <AnimatePresence>
+        {openSlider && (
+          <Modal
+            onClose={handleClose}
+            showCloseButton={false}
+            shouldCloseOutsideClick={false}
+          >
+            <PostSliderModal posts={posts} index={selectedIndex} />
+          </Modal>
+        )}
       </AnimatePresence>
     </div>
   )
