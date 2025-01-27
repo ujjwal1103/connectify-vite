@@ -5,19 +5,19 @@ import { getCurrentUser } from '@/lib/localStorage'
 import { ChevronLeft, Edit, EllipsisVertical } from 'lucide-react'
 import { useRef, useState } from 'react'
 import { useClickOutside } from '@react-hookz/web'
-import { useChatSlice } from '@/redux/services/chatSlice'
 import Modal from '@/components/shared/modal/Modal'
 import AddNewUser from './NewChat'
 import useModalStore from '@/zustand/newChatStore'
 import Tooltip from '@/components/shared/Tooltip'
 import { Button } from '@/components/ui/button'
 import { useNavigate } from 'react-router-dom'
+import { useChatStore } from '@/stores/Chats'
 
 const ChatListHeader = () => {
   const [open, setOpen] = useState(false)
   const { isModalOpen, closeModal, openModal } = useModalStore()
   const user = getCurrentUser()
-  const { selectChats, setSelectChats } = useChatSlice()
+  const { allowSelection, setAllowSelection } = useChatStore()
   const menuRef = useRef<HTMLDivElement>(null)
   const buttonRef = useRef<HTMLButtonElement>(null)
   const navigate = useNavigate()
@@ -94,7 +94,7 @@ const ChatListHeader = () => {
                     <li className="text-sm">
                       <button
                         onClick={() => {
-                          setSelectChats(!selectChats)
+                          setAllowSelection(!allowSelection)
                           setOpen(false)
                         }}
                       >

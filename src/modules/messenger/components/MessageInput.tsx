@@ -206,7 +206,7 @@ const MessageInput = () => {
             exit="hide"
             className="flex items-center"
           >
-            <div className="flex h-[53px] w-full items-center gap-3 px-4 py-2">
+            <div className="flex h-14 w-full items-center gap-3 px-4 py-2">
               <button onClick={handleClose}>
                 <IoClose size={24} />
               </button>
@@ -230,9 +230,9 @@ const MessageInput = () => {
             animate="show"
             exit="hide"
           >
-            <div className="flex flex-col gap-2 p-2">
+            <div className="flex flex-col gap-2 px-2">
               <MessageReply />
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-3 h-14">
                 <div className="flex w-full items-center gap-3">
                   <div className="flex items-center gap-2">
                     <motion.button
@@ -260,9 +260,9 @@ const MessageInput = () => {
                       <PlusIcon className="fill-white text-white" />
                     </motion.button>
                   </div>
-                  <div className="flex-1">
+                  <div className="flex-1 ">
                     <input
-                      className="w-full rounded-md border-2 border-transparent bg-background p-1 px-3 focus:outline-none focus-visible:border-blue-800"
+                      className="w-full rounded-md border-2 border-transparent bg-background p-2 px-3 focus:outline-none"
                       value={messageText}
                       onChange={handleTextChange}
                       placeholder="Type..."
@@ -318,7 +318,7 @@ const MessageInput = () => {
             initial="hide"
             animate="show"
             exit="hide"
-            className="flex h-[53px] flex-[0.05] items-center justify-end bg-secondary p-2"
+            className="flex h-14 flex-[0.05] items-center justify-end bg-secondary p-2"
           >
             <AudioRecorder
               handleClose={() => handleClick('Input')}

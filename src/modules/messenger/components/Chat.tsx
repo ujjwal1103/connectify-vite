@@ -19,6 +19,7 @@ import { IChat } from '@/lib/types'
 import { useSocket } from '@/context/SocketContext'
 import useSocketEvents from '@/hooks/useSocketEvent'
 import DropDownMenu from '@/components/shared/dialogs/DropDownMenu/DropDownMenu'
+import { useChatStore } from '@/stores/Chats'
 
 const items = [
   {
@@ -78,13 +79,10 @@ interface ChatProps {
 }
 
 const Chat = ({ chat, isChatSelected, handleSelect }: ChatProps) => {
-  const {
-    selectChats,
-    selectedChats,
-    setSelectedChats,
-    removeChat,
-    setChatToFirst,
-  } = useChat()
+  const { removeChat, setChatToFirst } = useChat()
+
+  const { allowSelection, selectChat, selectedChats, removeSelection } =
+    useChatStore()
 
   const { socket } = useSocket()
 
@@ -111,6 +109,8 @@ const Chat = ({ chat, isChatSelected, handleSelect }: ChatProps) => {
 
   useSocketEvents(socket, eventHandlers)
 
+  const isChecked = selectedChats.includes(chat._id)
+
   return (
     <motion.div
       animate={{ opacity: 1, y: 0 }}
@@ -126,10 +126,11 @@ const Chat = ({ chat, isChatSelected, handleSelect }: ChatProps) => {
       onClick={() => handleSelect(chat)}
     >
       <AvatarAndCheckbox
-        selectChats={selectChats}
-        selectedChats={selectedChats}
+        selectChats={allowSelection}
+        isChecked={isChecked}
         chat={chat}
-        setSelectedChats={setSelectedChats}
+        onSelectChat={selectChat}
+        onRemoveChat={removeSelection}
       />
       {chat?.unseenMessagesCount! > 0 && (
         <button className="ml-auto mr-3 h-5 w-5 rounded-full bg-gradient-to-l from-sky-900 to-indigo-900 text-xss text-sky-100">
@@ -163,11 +164,21 @@ const Chat = ({ chat, isChatSelected, handleSelect }: ChatProps) => {
 export default memo(Chat)
 
 const AvatarAndCheckbox = ({
+  onSelectChat,
   selectChats,
-  selectedChats,
+  isChecked,
   chat,
-  setSelectedChats,
+  onRemoveChat,
 }: any) => {
+  const chatId = chat._id
+
+  const handleSelection = () => {
+    if (isChecked) {
+      onRemoveChat(chatId)
+    } else {
+      onSelectChat(chatId)
+    }
+  }
   return (
     <div className="flex items-center space-x-2">
       <div
@@ -178,13 +189,11 @@ const AvatarAndCheckbox = ({
       >
         <input
           type="checkbox"
-          name=""
-          checked={selectedChats.includes(chat._id)}
-          id=""
+          name={chatId}
+          checked={isChecked}
+          id={chat.id}
           className="text-red-400 accent-blue-900"
-          onChange={() => {
-            setSelectedChats(chat._id)
-          }}
+          onChange={handleSelection}
         />
       </div>
       <div

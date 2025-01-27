@@ -104,15 +104,8 @@ const InfiniteScrollC: React.FC<InfiniteScrollProps> = ({
     if (scrollToBottom) {
       const scrollContainer = scrollContainerRef.current
       if (scrollContainer) {
-        const distanceFromBottom =
-          scrollContainer.scrollHeight -
-          scrollContainer.scrollTop -
-          scrollContainer.clientHeight
-
-        if (distanceFromBottom <= 300) {
-          scrollContainer.scrollTop = scrollContainer.scrollHeight
-          setScrollToBottom(false)
-        }
+        scrollContainer.scrollTop = scrollContainer.scrollHeight
+        setScrollToBottom(false)
       }
     }
   }, [scrollToBottom])

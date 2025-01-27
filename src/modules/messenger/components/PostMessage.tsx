@@ -1,10 +1,9 @@
 import UsernameLink from '@/components/shared/UsernameLink'
-import { tranformUrl, getReadableTime, cn } from '@/lib/utils'
+import { tranformUrl, cn } from '@/lib/utils'
 import Avatar from '@/components/shared/Avatar'
 import { Link } from 'react-router-dom'
-import Notch from './Notch'
 import { IMessage } from '@/lib/types'
-import { Check, CheckCheck } from 'lucide-react'
+import MetaData from './MetaData'
 
 interface PostMessageProps {
   currentUserMessage: boolean
@@ -14,14 +13,17 @@ interface PostMessageProps {
   message: IMessage
 }
 
-const PostMessage = ({
-  currentUserMessage,
-  allSeen,
-  className,
-  message,
-  showNotch,
-}: PostMessageProps) => {
-  const { isUnavailable, post, createdAt, seen } = message
+const PostMessage = ({ className, message, showNotch }: PostMessageProps) => {
+  const {
+    isUnavailable,
+    post,
+    isCurrentUserMessage,
+    isEdited,
+    reaction,
+    createdAt,
+    seen,
+    isLoading,
+  } = message
 
   if (isUnavailable) {
     return (
@@ -33,21 +35,25 @@ const PostMessage = ({
 
   return (
     <div
-    className={cn(
-      'relative z-10  flex w-fit max-w-md flex-col rounded-xl bg-chat-bubble-user p-2 text-foreground  transition-all duration-700',
-      {
-        'bg-chat-bubble-self text-white ': currentUserMessage,
-        "chat-bubble":showNotch
-      },
-  
-    )}
+      className={cn(
+        'relative z-10 flex w-fit max-w-md flex-col rounded-xl bg-message-background text-foreground transition-all duration-700',
+        {
+          'bg-chat-bubble-self ': isCurrentUserMessage,
+          'chat-bubble': showNotch,
+        }
+      )}
     >
-      <div className="flex items-center gap-3 py-2">
+      <div className="flex items-center gap-2 p-2">
         <Avatar
           src={post?.user?.avatar?.url}
-          className={'size-10 rounded-full'}
+          className={'size-7 rounded-full'}
         />
-        <UsernameLink username={post?.user?.username!}>
+        <UsernameLink
+          username={post?.user?.username!}
+          className={cn('text-black', {
+            'text-white': isCurrentUserMessage,
+          })}
+        >
           {post?.user?.username}
         </UsernameLink>
       </div>
@@ -66,18 +72,16 @@ const PostMessage = ({
         </div>
       )}
 
-      <div className="float-right flex w-fit flex-col items-center justify-end p-1 text-right text-xss text-gray-300">
-        <span className="z-[1] flex items-center gap-3 text-white">
-          {getReadableTime(createdAt)}
-          {currentUserMessage &&
-            (seen || allSeen ? (
-              <CheckCheck className="text-blue-500" />
-            ) : (
-              <Check />
-            ))}
-        </span>
-      </div>
-      {showNotch && <Notch currentUserMessage={currentUserMessage} />}
+      <MetaData
+        isEdited={isEdited}
+        createdAt={createdAt}
+        currentUserMessage={isCurrentUserMessage}
+        isLoading={isLoading}
+        allSeen={false}
+        seen={seen}
+        className="self-end absolute top-1 right-1"
+        reaction={reaction}
+      />
     </div>
   )
 }

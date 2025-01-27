@@ -95,4 +95,4 @@ const EditMessage = ({ message, end = false, onClose }: EditMessageProps) => {
   )
 }
 
-export default EditMessage
+export default EditMessage;

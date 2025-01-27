@@ -45,7 +45,7 @@ const ChatProfileCard = () => {
 
               <div className="py-2">
                 <Button
-                  onClick={toggleShowChat}
+                  onClick={() => toggleShowChat('Chat Info')}
                   variant={'secondary'}
                   className="space-x-2"
                 >

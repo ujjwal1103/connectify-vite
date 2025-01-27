@@ -95,8 +95,8 @@ const CommentPage = ({ postId, onClose }: CommentPageProps) => {
   }
 
   return (
-    <div className="relative flex h-dvh w-screen flex-col overflow-hidden bg-background text-foreground md:h-auto md:w-128">
-      <div className="flex w-full items-center justify-between border-b-[0.5px] border-border p-2 text-xl text-foreground">
+    <div className="relative flex h-dvh w-screen flex-col overflow-hidden bg-background text-foreground md:h-[90dvh] md:w-128">
+      <div className="flex h-14 w-full items-center justify-between border-b-[0.5px] border-border p-2 text-xl text-foreground">
         <div className="flex items-center gap-3">
           <Button
             onClick={onClose}
@@ -116,8 +116,8 @@ const CommentPage = ({ postId, onClose }: CommentPageProps) => {
           <X />
         </Button>
       </div>
-      <div className="relative calculated-height md:h-auto">
-        <div className="flex calculated-height flex-col overflow-y-scroll text-sm scrollbar-none md:h-128">
+      <div className="relative h-[calc(100dvh_-_3.5rem)] md:h-[calc(90dvh_-_3.5rem)]">
+        <div className="flex h-[calc(100dvh_-_7rem)] flex-col overflow-y-scroll text-sm scrollbar-none md:h-[calc(90dvh_-_7rem)]">
           {comments.length > 0 ? (
             <Comments
               postId={postId!}
@@ -127,10 +127,10 @@ const CommentPage = ({ postId, onClose }: CommentPageProps) => {
               onLikeDislike={onLikeDislike}
             />
           ) : (
-            <EmplyComments />
+            <EmplyComments /> 
           )}
         </div>
-        <div className="flex gap-2 p-2">
+        <div className="flex h-14 items-center gap-2 p-2">
           <div className="flex items-center justify-center">
             <Avatar src={getCurrentUser()?.avatar?.url} className="size-6" />
           </div>
@@ -144,7 +144,7 @@ const CommentPage = ({ postId, onClose }: CommentPageProps) => {
           </div>
         </div>
       </div>
-    </div>
+       </div>
   )
 }
 

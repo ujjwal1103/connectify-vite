@@ -132,7 +132,7 @@ const CommentInput = ({
         />
 
         <div className="flex items-center gap-2 px-2">
-          <EmojiPicker onEmojiClick={onEmojiClick} />
+            <EmojiPicker onEmojiClick={onEmojiClick} />
             {commentText && (
               <Button
                 variant="ghost"

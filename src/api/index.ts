@@ -1,4 +1,4 @@
-import { IChat, IMessage, IPost, IUser } from '@/lib/types'
+import { IChat, IMessage, IPost, IUser, Pagination } from '@/lib/types'
 import { makeRequest } from '../config/api.config'
 import {
   GetFollowRequetsRoot,
@@ -80,21 +80,30 @@ const cancelFollowRequest = async (userId: string): Promise<any> => {
   return await makeRequest.delete(`/cancelFollow/${userId}`)
 }
 
-interface RootObject {
+export interface ConverstionsReponse {
   isSuccess: boolean
-  chats: any[]
+  chats: IChat[]
+  pagination: Pagination
+}
+export interface ConverstionReponse {
+  isSuccess: boolean
+  chat: IChat
+  pagination: Pagination
 }
 
 // chat apis
-const getConversations = async (searchTerm?: string): Promise<RootObject> => {
-  let url = '/chats'
+const getConversations = async (
+  page: number,
+  searchTerm?: string
+): Promise<ConverstionsReponse> => {
+  let url = `/chats?page=${page}&limit=20`
   if (searchTerm) {
-    url = url + `?search=${searchTerm}`
+    url = url + `&search=${searchTerm}`
   }
   return await makeRequest.get(url)
 }
 
-const getChatByChatId = async (chatId?: string): Promise<RootObject> => {
+const getChatByChatId = async (chatId?: string): Promise<ConverstionReponse> => {
   let url = `/chat/${chatId}`
   return await makeRequest.get(url)
 }

@@ -1,11 +1,11 @@
-import { memo, useCallback, useRef, useState } from 'react'
+import { memo, useCallback, useEffect, useRef, useState } from 'react'
 import ChatListHeader from './ChatListHeader'
 import { Loader, Search, X, XIcon } from 'lucide-react'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { useGetQuery } from '@/hooks/useGetQuery'
 import { useChat, useMessage } from '@/redux/services/chatSlice'
 import { useDebounce } from '@/hooks/useDebounce'
-import { getConversations } from '@/api'
+import { ConverstionsReponse, getConversations } from '@/api'
 import { cn } from '@/lib/utils'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { NEW_CHAT, REFETCH_CHATS } from '@/constants/Events'
@@ -16,6 +16,7 @@ import { Button } from '@/components/ui/button'
 import useModalStore from '@/zustand/newChatStore'
 import Chat from './Chat'
 import { toast } from 'sonner'
+import { useChatStore } from '@/stores/Chats'
 
 const ChatList = () => {
   const [searchTerm, setSearchTerm] = useState('')
@@ -28,16 +29,19 @@ const ChatList = () => {
   const navigate = useNavigate()
 
   const location = useLocation()
+  const { setChat, setSelectedChat } = useChat()
+
   const {
     chats,
-    selectChats,
-    selectedChats,
     setChats,
-    setSelectChats,
+    hasNext,
+    page,
+    setPage,
+    allowSelection,
+    setAllowSelection,
+    selectedChats,
     resetSelectedChats,
-    setChat,
-    setSelectedChat,
-  } = useChat()
+  } = useChatStore()
   const { setMessagePage, setMessages } = useMessage()
 
   const { isLoading, isSuccess, refech } = useGetQuery({
@@ -45,17 +49,30 @@ const ChatList = () => {
       if (debouceSearch) {
         setIsSearching(true)
       }
-      return getConversations(debouceSearch)
+      return getConversations(page, debouceSearch)
     },
-    deps: [debouceSearch],
-    onSuccess: (data: any) => {
-      setChats(data.chats)
+    deps: [page, debouceSearch],
+    onSuccess: (data: ConverstionsReponse) => {
+      setChats({
+        chats: data.chats,
+        hasNext: data.pagination.hasNext,
+      })
       setIsSearching(false)
     },
     onError: () => {
       setIsSearching(false)
     },
   })
+
+  useEffect(() => {
+    return () => {
+      setPage(1)
+      setChats({
+        chats: [],
+        hasNext: true,
+      })
+    }
+  }, [])
 
   const handleMessage = useCallback((data: IChat) => {
     if (data?._id) {
@@ -64,14 +81,14 @@ const ChatList = () => {
   }, [])
 
   const handleReftch = useCallback((message: IMessage) => {
-    if(message.chat === chatId) return;
+    if (message.chat === chatId) return
     toast(
       <div>
         <span>New Message </span>
         <span>{message.text}</span>
       </div>,
       {
-        position: 'top-right'
+        position: 'top-right',
       }
     )
     refech()
@@ -79,7 +96,7 @@ const ChatList = () => {
 
   const eventHandlers = {
     [NEW_CHAT]: handleMessage,
-    [REFETCH_CHATS]: handleReftch
+    [REFETCH_CHATS]: handleReftch,
   }
 
   useSocketEvents(socket, eventHandlers)
@@ -101,6 +118,12 @@ const ChatList = () => {
     [chatId]
   )
 
+  const handleLoadMore = () => {
+    if (hasNext) {
+      setPage(page + 1)
+    }
+  }
+
   return (
     <div
       className={cn(
@@ -111,7 +134,7 @@ const ChatList = () => {
       <ChatListHeader />
 
       <div className="flex flex-[0.05] items-center">
-        {!selectChats && (
+        {!allowSelection && (
           <div className="mx-3 my-2 flex h-[40px] w-full items-center rounded-[8px] bg-secondary">
             <span
               className="ml-2 cursor-pointer rounded-full text-foreground"
@@ -153,11 +176,11 @@ const ChatList = () => {
           </div>
         )}
 
-        {selectChats && (
+        {allowSelection && (
           <div className="my-2 flex h-[40px] items-center gap-3 px-3">
             <button
               onClick={() => {
-                setSelectChats(false)
+                setAllowSelection(false)
                 resetSelectedChats()
               }}
             >
@@ -170,6 +193,7 @@ const ChatList = () => {
 
       <div
         ref={containerRef}
+        id="scrollableDiv"
         className={cn('overflow-y-scroll scrollbar-none md:flex-[0.85]')}
       >
         {isSuccess && Boolean(!chats.length) && (
@@ -189,9 +213,9 @@ const ChatList = () => {
         ) : (
           <InfiniteScroll
             className="flex h-full flex-col scrollbar-none"
-            dataLength={1}
-            next={() => {}}
-            hasMore={false}
+            dataLength={chats.length}
+            next={handleLoadMore}
+            hasMore={hasNext}
             loader={[12].map(() => (
               <li className="flex w-full items-center justify-center gap-3 px-2 py-2">
                 <Loader className="animate-spin" />

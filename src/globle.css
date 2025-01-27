@@ -31,6 +31,7 @@
     --chat-bubble-user:  233 11% 84%;
     --chat-backgroud: 0 0% 96%;
     --message-background:220 14.3% 95.9%;
+    --card-shadow: 0 0% 70%;
 
     --safe-area-inset-top: env(safe-area-inset-top);
     --safe-area-inset-right: env(safe-area-inset-right);
@@ -68,6 +69,7 @@
     --chat-bubble-user: 240 1% 15%;
     /* --chat-backgroud: 240 5.3% 26.1%; */
     --message-background:214.3 31.8% 91.4%;
+    --card-shadow: 0 0% 0%;
 
     --safe-area-inset-top: env(safe-area-inset-top);
     --safe-area-inset-right: env(safe-area-inset-right);

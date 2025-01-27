@@ -26,9 +26,11 @@ interface IChatSlice {
   selectedChats: string[]
   currentMessageReply?: IReply | null
   editMessage: IMessage | null
-  showChatInfo: boolean
+  showChatInfo: InfoType
   isAddingContent: boolean
 }
+
+type InfoType = 'Search' | 'Message Info' | 'Chat Info' | null
 
 const initialState: IChatSlice = {
   chats: [],
@@ -46,7 +48,7 @@ const initialState: IChatSlice = {
   selectedChats: [],
   currentMessageReply: null,
   editMessage: null,
-  showChatInfo: false,
+  showChatInfo: null,
   isAddingContent: false,
 }
 
@@ -242,17 +244,17 @@ const chatSlice = createSlice({
       state.messages[message].text = action.payload.text
       state.messages[message].isEdited = true
     },
-    
+
     removeMessage: (state, action) => {
       state.messages = state.messages.filter(
         (message) => message._id !== action.payload
       )
     },
-    toggleChatInfo: (state) => {
-      state.showChatInfo = !state.showChatInfo
+    toggleChatInfo: (state, action) => {
+      state.showChatInfo = typeof state.showChatInfo ? null : action.payload
     },
     closeShowChat: (state) => {
-      state.showChatInfo = false
+      state.showChatInfo = null
     },
     addNewMembers: (state, action) => {
       const newMembers = action.payload
@@ -482,8 +484,8 @@ const useChatSlice = () => {
     },
     []
   )
-  const toggleShowChat = useCallback(() => {
-    dispatch(actions.toggleChatInfo())
+  const toggleShowChat = useCallback((type: InfoType) => {
+    dispatch(actions.toggleChatInfo(type))
   }, [])
   const closeShowChat = useCallback(() => {
     dispatch(actions.closeShowChat())
@@ -585,8 +587,8 @@ export const useChat = () => {
     shallowEqual
   )
 
-  const toggleShowChat = useCallback(() => {
-    dispatch(actions.toggleChatInfo())
+  const toggleShowChat = useCallback((type: InfoType) => {
+    dispatch(actions.toggleChatInfo(type))
   }, [])
 
   const setChats = useCallback((chats: IChat[]) => {

@@ -72,7 +72,7 @@ const MessageListHeader = ({ selectedChat }: MessageListHeaderProps) => {
       </button>
       <div
         className="ml-2 flex items-center gap-3 font-semibold"
-        onClick={toggleShowChat}
+        onClick={() => toggleShowChat('Chat Info')}
       >
         <Avatar
           src={tranformUrl(
@@ -108,7 +108,7 @@ const MessageListHeader = ({ selectedChat }: MessageListHeaderProps) => {
                   icon={Info}
                   onClick={() => {
                     setOpen(false)
-                    toggleShowChat()
+                    toggleShowChat('Chat Info')
                   }}
                 />
                 <DropDownMenuItem

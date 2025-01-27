@@ -22,7 +22,7 @@ const Self = () => {
   };
 
   return (
-    <div className="rounded-md bg-background-dark shadow-md p-2 w-full"
+    <div className="rounded-md bg-background-dark shadow-card-shadow shadow-md p-2 w-full"
     style={{
       boxShadow: '2px 0px 91px -12px black;'
     }}

@@ -17,6 +17,7 @@ type Status = 'IDEAL' | 'SUCCESS' | 'LOADING' | 'ERROR'
 const SendPost = ({ onClose, post }: SendPostProps) => {
   const [users, setUsers] = useState<IUser[]>([])
   const [search, setSearch] = useState<string>('')
+  const [sendingPost, setSendingPost] = useState(false)
   const [status, setStatus] = useState<Status>('IDEAL')
   const [isSearching, setIsSearching] = useState(false)
   const [selectedUser, setSelectedUser] = useState<
@@ -46,13 +47,14 @@ const SendPost = ({ onClose, post }: SendPostProps) => {
 
   const handleSendPost = useCallback(async () => {
     if (selectedUser[0]?.id) {
-      const res = await makeRequest.post('/message/users/send', {
+      setSendingPost(true)
+      await makeRequest.post('/message/users/send', {
         userIds: selectedUser.map((u) => u.id),
         post: post?._id,
       })
-      console.log(res)
       onClose()
     }
+    setSendingPost(false)
   }, [onClose, post?._id, selectedUser])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -89,11 +91,14 @@ const SendPost = ({ onClose, post }: SendPostProps) => {
     fetchUsers()
   }, [fetchUsers])
 
+
+
   return (
     <div className="relative h-dvh w-screen overflow-hidden bg-background text-foreground md:h-auto md:w-128">
       <div className="flex w-full items-center justify-between border-b-[0.5px] border-border p-2 text-xl text-foreground">
         <div className="flex items-center gap-3">
           <Button
+            disabled={sendingPost}
             onClick={onClose}
             size={'icon'}
             className="p-0 hover:bg-background md:hidden"
@@ -103,6 +108,7 @@ const SendPost = ({ onClose, post }: SendPostProps) => {
           <h1 className="text-xl font-semibold">Share</h1>
         </div>
         <Button
+          disabled={sendingPost}
           variant={'ghost'}
           size="icon"
           onClick={onClose}
@@ -200,8 +206,8 @@ const SendPost = ({ onClose, post }: SendPostProps) => {
       </div>
       <div className="send-button-safe-area w-full bg-background px-2">
         <Button
+          disabled={sendingPost || !selectedUser.length}
           onClick={handleSendPost}
-          disabled={!selectedUser.length}
           className="w-full"
           variant={'follow'}
           size={'lg'}

@@ -4,7 +4,7 @@ import { useChatSlice } from '@/redux/services/chatSlice'
 import { Loader } from 'lucide-react'
 import { memo, useCallback, useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import Message from './Message';
+import Message from './Message'
 import { IMessage } from '@/lib/types'
 import { createNotification, formatDate } from '@/lib/utils'
 import { useSocket } from '@/context/SocketContext'
@@ -29,7 +29,7 @@ const MessageList = () => {
     removeMessage,
     setIsAddingContent,
     selectedChat,
-    editMessageById
+    editMessageById,
   } = useChatSlice()
 
   const { setScrollToBottom } = useNewMessages()
@@ -137,7 +137,7 @@ const MessageList = () => {
 
   const handleSeenMessage = useCallback(
     async (data: any) => {
-      console.log({data})
+      console.log({ data })
       if (data.chatId === chatId) {
         markAllMessagesAsSeen()
       }
@@ -154,8 +154,8 @@ const MessageList = () => {
       removeMessage(message._id)
     }
   }
-  
-  const editMessage = (data: any)=>{
+
+  const editMessage = (data: any) => {
     editMessageById({ text: data.text, messageId: data?.messageId })
   }
 

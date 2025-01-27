@@ -10,7 +10,7 @@ const Suggetions = () => {
 
   return (
     <div
-      className="hidden w-full rounded-md bg-background-dark p-2 text-foreground shadow-md shadow-black md:block"
+      className="hidden w-full rounded-md bg-background-dark p-2 text-foreground shadow-md shadow-card-shadow md:block"
       style={{
         boxShadow: '2px 0px 91px -12px rgba(255,255,255,0.75);',
       }}

@@ -24,6 +24,7 @@ module.exports = {
         'chat-bubble-self': "hsl(var(--chat-bubble-self))",
         'chat-bubble-user': "hsl(var(--chat-bubble-user))",
         'chat-background': "hsl(var(--chat-background))",
+        'card-shadow': "hsl(var(--card-shadow))",
         background: {
           DEFAULT: "hsl(var(--background))",
           light: "hsl(var(--background-light))",
