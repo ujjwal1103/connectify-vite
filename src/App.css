@@ -7,6 +7,8 @@
   min-height: 100dvh;
   min-width: 100dvw;
   max-width: 100dvw;
+  height: 100dvh;
+  width: 100dvw;
   overflow: hidden;
   background-color: hsl(var(--background));
 }
@@ -22,8 +24,8 @@
 
 body {
   margin: 0;
-  max-height: 100dvh;
-  max-width: 100dvw;
+  height: 100dvh;
+  width: 100dvw;
   overflow: hidden;
   min-width: 375px;
   font-size: 14px;

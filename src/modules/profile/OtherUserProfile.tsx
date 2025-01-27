@@ -114,7 +114,7 @@ const OtherUserProfile = () => {
                 canViewFollowers={true}
                 username={user?.username}
               />
-              <div className='md:hidden'>
+              <div className="md:hidden">
                 <span>{user?.username}</span>
               </div>
               <div>
@@ -161,7 +161,11 @@ const OtherUserProfile = () => {
               tabs={tabs}
             />
             {selectedTab === 'posts' && (
-              <Posts isSelfPosts={false} userId={user?._id} />
+              <Posts
+                isSelfPosts={false}
+                userId={user?._id}
+                shouldFetchPosts={(user?.posts ?? 0) > 0}
+              />
             )}
             {selectedTab === 'reels' && <Reels />}
           </>

@@ -33,7 +33,7 @@ const SelfProfile = () => {
   const [searchParams, setSearchParams] = useSearchParams()
   const tab = searchParams.get('tab') || 'posts'
   const { user, loading } = useAuth()
-  const navigate= useNavigate()
+  const navigate = useNavigate()
 
   const handleTabChange = (tab: string) => {
     setSearchParams({ tab }, { replace: true })
@@ -48,14 +48,14 @@ const SelfProfile = () => {
       className="relative h-dvh overflow-x-hidden overflow-y-scroll scrollbar-thin sm:py-0 sm:pt-0 md:my-0 md:w-full"
       id="scrollableDiv"
     >
-      <div className="sticky -top-0 z-20 flex sm:hidden items-center gap-2 bg-background p-2 ">
-        <button onClick={()=>navigate(-1)}>
+      <div className="sticky -top-0 z-20 flex items-center gap-2 bg-background p-2 sm:hidden">
+        <button onClick={() => navigate(-1)}>
           <ChevronLeft />
         </button>
 
         <span>{user?.username}</span>
       </div>
-      <hr className='border-[#595959]'/>
+      <hr className="border-[#595959]" />
       <div className="w-full text-sm">
         <div className="flex flex-col justify-center gap-3 px-2 py-3 md:mx-auto md:justify-evenly md:px-10 md:py-5 lg:w-4/5">
           <div className="flex gap-10 sm:mx-10">
@@ -139,7 +139,7 @@ const SelfProfile = () => {
             </Button>
           </div>
         </div>
-        <div className='sticky top-10 sm:top-0 z-20 bg-background'>
+        <div className="sticky top-10 z-20 bg-background sm:top-0">
           <TabControl
             tabId={'tabs'}
             selectedTab={tab}
@@ -148,7 +148,7 @@ const SelfProfile = () => {
           />
         </div>
 
-        {tab === 'posts' && <Posts />}
+        {tab === 'posts' && <Posts shouldFetchPosts={(user?.posts ?? 0) > 0} />}
         {tab === 'reels' && <Reels />}
         {/* {tab === 'saved' && <SavedPost />} */}
       </div>
