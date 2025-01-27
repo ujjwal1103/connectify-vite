@@ -12,7 +12,10 @@ const MainContainer = () => {
   return (
     <main className="flex h-full w-full min-w-80 flex-1 flex-col bg-background-secondary text-foreground sm:flex-row">
       <Sidebar />
-      <Appbar hideAppBar={hideAppBar} show={show} />
+      <Appbar
+        hideAppBar={hideAppBar || location.pathname !== '/'}
+        show={show}
+      />
 
       <main
         key={location.pathname}

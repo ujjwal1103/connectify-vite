@@ -42,7 +42,7 @@ const SidePannel = ({ width, children, onClose }: any) => {
       animate={{ opacity: 1, x: 0 }}
       exit={{ x: -400 }}
       transition={{ duration: 0.3, ease: "linear" }}
-      className="h-full z-100 fixed top-0 focus-visible:outline-0"
+      className="h-dvh z-100 fixed top-0 focus-visible:outline-0"
       style={{ left: width }}
       tabIndex={-1}
     >
