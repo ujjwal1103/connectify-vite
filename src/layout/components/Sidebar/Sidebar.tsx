@@ -16,11 +16,12 @@ import { SidebarRoute, sidebarRoutes } from './sidebarRoutes'
 import SidebarHeader from './SidebarHeader'
 import Route from './Route'
 import { useSocket } from '@/context/SocketContext'
-import { LIKE_POST, NEW_MESSAGE, NEW_REQUEST } from '@/constants/Events'
+import { LIKE_POST, NEW_REQUEST, REFETCH_CHATS } from '@/constants/Events'
 import useSocketEvents from '@/hooks/useSocketEvent'
 import { XIcon } from 'lucide-react'
 import { NewStory } from '@/modules/story/NewStory/NewStory'
 import { useClickOutside } from '@react-hookz/web'
+import { IMessage } from '@/lib/types'
 
 const Sidebar = () => {
   const [counts, setCounts] = useState({
@@ -51,6 +52,8 @@ const Sidebar = () => {
     handleResize()
   }, [location.pathname])
 
+  const isInboxOpen = location.pathname.includes('/inbox')
+
   const handleModalToggle = (modalName: ModalStateNames) => {
     setModalState(modalName)
   }
@@ -61,7 +64,6 @@ const Sidebar = () => {
     target: HTMLElement
   ) => {
     if (!sidebarRef.current) return
-    console.log({ modalName })
     if (modalName === 'newPost') {
       setModalState(modalName)
       return
@@ -75,28 +77,40 @@ const Sidebar = () => {
 
     setModalState(modalName)
   }
-  const handleNewMessage = () => {
-    setCounts((prev) => ({ ...prev, messenger: prev.messenger + 1 }))
+  const handleNewMessage = (message: IMessage) => {
+    if (message?._id && !isInboxOpen) {
+      setCounts((prev) => ({ ...prev, messenger: prev.messenger + 1 }))
+    }
   }
   const handleNewNotification = () => {
     setCounts((prev) => ({ ...prev, notification: prev.notification + 1 }))
   }
 
   const eventHandlers = {
-    [NEW_MESSAGE]: handleNewMessage,
+    [REFETCH_CHATS]: handleNewMessage,
     [LIKE_POST]: handleNewNotification,
     [NEW_REQUEST]: handleNewNotification,
   }
 
   useSocketEvents(socket, eventHandlers)
 
+
+
   const handleModalClick = (
     e: React.MouseEvent<HTMLAnchorElement>,
     modalName: ModalStateNames,
     modal?: boolean
   ) => {
+    const target = e.target as HTMLElement
+    if (target.id === 'messages') {
+      setCounts((prev) => ({ ...prev, messenger: 0 }))
+    }
+
     if (modal) {
       e.preventDefault()
+      if (modalName === 'notiSheet') {
+        setCounts((prev) => ({ ...prev, notification: 0 }))
+      }
       if (modalName === 'openPostModal') {
         const rect = e.currentTarget.getBoundingClientRect()
 
@@ -114,8 +128,6 @@ const Sidebar = () => {
       handleModalToggle(modalName!)
     }
   }
-
-  const isInboxOpen = location.pathname.includes('/inbox')
 
   const renderRouteItem = useCallback(
     (route: SidebarRoute) => {

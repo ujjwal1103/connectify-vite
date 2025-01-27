@@ -25,10 +25,10 @@ const Route = ({
   handleModalClick,
   badge = false,
   count,
-  isHidden
+  isHidden,
 }: Props) => {
   return (
-    <li key={route} className="relative last:mt-auto" >
+    <li key={route} className="relative last:mt-auto">
       <NavLink
         id={label.toLowerCase()}
         to={route}
@@ -38,24 +38,29 @@ const Route = ({
             {
               'bg-secondary': isActive,
               'shadow-inner ring ring-background': isDisabled,
-              'lg:inline-block lg:gap-0 transition-all duration-300': isHidden
+              'transition-all duration-300 lg:inline-block lg:gap-0': isHidden,
             }
           )
         }
         onClick={(e) => handleModalClick(e, modalName!, modal)}
       >
-        <div className="mx-2 pointer-events-none">
+        <div className="pointer-events-none relative mx-2 ">
+          {badge && count !== 0 && (
+            <span className="pointer-events-none absolute -top-2 -left-3 z-50 flex h-5 min-w-5 text-xs overflow-clip px-1 items-center justify-center rounded-full bg-blue-700">
+              {count}
+            </span>
+          )}
           <Icon />
         </div>
-        <div className={cn('hidden lg:inline-block pointer-events-none', isHidden && 'lg:hidden transition-all duration-300')}>
+        <div
+          className={cn(
+            'pointer-events-none hidden lg:inline-block',
+            isHidden && 'transition-all duration-300 lg:hidden'
+          )}
+        >
           <span className="text-lg">{label}</span>
         </div>
       </NavLink>
-      {badge && count !== 0 && (
-        <span className="absolute pointer-events-none right-3 top-1/2 z-50 hidden -translate-y-1/2 sm:inline">
-          {count}
-        </span>
-      )}
     </li>
   )
 }
